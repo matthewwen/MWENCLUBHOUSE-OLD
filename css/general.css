@@ -1,0 +1,33 @@
+.default {
+    padding: 0;
+    margin: 0;
+    background: #333333;
+    color: white;
+}
+
+.header {
+    height: 48px;
+    display: inline-flex;
+    flex-flow: row wrap;
+    position: fixed;
+    top: 0;
+    flex: 0;
+    margin-top: 0;
+    width: 100%;
+    z-index: 80;
+}
+
+.header div {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+}
+
+.header div:hover{
+    background: #111111;
+}
+
+.header a{
+    color: white;
+    text-decoration: none;
+}
