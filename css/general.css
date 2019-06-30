@@ -6,28 +6,40 @@
 }
 
 .header {
-    height: 48px;
-    display: inline-flex;
-    flex-flow: row wrap;
     position: fixed;
     top: 0;
-    flex: 0;
-    margin-top: 0;
     width: 100%;
-    z-index: 80;
+    overflow: hidden;
+    transition: 0.1s;
+    height: 100vh;
 }
 
-.header div {
+.menu {
+    width: 100%;
+    display: inline-flex;
+    flex-flow: row wrap;
+    flex-flow: 2;
+}
+
+.menu div {
     flex: 1;
     text-align: center;
     padding: 10px;
+    height: 10%; 
+    min-height: 18px;
+    max-height: 25px;
+    flex-grow: 1;
 }
 
-.header div:hover{
+.menu div:hover{
     background: #111111;
 }
 
-.header a{
+.menu a{
     color: white;
     text-decoration: none;
+}
+
+.main {
+    margin-top: 200px;
 }
