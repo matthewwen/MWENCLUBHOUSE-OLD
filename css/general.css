@@ -10,8 +10,6 @@
     top: 0;
     width: 100%;
     overflow: hidden;
-    transition: 0.1s;
-    height: 100vh;
 }
 
 .menu {
@@ -42,4 +40,9 @@
 
 .main {
     margin-top: 200px;
+}
+
+.footer {
+    text-align: center;
+    width: 100%;
 }

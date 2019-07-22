@@ -33,35 +33,27 @@ function animate_header() {
     header  = document.querySelector(".header"  );
     body    = document.querySelector(".body"    );
 
-    var name  = document.getElementById("headername");
-
-    //name.style.display  = "none";
-    //name.style.height   = this.window.innerHeight - header.style.height;
     window.addEventListener('scroll', function(evt) {
         var pos = this.document.documentElement.scrollTop;
         if (pos === 0) {
             this.console.log(pos);
             header.style.height = "100vh";
-            //name.style.display  = "block";
-            //name.style.height   = this.window.innerHeight - header.style.height - this.document.documentElement.scrollTop;
         }
         else {
             this.console.log("set pxl: " + pos);
             header.style.height = "48px";
-            //name.style.display  = "none";
         }
 
     });
 }
 
-do {
-    window.onload = init;
-    var parent = document.getElementsByClassName("main");
-    for (var i = 0; i < 100; i++) {
-        var p = document.createElement("p");
-        var n = document.createTextNode("From the for loop");
-        p.appendChild(n);
-        parent[0].appendChild(p);
-    }
+$(function() {
+    console.log("Hello JQuery");
+});
 
-}while(false);
+window.onload = init;
+var parent = document.getElementsByClassName("main");
+var p = document.createElement("p");
+var n = document.createTextNode("Website is a work in progress");
+p.appendChild(n);
+parent[0].appendChild(p);
