@@ -38,8 +38,8 @@
     text-decoration: none;
 }
 
-.main {
-    margin-top: 200px;
+.main p {
+    text-align: center;
 }
 
 .footer {
