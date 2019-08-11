@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 
 int main(int argc, char *argv[])
 {
@@ -26,10 +27,13 @@ int main(int argc, char *argv[])
 
 	memset(&serv_addr, '0', sizeof(serv_addr));
 
+	struct hostent * server = gethostbyname("www.matthewwen.com");
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(5000);
+	serv_addr.sin_port = htons(80);
+	//printf("%s\n", server->h_addr_list[0]);
+	//serv_addr.sin_addr = *((struct in_addr *) server->h_addr);
 
-	if(inet_pton(AF_INET, "192.168.1.17", &serv_addr.sin_addr)<=0)
+	if(inet_pton(AF_INET, "192.168.1.18", &serv_addr.sin_addr)<=0)
 	{
 		printf("\n inet_pton error occured\n");
 		return 1;
