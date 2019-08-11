@@ -1,0 +1,11 @@
+SERVER_NAME=server
+CLIENT_NAME=client
+
+SRC_S=$(SERVER_NAME).c
+SRC_C=$(CLIENT_NAME).c
+
+$(SERVER_NAME):
+	$(CC) $(SRC_S) -o $(SERVER_NAME) 
+
+$(CLIENT_NAME):
+	$(CC) $(SRC_C) -o $(CLIENT_NAME)
