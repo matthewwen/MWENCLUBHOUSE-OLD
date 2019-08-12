@@ -51,6 +51,5 @@ int main(int argc, char *argv[]) {
         close(fdimg);
 
 		close(connfd);
-		sleep(1);
 	}
 }
