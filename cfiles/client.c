@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(5000);
 
-	if(inet_pton(AF_INET, "10.15.231.21", &serv_addr.sin_addr)<=0) {
+	if(inet_pton(AF_INET, "10.50.200.213", &serv_addr.sin_addr)<=0) {
 		printf("\n inet_pton error occured\n");
 		return 1;
 	}

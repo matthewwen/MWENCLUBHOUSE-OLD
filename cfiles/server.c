@@ -24,13 +24,7 @@ static void panelconn_signal_handler(int signo) {
 }
 
 int main(int argc, char *argv[]) {
-	// signal(SIGHUP, panelconn_signal_handler);
-	// signal(SIGUSR1, panelconn_signal_handler);
-	// signal(SIGPIPE, panelconn_signal_handler);
-	// signal(SIGALRM, panelconn_signal_handler);
-
 	int port = 5000;
-	printf("port: %d\n", port);
 
 	char sendBuff[1025];
 	memset(sendBuff, 0, sizeof(sendBuff));
@@ -45,14 +39,10 @@ int main(int argc, char *argv[]) {
 	bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
 	listen(listenfd, 10);
 
-	// int epfd = epoll_create(1024);
-	// if (epfd < 0) {
-	// 	printf("failed to init epoll\n");
-	// }
-
 	int connfd = 0;
+	struct sockaddr cli_addr;
 	while(true) {
-		connfd = accept(listenfd, (struct sockaddr*)NULL, NULL);
+		connfd = accept(listenfd, (struct sockaddr*) &cli_addr, sizeof(cli_addr));
 
         int fdimg = open("file.txt", O_RDONLY);
         sendfile(connfd, fdimg, NULL, 4000);
