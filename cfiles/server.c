@@ -24,12 +24,12 @@ static void panelconn_signal_handler(int signo) {
 }
 
 int main(int argc, char *argv[]) {
-	signal(SIGHUP, panelconn_signal_handler);
-	signal(SIGUSR1, panelconn_signal_handler);
-	signal(SIGPIPE, panelconn_signal_handler);
-	signal(SIGALRM, panelconn_signal_handler);
+	// signal(SIGHUP, panelconn_signal_handler);
+	// signal(SIGUSR1, panelconn_signal_handler);
+	// signal(SIGPIPE, panelconn_signal_handler);
+	// signal(SIGALRM, panelconn_signal_handler);
 
-	int port = config_int_value("5000");
+	int port = 5000;
 	printf("port: %d\n", port);
 
 	char sendBuff[1025];
@@ -45,10 +45,10 @@ int main(int argc, char *argv[]) {
 	bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
 	listen(listenfd, 10);
 
-	int epfd = epoll_create(1024);
-	if (epfd < 0) {
-		printf("failed to init epoll\n");
-	}
+	// int epfd = epoll_create(1024);
+	// if (epfd < 0) {
+	// 	printf("failed to init epoll\n");
+	// }
 
 	int connfd = 0;
 	while(true) {
