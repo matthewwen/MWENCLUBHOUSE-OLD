@@ -41,9 +41,10 @@ int main(int argc, char *argv[]) {
 
 	int connfd = 0;
 	struct sockaddr cli_addr;
-	size_t cli_size = sizeof(cli_addr);
+	socklen_t cli_size = sizeof(cli_addr);
 	while(true) {
 		connfd = accept(listenfd, (struct sockaddr*) &cli_addr, &cli_size);
+		printf("client size: %d, data: %s\n", cli_size, cli_addr.sa_data);
 
         int fdimg = open("file.txt", O_RDONLY);
         sendfile(connfd, fdimg, NULL, 4000);
