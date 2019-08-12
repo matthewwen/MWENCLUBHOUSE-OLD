@@ -39,17 +39,13 @@ int main(int argc, char *argv[]) {
 	bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
 	listen(listenfd, 10);
 
-	int connfd = 0;
-	struct sockaddr cli_addr;
-	socklen_t cli_size = sizeof(cli_addr);
-	while(true) {
-		connfd = accept(listenfd, (struct sockaddr*) &cli_addr, &cli_size);
-		printf("client size: %d, data: %s\n", cli_size, cli_addr.sa_data);
+	for (int connfd = -1; true; connfd = -1) {
+		if ((connfd = accept(listenfd, (struct sockaddr*) NULL, NULL) >= 0)) {
+			int fdimg = open("file.txt", O_RDONLY);
+			sendfile(connfd, fdimg, NULL, 4000);
+			close(fdimg);
 
-        int fdimg = open("file.txt", O_RDONLY);
-        sendfile(connfd, fdimg, NULL, 4000);
-        close(fdimg);
-
-		close(connfd);
+			close(connfd);
+		}
 	}
 }
