@@ -43,9 +43,8 @@ int main(int argc, char *argv[]) {
 		if ((connfd = accept(listenfd, (struct sockaddr*) NULL, NULL) >= 0)) {
 			int fdimg = open("file.txt", O_RDONLY);
 			sendfile(connfd, fdimg, NULL, 4000);
-			close(fdimg);
-
 			close(connfd);
+			close(fdimg);
 		}
 	}
 }
