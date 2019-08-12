@@ -19,15 +19,9 @@
 
 #include <sys/epoll.h>
 
-static void panelconn_signal_handler(int signo) {
-
-}
-
 int main(int argc, char *argv[]) {
 	int port = 5000;
 
-	char sendBuff[1025];
-	memset(sendBuff, 0, sizeof(sendBuff));
 
 	int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	struct sockaddr_in serv_addr;
@@ -39,8 +33,14 @@ int main(int argc, char *argv[]) {
 	bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
 	listen(listenfd, 10);
 
+	char sendBuff[1025];
+	memset(sendBuff, 0, sizeof(sendBuff));
 	for (int connfd = -1; true; connfd = -1) {
 		if ((connfd = accept(listenfd, (struct sockaddr*) NULL, NULL) >= 0)) {
+			// getting message from the server
+			int bc = recv(listenfd, sendBuff, sizeof(sendBuff) - 1, 0);
+			sendBuff[bc] = 0;
+			printf("buff msg: %s\n", sendBuff);
 			int fdimg = open("file.txt", O_RDONLY);
 			sendfile(connfd, fdimg, NULL, 4000);
 			close(connfd);
