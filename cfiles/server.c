@@ -28,23 +28,22 @@ int main(int argc, char *argv[]) {
 	memset(&serv_addr, 0, sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	serv_addr.sin_port = htons(5000);
+	serv_addr.sin_port = htons(port);
 
 	bind(listenfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
 	listen(listenfd, 10);
 
-	char sendBuff[1025];
-	memset(sendBuff, 0, sizeof(sendBuff));
+	char sendBuff[1025] = "Hello There, You are connected to server";
+	socklen_t len = sizeof(serv_addr);
 	for (int connfd = -1; true; connfd = -1) {
-		if ((connfd = accept(listenfd, (struct sockaddr*) NULL, NULL) >= 0)) {
+		if ((connfd = accept(listenfd, (struct sockaddr*) &serv_addr, &len) >= 0)) {
 			// getting message from the server
-			//int bc = recv(listenfd, sendBuff, sizeof(sendBuff) - 1, 0);
-			//sendBuff[bc] = 0;
-			//printf("buff msg: %s\n", sendBuff);
-			int fdimg = open("ubuntu-18.04.3-desktop-amd64.iso", O_RDONLY);
-			sendfile(connfd, fdimg, NULL, 4000);
+			write(connfd, sendBuff, strlen(sendBuff));
+			//printf("the buff msg: %s\n", sendBuff);
 			close(connfd);
-			close(fdimg);
+			// int fdimg = open("ubuntu-18.04.3-desktop-amd64.iso", O_RDONLY);
+			// sendfile(connfd, fdimg, NULL, 4000);
+			// close(fdimg);
 		}
 	}
 }

@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(5000);
 
-	if(inet_pton(AF_INET, "10.50.200.213", &serv_addr.sin_addr)<=0) {
+	if(inet_pton(AF_INET, "10.15.231.16", &serv_addr.sin_addr)<=0) {
 		printf("\n inet_pton error occured\n");
 		return 1;
 	}
@@ -35,9 +35,11 @@ int main(int argc, char *argv[]) {
 	char recvBuff[1024];
 	memset(recvBuff, 0,sizeof(recvBuff));
 	int n = 0;
+	FILE * fp = fopen("img.iso", "a");
 	while ((n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0) {
 		printf("in the loop : %d\n", n);
 		recvBuff[n] = 0;
+		fwrite(recvBuff, sizeof(*recvBuff), n, fp);
 		if(fputs(recvBuff, stdout) == EOF) {
 			printf("\n Error : Fputs error\n");
 		}
