@@ -38,10 +38,10 @@ int main(int argc, char *argv[]) {
 	for (int connfd = -1; true; connfd = -1) {
 		if ((connfd = accept(listenfd, (struct sockaddr*) NULL, NULL) >= 0)) {
 			// getting message from the server
-			int bc = recv(listenfd, sendBuff, sizeof(sendBuff) - 1, 0);
-			sendBuff[bc] = 0;
-			printf("buff msg: %s\n", sendBuff);
-			int fdimg = open("file.txt", O_RDONLY);
+			//int bc = recv(listenfd, sendBuff, sizeof(sendBuff) - 1, 0);
+			//sendBuff[bc] = 0;
+			//printf("buff msg: %s\n", sendBuff);
+			int fdimg = open("ubuntu-18.04.3-desktop-amd64.iso", O_RDONLY);
 			sendfile(connfd, fdimg, NULL, 4000);
 			close(connfd);
 			close(fdimg);
