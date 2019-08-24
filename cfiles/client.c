@@ -1,53 +1,41 @@
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-
-int main(int argc, char *argv[]) {
-	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if(sockfd < 0) {
-		printf("\n Error : Could not create socket \n");
-		return 1;
-	}
-
-	struct sockaddr_in serv_addr;
-	memset(&serv_addr, 0, sizeof(serv_addr));
-	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(5000);
-
-	if(inet_pton(AF_INET, "10.15.231.16", &serv_addr.sin_addr)<=0) {
-		printf("\n inet_pton error occured\n");
-		return 1;
-	}
-
-	if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-		printf("Error : Connect Failed\n");
-		return 1;
-	}
-
-	char recvBuff[1024];
-	memset(recvBuff, 0,sizeof(recvBuff));
-	int n = 0;
-	FILE * fp = fopen("img.iso", "a");
-	while ((n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0) {
-		printf("in the loop : %d\n", n);
-		recvBuff[n] = 0;
-		fwrite(recvBuff, sizeof(*recvBuff), n, fp);
-		if(fputs(recvBuff, stdout) == EOF) {
-			printf("\n Error : Fputs error\n");
-		}
-	}
-
-	if(n < 0) {
-		printf("Read error\n");
-	}
-
-	return EXIT_SUCCESS;
-}
+#include <stdio.h> 
+#include <sys/socket.h> 
+#include <arpa/inet.h> 
+#include <unistd.h> 
+#include <string.h> 
+#include <curl/curl.h>
+#define PORT 8080 
+   
+int main(int argc, char const *argv[]) 
+{ 
+    int sock = 0, valread; 
+    struct sockaddr_in serv_addr; 
+    char *hello = "Hello from client"; 
+    char buffer[1024] = {0}; 
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+    { 
+        printf("\n Socket creation error \n"); 
+        return -1; 
+    } 
+   
+    serv_addr.sin_family = AF_INET; 
+    serv_addr.sin_port = htons(PORT); 
+       
+    // Convert IPv4 and IPv6 addresses from text to binary form 
+    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)  
+    { 
+        printf("\nInvalid address/ Address not supported \n"); 
+        return -1; 
+    } 
+   
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 
+    { 
+        printf("\nConnection Failed \n"); 
+        return -1; 
+    } 
+    send(sock , hello , strlen(hello) , 0 ); 
+    printf("Hello message sent\n"); 
+    valread = read( sock , buffer, 1024); 
+    printf("%s\n",buffer ); 
+    return 0; 
+} 
