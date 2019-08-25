@@ -78,7 +78,6 @@ void post_request() {
 
 static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *stream) {
     //printf("num member: %ld\n", nmemb);
-    nmemb = 999;
     size_t retcode   = fread(ptr, size, nmemb, stream);
     curl_off_t nread = (curl_off_t) retcode;
 
@@ -111,7 +110,6 @@ void put_request() {
         struct curl_slist * chunk = NULL;
 
         chunk = curl_slist_append(chunk, "Accept:");
-        // chunk = curl_slist_append(chunk, "Expect:");
         chunk = curl_slist_append(chunk, "Service: Database");
         chunk = curl_slist_append(chunk, "Signature: postrequest");
         chunk = curl_slist_append(chunk, "Content-Type: application/json");

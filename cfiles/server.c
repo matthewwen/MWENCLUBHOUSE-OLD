@@ -6,8 +6,10 @@
 #include <netinet/in.h> 
 #include <string.h> 
 #include <assert.h>
+
+#include "http.h"
+
 #define PORT 8080 
-#define SIZE 1000
 
 int create_server_socket(struct sockaddr_in * address) {
     // Creating socket file descriptor 
@@ -48,15 +50,21 @@ int main(int argc, char const *argv[]) {
     char * response = "Reponse Message"; 
     for (int new_socket = -1; true; new_socket = -1) {
         if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) >= 0) { 
+            request_t request = get_default_request();
+            int len = SIZE - 1;
             printf("\n--------------header-----------------\n");
-            for (int valread = SIZE - 1; valread == SIZE - 1; ) {
+            for (int valread = SIZE - 1; (valread == SIZE - 1) && request.expect == false; ) {
                 valread = read(new_socket, buffer, SIZE - 1);
                 buffer[valread + 1] = '\0';
                 printf("%s", buffer);
+                char * a_pos = buffer;
+                parse_request(&request, &a_pos, &len);
             }
+            printf("\n------------------\n");
 
             printf("\n--------------data-----------------\n");
-            for (int valread = SIZE - 1; valread == SIZE - 1; ) {
+            uint64_t file_size = request.length;
+            for (int valread = SIZE - 1; file_size > 0 && request.protocol != GET; file_size = file_size - valread) {
                 valread = read(new_socket, buffer, SIZE - 1);
                 buffer[valread + 1] = '\0';
                 printf("%s", buffer);
