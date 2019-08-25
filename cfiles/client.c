@@ -1,41 +1,31 @@
 #include <stdio.h> 
-#include <sys/socket.h> 
-#include <arpa/inet.h> 
-#include <unistd.h> 
+#include <stdlib.h>
 #include <string.h> 
 #include <curl/curl.h>
-#define PORT 8080 
+
+static const int SIG_LEN = 75; 
+static const int REQUEST_LEN = 2048;
    
-int main(int argc, char const *argv[]) 
-{ 
-    int sock = 0, valread; 
-    struct sockaddr_in serv_addr; 
-    char *hello = "Hello from client"; 
-    char buffer[1024] = {0}; 
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
-    { 
-        printf("\n Socket creation error \n"); 
-        return -1; 
-    } 
-   
-    serv_addr.sin_family = AF_INET; 
-    serv_addr.sin_port = htons(PORT); 
-       
-    // Convert IPv4 and IPv6 addresses from text to binary form 
-    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)  
-    { 
-        printf("\nInvalid address/ Address not supported \n"); 
-        return -1; 
-    } 
-   
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 
-    { 
-        printf("\nConnection Failed \n"); 
-        return -1; 
-    } 
-    send(sock , hello , strlen(hello) , 0 ); 
-    printf("Hello message sent\n"); 
-    valread = read( sock , buffer, 1024); 
-    printf("%s\n",buffer ); 
-    return 0; 
+int main(int argc, char const *argv[]) { 
+    CURL * curl = curl_easy_init();
+    if (curl != NULL) {
+        struct curl_slist * chunk = NULL;
+
+        chunk = curl_slist_append(chunk, "Accept:");
+        chunk = curl_slist_append(chunk, "Service:Database");
+        chunk = curl_slist_append(chunk, "Signature:");
+
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+        curl_easy_setopt(curl, CURLOPT_URL, "192.168.1.103:8080");
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
+        CURLcode res = curl_easy_perform(curl);
+        if (res != CURLE_OK) {
+            printf("error!!\n");
+        }
+
+        curl_easy_cleanup(curl);
+        curl_slist_free_all(chunk);
+    }
+    return EXIT_SUCCESS;
 } 
