@@ -9,7 +9,7 @@
 
 #include "http.h"
 
-#define PORT 8080 
+#define PORT 80
 
 int create_server_socket(struct sockaddr_in * address) {
     // Creating socket file descriptor 

@@ -14,6 +14,8 @@ void put_request();
 
 int count = 0;
 
+#define PUBIP ":80"
+
 int main(int argc, char const *argv[]) { 
     //get_request();
     curl_global_init(CURL_GLOBAL_ALL);
@@ -33,7 +35,7 @@ void get_request() {
         chunk = curl_slist_append(chunk, "Content-Type: application/json");
 
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-        curl_easy_setopt(curl, CURLOPT_URL, "192.168.1.103:8080");
+        curl_easy_setopt(curl, CURLOPT_URL, PUBIP);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
         CURLcode res = curl_easy_perform(curl);
@@ -57,7 +59,7 @@ void post_request() {
         chunk = curl_slist_append(chunk, "Content-Type: application/json");
 
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-        curl_easy_setopt(curl, CURLOPT_URL, "192.168.1.103:8080");
+        curl_easy_setopt(curl, CURLOPT_URL, PUBIP);
         //curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"Hello\": 5}");
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
@@ -121,7 +123,7 @@ void put_request() {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &response);
         curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
         curl_easy_setopt(curl, CURLOPT_PUT, 1L);
-        curl_easy_setopt(curl, CURLOPT_URL, "192.168.1.103:8080");
+        curl_easy_setopt(curl, CURLOPT_URL, PUBIP);
         curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t) file_info.st_size);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
