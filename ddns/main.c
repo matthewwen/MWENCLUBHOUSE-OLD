@@ -1,7 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
+#include <inttypes.h>
+#include <getdns/getdns_extra.h>
 
 int main(int argc, char* argv[]) {
+	getdns_return_t r;
+
+
+	getdns_context * ctxt = NULL;
+	r = getdns_context_create(&ctxt, 1);
+	assert(r == 0);
+
+	getdns_context_destroy(ctxt);
 
 	return EXIT_SUCCESS;
 }
