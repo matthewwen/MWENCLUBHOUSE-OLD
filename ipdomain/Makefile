@@ -7,7 +7,7 @@ SRC_C=$(CLIENT_NAME).c
 
 MAIN_NAME=main
 MAIN_C=$(MAIN_NAME).c
-LIB=-lmicrohttpd
+LIB=-lmicrohttpd -lssh -lpthread
 
 SERVER_INCLUDE=include
 
