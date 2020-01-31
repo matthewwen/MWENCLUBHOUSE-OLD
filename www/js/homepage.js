@@ -70,11 +70,13 @@ function set_content_size() {
         $('#about-me-side').css("margin-left", margin_left + "px");
         $('#div-body').css('margin-left', 0 + 'px');
         $('#about-me-side').css('visibility', 'visible');
+        $('#about-me-side').show();
     }
     else {
         console.log("Hello There hide");
         $('#div-body').css('margin-left', 'auto');
-        $('#about-me-side').css('visibility', 'hidden');
+        $('#about-me-side').css('visibility', 'collapse');
+        $('#about-me-side').hide();
     }
 
     $('#content-main').css('padding-top', header_heigth + "px");
