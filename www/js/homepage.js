@@ -47,7 +47,7 @@ function set_content_size() {
     var window_height = $(window).height();
     var header_heigth = $('#header-main').height();
     var footer_height = $('#homepage-footer').height();
-    var min_height    = window_height - header_heigth - footer_height - footer_height;
+    var min_height    = window_height - header_heigth - footer_height - footer_height - 5;
 
     $('#content-main').css('padding-top', header_heigth + "px");
     $('#div-body').css('min-height', min_height + "px");
