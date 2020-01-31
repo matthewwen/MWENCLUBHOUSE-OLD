@@ -1,7 +1,20 @@
 .default {
     padding: 0;
     margin: 0;
-    background: #333333;
+    background: #222222;
+    color: white;
+}
+
+.selected {
+    background: #ff3333;
+}
+
+.notselected {
+    background: #222222;
+}
+
+.content {
+    background-color: #992222;
     color: white;
 }
 

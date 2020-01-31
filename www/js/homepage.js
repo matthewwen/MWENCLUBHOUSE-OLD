@@ -1,39 +1,53 @@
-var aboutme = undefined;
-var workexp = undefined; 
-var school  = undefined;
-var project = undefined;
-var miscell = undefined;
-
 var header = undefined;
 var body   = undefined;
 
+var section_open = 0;
+var section_url  = ['/www/html/about.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/miscellaneous.html'];
+var heading_id   = ['#aboutme', '#workexp', '#school', '#project', '#miscell'];
+
 function init(){
-    aboutme = document.querySelector("#aboutme");
-    workexp = document.querySelector("#workexp");
-    school  = document.querySelector("#school");
-    project = document.querySelector("#project");
-    miscell = document.querySelector("#miscell");
-
-    add_alert(aboutme, "about me");
-    add_alert(workexp, "work experience");
-    add_alert(school, "school");
-    add_alert(project, "project");
-    add_alert(miscell, "miscellaneous");
-
     set_content_size();
+    load_section(0);
+
+    $(heading_id[0]).click(function() {
+        load_section(0);
+    });
+
+    $(heading_id[1]).click(function() {
+        load_section(1);
+    });
+
+    $(heading_id[2]).click(function() {
+        load_section(2);
+    });
+
+    $(heading_id[3]).click(function() {
+        load_section(3);
+    });
+
+    $(heading_id[4]).click(function() {
+        load_section(4);
+    });
 }
 
-function add_alert(view, msg) {
-    view.addEventListener("click", function(evt){
-        alert(msg);
-    })
+function load_section(new_selected) {
+    $.ajax({type: 'GET', 
+            url: section_url[new_selected],
+            success: function (result) {
+                $(heading_id[section_open]).removeClass('selected');
+                $('#div-body').html(result);
+                section_open = new_selected;
+                $(heading_id[section_open]).removeClass('notselected');
+                $(heading_id[section_open]).addClass('selected');
+            }
+    });    
 }
 
 function set_content_size() {
     var window_height = $(window).height();
     var header_heigth = $('#header-main').height();
     var footer_height = $('#homepage-footer').height();
-    var min_height    = window_height - header_heigth - footer_height - footer_height - 10;
+    var min_height    = window_height - header_heigth - footer_height - footer_height;
 
     $('#content-main').css('padding-top', header_heigth + "px");
     $('#div-body').css('min-height', min_height + "px");
