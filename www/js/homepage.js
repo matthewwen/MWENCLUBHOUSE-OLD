@@ -20,7 +20,7 @@ function init(){
     add_alert(project, "project");
     add_alert(miscell, "miscellaneous");
 
-    animate_header();
+    set_content_size();
 }
 
 function add_alert(view, msg) {
@@ -29,31 +29,19 @@ function add_alert(view, msg) {
     })
 }
 
-function animate_header() {
-    header  = document.querySelector(".header"  );
-    body    = document.querySelector(".body"    );
+function set_content_size() {
+    var window_height = $(window).height();
+    var header_heigth = $('#header-main').height();
+    var footer_height = $('#homepage-footer').height();
+    var min_height    = window_height - header_heigth - footer_height - footer_height - 10;
 
-    window.addEventListener('scroll', function(evt) {
-        var pos = this.document.documentElement.scrollTop;
-        if (pos === 0) {
-            this.console.log(pos);
-            header.style.height = "100vh";
-        }
-        else {
-            this.console.log("set pxl: " + pos);
-            header.style.height = "48px";
-        }
-
-    });
+    $('#content-main').css('padding-top', header_heigth + "px");
+    $('#div-body').css('min-height', min_height + "px");
 }
 
-$(function() {
-    console.log("Hello JQuery");
-});
+function resize() {
+    set_content_size();
+}
 
-window.onload = init;
-var parent = document.getElementsByClassName("main");
-var p = document.createElement("p");
-var n = document.createTextNode("Website is a work in progress");
-p.appendChild(n);
-parent[0].appendChild(p);
+window.onload   = init;
+window.onresize = resize;

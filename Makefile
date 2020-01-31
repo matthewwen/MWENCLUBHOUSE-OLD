@@ -15,4 +15,4 @@ clean:
 	rm -rf $(NAME)
 
 add:
-	git add header/* $(SRC) Makefile
+	git add header/* $(SRC) Makefile www/js/* www/css/* www/*
