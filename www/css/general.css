@@ -39,11 +39,12 @@
     flex-grow: 1;
 }
 
-.menu div:hover{
-    background: #666666;
-}
-
 .footer {
     text-align: center;
     width: 100%;
+}
+
+.body-div {
+    margin: 0;
+    padding: 10px;
 }
