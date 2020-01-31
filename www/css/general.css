@@ -25,6 +25,10 @@
     overflow: hidden;
 }
 
+.header_menu {
+    height: 39px;
+}
+
 .menu {
     width: 100%;
     display: inline-flex;
@@ -47,4 +51,9 @@
 .body-div {
     margin: 0;
     padding: 10px;
+    width: fit-content;
+}
+
+.grid_css {
+    width: 0px;
 }

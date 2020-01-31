@@ -17,7 +17,8 @@ int handle_get_request(const char * url, struct lws * wsi) {
     // request is not found, send unknown response 
     if (request_found == false) {
         char unknown[] = "unknown";
-        lws_write(wsi, (void * ) unknown, (strlen(unknown) * sizeof(*unknown)), LWS_WRITE_TEXT);
+        printf("write unknown response\n");
+        lws_write(wsi, (void * ) unknown, (strlen(unknown) * sizeof(*unknown)), LWS_WRITE_HTTP);
     }
 
     return n;

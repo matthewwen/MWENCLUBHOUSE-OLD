@@ -15,19 +15,21 @@
 <body class="content" style="margin: 0px;">
 	<header class="header default" id="header-main">
 		<menu class="menu default">
-			<div id="aboutme" class="notselected">Home </div>
-			<div id="workexp" class="notselected">Work Experience</div>
-			<div id="school" class="notselected">School </div>
-			<div id="project" class="notselected">Projects </div>
-			<div id="miscell" class="notselected">Miscellaneous </div>
+			<div id="aboutme" class="notselected header_menu">Home </div>
+			<div id="workexp" class="notselected header_menu">Work</div>
+			<div id="school" class="notselected  header_menu">School </div>
+			<div id="project" class="notselected header_menu">Projects </div>
+			<div id="miscell" class="notselected header_menu">Miscellaneous </div>
 		</menu>
 	</header>
 
-	<!-- <div style="flex: left;"><p>Hello there</p></div> -->
 	<main class="main content" id="content-main">
+
 		<div style="display: flex;">
+
+			<!-- For Computer Display greater than 1080px -->
 			<div id="about-me-side" class="mdc-elevation--z5" 
-			     style="margin:10px; float: left; width: 230px; visibility: collapse;">
+			     style="margin:10px; float: left; width: 230px; visibility: collapse; height: fit-content;">
 				<div><img src="www/img/profile.jpg" alt="Matthew Wen" width="230px" height="306px"></div>
 				<div>
 					<h4 class="mdc-typography--headline4" style="text-align: center; margin: 0 auto;">Matthew Wen</h4>
@@ -41,8 +43,9 @@
 				</div>
 			</div>
 
+			<!-- Content To Be Displayed -->
 			<div class="mdc-elevation--z5" id="div-body"
-				style="max-width: 1080px; width: 100%; padding: 0 10px; margin: 0 auto;"></div>
+				style="max-width: 1080px; width: 100%; min-width: fit-content;padding: 0 10px; margin: 0 auto;"></div>
 		</div>
 		<footer class="footer content" id="homepage-footer">
 			<hr style="margin: 0;" />
