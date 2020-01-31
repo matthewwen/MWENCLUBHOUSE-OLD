@@ -56,12 +56,30 @@ function load_section(new_selected) {
 
 function set_content_size() {
     var window_height = $(window).height();
+    var window_width  = $(window).width();
+    var body_width    = $('#div-body').width();
+    var abme_width    = $('#about-me-side').width();
     var header_heigth = $('#header-main').height();
     var footer_height = $('#homepage-footer').height();
     var min_height    = window_height - header_heigth - footer_height - footer_height - 5;
 
+    var margin_left = (window_width - body_width) / 2 - abme_width;
+
+    if (margin_left > 0) {
+        console.log("Hello There");
+        $('#about-me-side').css("margin-left", margin_left + "px");
+        $('#div-body').css('margin-left', 0 + 'px');
+        $('#about-me-side').css('visibility', 'visible');
+    }
+    else {
+        console.log("Hello There hide");
+        $('#div-body').css('margin-left', 'auto');
+        $('#about-me-side').css('visibility', 'hidden');
+    }
+
     $('#content-main').css('padding-top', header_heigth + "px");
     $('#div-body').css('min-height', min_height + "px");
+    $('#-body').css('height', "auto");
 }
 
 function resize() {

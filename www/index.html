@@ -1,35 +1,58 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta name="viewpoint" content="width=device-width, initial-scale=1">
-		<title>Matthew Wen</title>
-		<link rel="stylesheet" href="css/general.css"/>
-		<link rel="stylesheet" href="css/homepage.css"/>
-		<link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-		<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	</head>
-	<body class="content" style="margin: 0px;"> 
-		<header class="header default" id="header-main">
-			<menu class="menu default">
-				<div id = "aboutme" class="notselected">Home           </div>
-				<div id = "workexp" class="notselected">Work Experience</div>
-				<div id = "school"  class="notselected">School         </div>
-				<div id = "project" class="notselected">Projects       </div>
-				<div id = "miscell" class="notselected">Miscellaneous  </div>
-			</menu>
-		</header>
 
-		<main class="main content" id="content-main">
-			<div class="mdc-elevation--z5" id="div-body" style="max-width: 1080px; margin: 0 auto; padding: 0 10px;"></div>
-			<footer class="footer content" id="homepage-footer">
-				<hr style="margin: 0;"/> 
-				<p>Copyright &copy; 2020 Matthew Wen</p>
-			</footer>
-		</main>
+<head>
+	<meta name="viewpoint" content="width=device-width, initial-scale=1">
+	<title>Matthew Wen</title>
+	<link rel="stylesheet" href="css/general.css" />
+	<link rel="stylesheet" href="css/homepage.css" />
+	<link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+	<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
 
-	</body>
+<body class="content" style="margin: 0px;">
+	<header class="header default" id="header-main">
+		<menu class="menu default">
+			<div id="aboutme" class="notselected">Home </div>
+			<div id="workexp" class="notselected">Work Experience</div>
+			<div id="school" class="notselected">School </div>
+			<div id="project" class="notselected">Projects </div>
+			<div id="miscell" class="notselected">Miscellaneous </div>
+		</menu>
+	</header>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-	<script src="www/js/homepage.js"></script> 
+	<!-- <div style="flex: left;"><p>Hello there</p></div> -->
+	<main class="main content" id="content-main">
+		<div style="display: flex;">
+			<div id="about-me-side" class="mdc-elevation--z5" 
+			     style="margin:10px; float: left; width: 230px; visibility: hidden;">
+				<div><img src="www/img/profile.jpg" alt="Matthew Wen" width="230px" height="306px"></div>
+				<div>
+					<h4 class="mdc-typography--headline4" style="text-align: center; margin: 0 auto;">Matthew Wen</h4>
+					<p style="text-align: center;">Undergraduate Computer Engineering Student at Purdue University</p>
+					<ul>
+						<li><a href="https://www.github.com/matthewwen/">Github</a></li>
+						<li><a href="https://www.facebook.com/mattwen89">Facebook</a></li>
+						<li><a href="https://www.linkedin.com/in/mattwen89/">Linkedin</a></li>
+						<li><a href="">Resume</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="mdc-elevation--z5" id="div-body"
+				style="max-width: 1080px; width: 100%; padding: 0 10px; margin: 0 auto;"></div>
+		</div>
+		<footer class="footer content" id="homepage-footer">
+			<hr style="margin: 0;" />
+			<p>Copyright &copy; 2020 Matthew Wen</p>
+		</footer>
+	</main>
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="www/js/homepage.js"></script>
+
 </html>
