@@ -2,7 +2,7 @@ var header = undefined;
 var body   = undefined;
 
 var section_open = 0;
-var section_url  = ['/www/html/about.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/miscellaneous.html'];
+var section_url  = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/miscellaneous.html'];
 var heading_id   = ['#aboutme', '#workexp', '#school', '#project', '#miscell'];
 var section_html = [null, null, null, null, null];
 
