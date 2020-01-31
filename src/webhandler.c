@@ -24,6 +24,9 @@ char * get_mime_type(const char * url) {
     else if (strcmp(end, ".map" ) == 0) {
         return "application/octet-stream";
     }
+    else if (strcmp(end, ".jpg") == 0) {
+        return "image/jpg";
+    }
     return NULL;
 }
 
