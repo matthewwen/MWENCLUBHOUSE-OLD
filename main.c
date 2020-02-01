@@ -9,6 +9,8 @@
 #include "gethandler.h"
 static int INTERRUPTED;
 
+#define MAXBUFFERLEN 1000000
+
 typedef struct{
     int n;
 }handle_t;
@@ -16,9 +18,32 @@ typedef struct{
 int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len) {
     if (reason == LWS_CALLBACK_HTTP) {
         if (lws_hdr_total_length(wsi, WSI_TOKEN_GET_URI)) {
-            return handle_get_request(in, wsi);
+            return handle_get_request(in, wsi, &user);
         }
         return 0;
+    }
+    if (reason == LWS_CALLBACK_HTTP_WRITEABLE) {
+        struct request * r = user;
+        size_t num_sent = r->alloc_size;
+        if (num_sent > MAXBUFFERLEN) {
+            printf("max buffer\n");
+            num_sent = MAXBUFFERLEN;
+        }
+        lws_write(wsi, (uint8_t *) r->pos, num_sent, LWS_WRITE_HTTP_FINAL);
+        r->alloc_size -= num_sent;
+        printf("alloc size: %ld\n", r->alloc_size);
+        if (r->alloc_size == 0) {
+            if (r->free_type == BUFFER_MALLOC) {
+                free(r->buff);
+            }
+            lws_http_transaction_completed(wsi);
+            return -1;
+        }
+        else {
+            r->pos += num_sent;
+            lws_callback_on_writable(wsi);
+            return 0;
+        }
     }
 
     return lws_callback_http_dummy(wsi, reason, user, in, len);
@@ -31,7 +56,7 @@ void sigint_handler(int sig) {
 
 int main(int argc, char* argv[]) {
     INTERRUPTED = 0;
-    const struct lws_protocols protocol = {"http", callback_dynamic_http, NULL, 0};
+    const struct lws_protocols protocol = {"http", callback_dynamic_http, sizeof(struct request), 0};
     const struct lws_protocols *pprotocols[] = {&protocol, NULL };
 
     //override the default mount for /dyn in the URL space 

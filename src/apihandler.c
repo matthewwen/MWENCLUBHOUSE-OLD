@@ -4,9 +4,12 @@
 #include <stdbool.h>
 #include "apihandler.h"
 
-int handle_api_request(const char * url, struct lws * wsi, bool * found) {
+int handle_api_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
     int n = 0;
     if (*found == false) {
+        if (false) {
+            r->response = BUFFER_REQUEST;
+        }
     }
     return n;
 }

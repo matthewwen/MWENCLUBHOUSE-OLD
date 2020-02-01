@@ -6,19 +6,27 @@
 #include "webhandler.h"
 #include "apihandler.h"
 
-int handle_get_request(const char * url, struct lws * wsi) {
+static char UNKNOWN[] = "unknown";
+
+int handle_get_request(const char * url, struct lws * wsi, void ** a_request) {
     int n = 0;
     bool request_found = false;
+    struct request * r = *a_request;
     
     // O(n) -> n = number of requests -> TODO -> change to hash map
-    n = handle_web_request(url, wsi, &request_found);
-    n = handle_api_request(url, wsi, &request_found);
+    if (r->response == 0) {
+        n = handle_web_request(url, wsi, &request_found, r);
+        n = handle_api_request(url, wsi, &request_found, r);
 
-    // request is not found, send unknown response 
-    if (request_found == false) {
-        char unknown[] = "unknown";
-        printf("write unknown response\n");
-        lws_write(wsi, (void * ) unknown, (strlen(unknown) * sizeof(*unknown)), LWS_WRITE_HTTP);
+        // request is not found, send unknown response 
+        if (request_found == false) {
+            *r = (struct request) {.response = BUFFER_REQUEST, .alloc_size = sizeof(UNKNOWN) - 1, 
+                                   .buff = UNKNOWN, .pos = UNKNOWN, .free_type = BUFFER_STATIC};
+        }
+
+        if (r->response == BUFFER_REQUEST) {
+            lws_callback_on_writable(wsi);
+        }
     }
 
     return n;

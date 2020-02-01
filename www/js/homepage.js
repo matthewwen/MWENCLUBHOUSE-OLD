@@ -65,8 +65,6 @@ function set_content_size() {
     var min_height    = window_height - header_heigth - footer_height - footer_height - 5;
 
     var margin_left = (window_width - body_width - abme_width) / 2;
-    console.log('margin left: ' + margin_left, ", content: " + content_width);
-
     if (margin_left > 0) {
         $('#about-me-side').css("margin-left", margin_left + "px");
         $('#div-body').css('margin-left', 0 + 'px');
@@ -89,7 +87,7 @@ function resize() {
 }
 
 // temp
-$.ajax({type: 'GET', url: '/nothing', success: function(result) {console.log(result)}});
+$.ajax({type: 'POST', url: '/nothing', success: function(result) {console.log(result)}});
 console.log("update change");
 
 window.onload   = init;

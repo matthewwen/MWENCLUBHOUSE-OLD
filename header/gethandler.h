@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libwebsockets.h>
+#include "common.h"
 
-int handle_get_request(const char * url, struct lws * wsi);
+int handle_get_request(const char *, struct lws *, void **);
 
 #endif
