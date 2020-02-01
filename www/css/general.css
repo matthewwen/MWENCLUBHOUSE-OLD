@@ -20,9 +20,12 @@
 
 .header {
     position: fixed;
+    display: flex;
+    flex-wrap: /*wrap*/;
+    align-content: left;
     top: 0;
     width: 100%;
-    overflow: hidden;
+    padding: 0 10px;
 }
 
 .header_menu {
@@ -33,10 +36,7 @@
 }
 
 .menu {
-    width: 100%;
-    display: inline-flex;
-    flex-flow: row wrap;
-    flex-flow: 2;
+    display: flex;
 }
 
 .menu div {
