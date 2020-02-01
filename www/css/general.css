@@ -26,7 +26,6 @@
 }
 
 .header_menu {
-    height: 39px;
 }
 
 .menu {
@@ -51,7 +50,7 @@
 .body-div {
     margin: 0;
     padding: 10px;
-    width: fit-content;
+    width: 100%;
 }
 
 .grid_css {

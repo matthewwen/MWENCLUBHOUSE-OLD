@@ -64,10 +64,10 @@ function set_content_size() {
     var footer_height = $('#homepage-footer').height();
     var min_height    = window_height - header_heigth - footer_height - footer_height - 5;
 
-    var margin_left = (window_width - content_width - abme_width) / 2;
+    var margin_left = (window_width - body_width - abme_width) / 2;
+    console.log('margin left: ' + margin_left, ", content: " + content_width);
 
     if (margin_left > 0) {
-        margin_left = (window_width - abme_width - body_width) / 2;
         $('#about-me-side').css("margin-left", margin_left + "px");
         $('#div-body').css('margin-left', 0 + 'px');
         $('#about-me-side').css('visibility', 'visible');
@@ -81,7 +81,7 @@ function set_content_size() {
 
     $('#content-main').css('padding-top', header_heigth + "px");
     $('#div-body').css('min-height', min_height + "px");
-    $('.grid_css').css('width', body_width + 'px');
+    $('.grid_css').css('width', content_width + 'px');
 }
 
 function resize() {
