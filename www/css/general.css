@@ -26,6 +26,10 @@
 }
 
 .header_menu {
+    padding: 0px;
+    margin: 0px;
+    font-size: large;
+    font-weight: normal;
 }
 
 .menu {

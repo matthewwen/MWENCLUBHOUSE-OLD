@@ -26,12 +26,10 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
         struct request * r = user;
         size_t num_sent = r->alloc_size;
         if (num_sent > MAXBUFFERLEN) {
-            printf("max buffer\n");
             num_sent = MAXBUFFERLEN;
         }
         lws_write(wsi, (uint8_t *) r->pos, num_sent, LWS_WRITE_HTTP_FINAL);
         r->alloc_size -= num_sent;
-        printf("alloc size: %ld\n", r->alloc_size);
         if (r->alloc_size == 0) {
             if (r->free_type == BUFFER_MALLOC) {
                 free(r->buff);
@@ -66,7 +64,6 @@ int main(int argc, char* argv[]) {
     int n = 0, logs = LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE;
     signal(SIGINT, sigint_handler);
     lws_set_log_level(logs, NULL);
-    lwsl_user("LWS minimal http server dynamic | visit http://localhost:80\n");
 
     struct lws_context_creation_info info;
     memset(&info, 0, sizeof info);
