@@ -5,6 +5,6 @@
 
 char * get_mime_type(const char * );
 int send_static_page(const char * , struct lws * );
-int handle_web_request(const char * , struct lws * , bool * , struct request *);
+int handle_gweb_request(const char * , struct lws * , bool * , struct request *);
 
 #endif

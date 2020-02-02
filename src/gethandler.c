@@ -15,8 +15,8 @@ int handle_get_request(const char * url, struct lws * wsi, void ** a_request) {
     
     // O(n) -> n = number of requests -> TODO -> change to hash map
     if (r->response == 0) {
-        n = handle_web_request(url, wsi, &request_found, r);
-        n = handle_api_request(url, wsi, &request_found, r);
+        n = handle_gweb_request(url, wsi, &request_found, r);
+        n = handle_gapi_request(url, wsi, &request_found, r);
 
         // request is not found, send unknown response 
         if (request_found == false) {

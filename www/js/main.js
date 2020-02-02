@@ -50,3 +50,11 @@ function load_section(new_selected) {
 }
 
 window.onload   = init;
+
+$.ajax({type: 'PUT',
+	url: '/nothing',
+	data: 'This is the data',
+	success: function (result) {
+		console.log(result);
+	}
+});

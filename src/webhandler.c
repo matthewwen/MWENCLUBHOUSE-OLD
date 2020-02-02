@@ -45,7 +45,7 @@ int send_static_page(const char * url, struct lws * wsi) {
     return 0;
 }
 
-int handle_web_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
+int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
     int n = 0;
     if (*found == false) {
         *found = true;

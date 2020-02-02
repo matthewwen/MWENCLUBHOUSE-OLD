@@ -3,6 +3,6 @@
 #include <libwebsockets.h>
 #include "common.h"
 
-int handle_api_request(const char *, struct lws *, bool *, struct request *);
+int handle_gapi_request(const char *, struct lws *, bool *, struct request *);
 
 #endif
