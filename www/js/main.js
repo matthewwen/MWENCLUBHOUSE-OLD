@@ -1,7 +1,7 @@
 var section_open = 0;
-var section_url  = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/miscellaneous.html'];
-var heading_id   = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#miscell-menu'];
-var title_name   = ['Home', 'Work', 'School', 'Projects', 'Miscellaneous']
+var section_url  = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
+var heading_id   = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
+var title_name   = ['Home', 'Work', 'School', 'Projects', 'About']
 var section_html = [null, null, null, null, null];
 
 function init(){
@@ -49,5 +49,4 @@ function load_section(new_selected) {
 	}
 }
 
-console.log("hello there, from main");
 window.onload   = init;
