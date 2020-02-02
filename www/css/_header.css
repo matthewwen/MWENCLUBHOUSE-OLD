@@ -1,0 +1,72 @@
+.main-header {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 65px;
+  width: 100vw;
+  padding: 0 10vw;
+  color: #000;
+  z-index: 1;
+  transition: .4s ease-out; }
+  .main-header div {
+    color: inherit;
+    text-transform: uppercase; }
+  .main-header .nav-links {
+    transition: opacity 0.4s ease-in-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    list-style: none; }
+    .main-header .nav-links:nth-of-type(1) {
+      transition-delay: .1s; }
+    .main-header .nav-links:nth-of-type(2) {
+      transition-delay: .2s; }
+    .main-header .nav-links:nth-of-type(3) {
+      transition-delay: .3s; }
+    .main-header .nav-links:nth-of-type(4) {
+      transition-delay: .4s; }
+    .main-header .nav-links .nav-link div {
+      margin: .2rem;
+      padding: 1rem .5rem; }
+    .main-header .nav-links .nav-link div:hover {
+      background: rgba(255, 255, 255, 0.2); }
+  .main-header .menu-icon {
+    position: relative;
+    padding: 26px 10px;
+    cursor: pointer;
+    z-index: 1;
+    display: none; }
+    .main-header .menu-icon__line {
+      display: block;
+      position: relative;
+      background: #000;
+      height: 2px;
+      width: 20px;
+      border-radius: 4px;
+      transition: background .8s ease; }
+      .main-header .menu-icon__line::before, .main-header .menu-icon__line::after {
+        content: '';
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        border-radius: 4px;
+        background: #000;
+        transition: background .8s ease; }
+      .main-header .menu-icon__line::before {
+        transform: translateY(-5px); }
+      .main-header .menu-icon__line::after {
+        transform: translateY(5px); }
+  .main-header .menu-btn {
+    position: absolute;
+    top: -100px; }
+    .main-header .menu-btn:focus ~ .menu-icon .menu-icon__line::before {
+      transform: translateY(-7px); }
+    .main-header .menu-btn:focus ~ .menu-icon .menu-icon__line::after {
+      transform: translateY(7px); }
+  .main-header.scrolled {
+    height: 50px;
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff; }
+    .main-header.scrolled .menu-icon__line, .main-header.scrolled .menu-icon__line::before, .main-header.scrolled .menu-icon__line::after {
+      background: #fff; }
+
+/*# sourceMappingURL=_header.css.map */

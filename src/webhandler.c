@@ -15,7 +15,7 @@ char * get_mime_type(const char * url) {
     else if (strcmp(end, ".mjs" ) == 0) {
         return "text/javascript";
     }
-    else if (strcmp(end, ".css" ) == 0) {
+    else if (strcmp(end, ".css" ) == 0 || strcmp(end, ".scss") == 0) {
         return "text/css";
     }
     else if (strcmp(end, ".html") == 0) {
@@ -26,6 +26,9 @@ char * get_mime_type(const char * url) {
     }
     else if (strcmp(end, ".jpg") == 0) {
         return "image/jpg";
+    }
+    else if (strcmp(end, ".png") == 0) {
+        return "image/png";
     }
     return NULL;
 }

@@ -1,0 +1,20 @@
+@import url(/www/css/montserrat.css);
+@import url(/www/css/_title.css);
+@import url(/www/css/_header.css);
+@import url(/www/css/_media.css);
+@import url(/www/css/_animation.css);
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0; }
+
+body {
+  font-family: 'Montserrat', 'sans-serif'; }
+
+.container {
+  width: 80%;
+  margin: 2rem auto; }
+  .container p {
+    margin: 1rem 0; }
+
+/*# sourceMappingURL=mwen.css.map */

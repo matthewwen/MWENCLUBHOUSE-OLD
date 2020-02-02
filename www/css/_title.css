@@ -1,0 +1,25 @@
+.hero {
+  height: 50vh;
+  background: #993333;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10vw;
+  color: #fff; }
+  .hero h1 {
+    position: relative;
+    font-size: 4rem;
+    text-transform: uppercase;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    border-radius: 20px 20px; }
+    .hero h1::before, .hero h1::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 50%; }
+
+/*# sourceMappingURL=_title.css.map */
