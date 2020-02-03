@@ -7,7 +7,9 @@
 #include <time.h>
 
 #include "gethandler.h"
+#include "posthandler.h"
 static int INTERRUPTED;
+const char * PARAM[] = {"/"};
 
 #define MAXBUFFERLEN 1000000
 
@@ -16,12 +18,14 @@ typedef struct{
 }handle_t;
 
 int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len) {
+	struct request * r = user;
 	if (reason == LWS_CALLBACK_HTTP) {
 		if (lws_hdr_total_length(wsi, WSI_TOKEN_GET_URI)) {
 			return handle_get_request(in, wsi, &user);
 		}
 		else if (lws_hdr_total_length(wsi, WSI_TOKEN_POST_URI)) {
 			printf("post request\n");
+			return handle_post_request(in, wsi, &user);
 		}
 		else if (lws_hdr_total_length(wsi, WSI_TOKEN_PUT_URI)) {
 			printf("put request\n");
@@ -29,7 +33,6 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 		return 0;
 	}
 	else if (reason == LWS_CALLBACK_HTTP_WRITEABLE) {
-		struct request * r = user;
 		size_t num_sent = r->alloc_size;
 		if (num_sent > MAXBUFFERLEN) {
 			num_sent = MAXBUFFERLEN;
@@ -49,23 +52,25 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 			return 0;
 		}
 	}
-	else if (reason == LWS_CALLBACK_ESTABLISHED_CLIENT_HTTP) {
-		printf("reason == LWS_CALLBACK_ESTABLISHED_CLIENT_HTTP\n");
+	else if (reason == LWS_CALLBACK_HTTP_BODY) {
+		printf("reason == LWS_CALLBACK_HTTP_BODY\n");
+		if (r->spa == NULL) {
+			r->spa = lws_spa_create(wsi, PARAM, 1, 1024, NULL, NULL);
+		}
+
+		if (lws_spa_process(r->spa, in, (int) len)) {
+			printf("return -1\n");
+			return -1;
+		}
 	}
-	else if (reason == LWS_CALLBACK_RECEIVE_CLIENT_HTTP_READ) {
-		printf("reason == LWS_CALLBACK_RECEIVE_CLIENT_HTTP_READ\n");
-	}
-	else if (reason == LWS_CALLBACK_RECEIVE_CLIENT_HTTP) {
-		printf("reason == LWS_CALLBACK_RECEIVE_CLIENT_HTTP\n");
-	}
-	else if (reason == LWS_CALLBACK_COMPLETED_CLIENT_HTTP) {
-		printf("reason == LWS_CALLBACK_COMPLETED_CLIENT_HTTP\n");
-	}
-	else if (reason == LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER) {
-		printf("reason == LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER\n");
-	}
-	else if (reason == LWS_CALLBACK_CLIENT_HTTP_WRITEABLE) {
-		printf("reason == LWS_CALLBACK_CLIENT_HTTP_WRITEABLE\n");
+	else if (reason == LWS_CALLBACK_HTTP_BODY_COMPLETION) {
+		printf("reason == LWS_CALLBACK_HTTP_BODY_COMPLETION\n");
+		lws_spa_finalize(r->spa);
+		if (r->type == PUT) {
+			printf("put request\n");
+			const char * response = lws_spa_get_string(r->spa, 1);
+			printf("response: %s\n",response);
+		}
 	}
 
 	return lws_callback_http_dummy(wsi, reason, user, in, len);

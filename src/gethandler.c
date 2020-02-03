@@ -12,6 +12,7 @@ int handle_get_request(const char * url, struct lws * wsi, void ** a_request) {
     int n = 0;
     bool request_found = false;
     struct request * r = *a_request;
+    r->type = GET;
     
     // O(n) -> n = number of requests -> TODO -> change to hash map
     if (r->response == 0) {

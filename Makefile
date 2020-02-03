@@ -1,9 +1,10 @@
 NAME=main
 SRC=main.c\
-	src/apihandler.c\
-	src/gethandler.c\
-	src/webhandler.c\
-	src/json.c
+    src/apihandler.c\
+    src/gethandler.c\
+    src/posthandler.c\
+    src/webhandler.c\
+    src/json.c
 LIB=-lwebsockets
 CFLAG=-O3 -std=c99 -Wall -Wshadow -Wvla -pedantic
 INCLUDE=header
