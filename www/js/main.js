@@ -51,10 +51,12 @@ function load_section(new_selected) {
 
 window.onload   = init;
 
+var dataObj = {'data': 'this the data'};
 $.ajax({type: 'PUT',
 	url: '/nothing',
-	data: 'This is the data',
 	success: function (result) {
+        console.log("result: ");
 		console.log(result);
 	}
 });
+console.log("post that progress");

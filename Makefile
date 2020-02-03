@@ -3,6 +3,7 @@ SRC=main.c\
     src/apihandler.c\
     src/gethandler.c\
     src/posthandler.c\
+    src/puthandler.c\
     src/webhandler.c\
     src/json.c
 LIB=-lwebsockets

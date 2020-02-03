@@ -33,4 +33,12 @@ struct request{
 	struct lws_spa * spa;
 };
 
+#define CREATE_REQUEST(REQUEST, RESPONSE, ALLOC_SIZE, BUFF, FREE_TYPE) do {\
+    REQUEST->response   = RESPONSE;\
+    REQUEST->alloc_size = ALLOC_SIZE;\
+    REQUEST->buff       = BUFF;\
+    REQUEST->pos        = BUFF;\
+    REQUEST->free_type  = FREE_TYPE;\
+}while(false);
+
 #endif
