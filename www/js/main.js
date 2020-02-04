@@ -63,6 +63,8 @@ $(document).keypress(function(event) {
 	if (key_start == 4) {
 		password = prompt("Hey Vikram. What's up", "password");
 	}
+	var val = $.sha256("hello there");
+	console.log(val);
 });
 
 window.onload   = init;
