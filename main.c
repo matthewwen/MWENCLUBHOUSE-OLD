@@ -27,20 +27,15 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 
     struct request * r = user;
     if (reason == LWS_CALLBACK_HTTP) {
-        printf("url: %s\n", (char *) in);
         if (lws_hdr_total_length(wsi, WSI_TOKEN_GET_URI)) {
-            printf("get request\n");
+            printf("changed to get\n");
             return handle_get_request(in, wsi, &user);
         }
         else if (lws_hdr_total_length(wsi, WSI_TOKEN_POST_URI)) {
-            printf("post request\n");
             handle_post_request(in, wsi, &user);
-            return 0;
         }
         else if (lws_hdr_total_length(wsi, WSI_TOKEN_PUT_URI)) {
-            printf("put request\n");
             handle_put_request(in, wsi, &user);
-            return 0;
         }
         return 0;
     }
@@ -65,8 +60,10 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
         }
     }
     else if (reason == LWS_CALLBACK_HTTP_BODY) {
+        printf("inside body\n");
         if (r->type == PUT || r->type == POST) {
             if (r->spa == NULL) {
+                printf("create spa\n");
                 r->spa = lws_spa_create(wsi, PARAM, LWS_ARRAY_SIZE(PARAM), 1024, NULL, user);
             }
             if (lws_spa_process(r->spa, in, (int) len)) {
@@ -77,18 +74,11 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
     else if (reason == LWS_CALLBACK_HTTP_BODY_COMPLETION) {
         if (r->type == PUT || r->type == POST) {
             lws_spa_finalize(r->spa);
-            if (r->type == POST) {
-                const char * response = lws_spa_get_string(r->spa, 0);
-                printf("respone: %s\n", response);
-            }
-            const char * getrequest = "/request";
-            printf("should redirect\n");
-            if (lws_http_redirect(wsi, HTTP_STATUS_MOVED_PERMANENTLY, (const unsigned char *) getrequest, strlen(getrequest), &p, end) < 0) {
+            const char * response = lws_spa_get_string(r->spa, 0);
+            const char * getrequest = "/";
+            if (lws_http_redirect(wsi, HTTP_STATUS_OK, (const unsigned char *) getrequest, strlen(getrequest), &p, end) < 0) {
                 return -1;
             }
-        }
-        else {
-            printf("post request?\n");
         }
     }
     else if (reason == LWS_CALLBACK_HTTP_DROP_PROTOCOL) {

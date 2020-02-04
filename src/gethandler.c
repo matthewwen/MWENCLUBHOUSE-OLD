@@ -8,7 +8,7 @@
 #include "apihandler.h"
 #include "common.h"
 
-static char UNKNOWN[] = "unknown";
+static char UNKNOWN[] = "{\"result\": \"unknown\"}";
 
 int handle_get_request(const char * url, struct lws * wsi, void ** a_request) {
     int n = 0;

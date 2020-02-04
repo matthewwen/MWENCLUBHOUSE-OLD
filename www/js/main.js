@@ -1,11 +1,11 @@
-var section_open = 0;
+var section_open = 4;
 var section_url  = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
 var heading_id   = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
 var title_name   = ['Home', 'Work', 'School', 'Projects', 'About']
 var section_html = [null, null, null, null, null];
 
 function init(){
-	load_section(0);
+	load_section(section_open);
 
 	$(heading_id[0]).click(function() {
 		load_section(0);
@@ -54,6 +54,7 @@ window.onload   = init;
 var dataObj = {'data': 'this the data'};
 $.ajax({type: 'PUT',
 	url: '/nothing',
+	data: dataObj,
 	success: function (result) {
         console.log("result: ");
 		console.log(result);
