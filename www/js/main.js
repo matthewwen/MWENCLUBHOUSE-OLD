@@ -3,6 +3,9 @@ var section_url  = ['/www/html/home.html', '/www/html/work.html', '/www/html/sch
 var heading_id   = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
 var title_name   = ['Home', 'Work', 'School', 'Projects', 'About']
 var section_html = [null, null, null, null, null];
+var edit_keyword = [109, 119, 101, 110];
+var key_start    = 0;
+var password     = null;
 
 function init(){
 	load_section(section_open);
@@ -49,15 +52,17 @@ function load_section(new_selected) {
 	}
 }
 
-window.onload   = init;
+$(document).keypress(function(event) {
+	if (event.charCode == edit_keyword[key_start]) {
+		key_start++;
+	}
+	else {
+		key_start = 0;
+	}
 
-var dataObj = {'data': 'this the data'};
-$.ajax({type: 'PUT',
-	url: '/nothing',
-	data: dataObj,
-	success: function (result) {
-        console.log("result: ");
-		console.log(result);
+	if (key_start == 4) {
+		password = prompt("Hey Vikram. What's up", "password");
 	}
 });
-console.log("post that progress");
+
+window.onload   = init;

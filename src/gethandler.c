@@ -24,9 +24,6 @@ int handle_get_request(const char * url, struct lws * wsi, void ** a_request) {
         // request is not found, send unknown response 
         if (request_found == false) {
             CREATE_REQUEST(r, BUFFER_REQUEST, sizeof(UNKNOWN) - 1, UNKNOWN, BUFFER_STATIC);
-            assert(r->type == GET);
-            /*r = (struct request) {.response = BUFFER_REQUEST, .alloc_size = sizeof(UNKNOWN) - 1, 
-                                   .buff = UNKNOWN, .pos = UNKNOWN, .free_type = BUFFER_STATIC};*/
         }
 
         if (r->response == BUFFER_REQUEST) {
