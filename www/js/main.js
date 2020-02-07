@@ -1,4 +1,4 @@
-var section_open = 4;
+var section_open = 0;
 var section_url = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
 var heading_id = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
 var title_name = ['Home', 'Work', 'School', 'Projects', 'About']
@@ -6,6 +6,22 @@ var section_html = [null, null, null, null, null];
 var edit_keyword = [109, 119, 101, 110];
 var key_start = 0;
 var password = null;
+
+function resizeGridItem(item){
+	var grid = document.getElementsByClassName("mwen-grid")[0];
+	var rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+	var rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap'));
+	var rowSpan = Math.ceil((item.querySelector('.content').getBoundingClientRect().height+rowGap)/(rowHeight+rowGap) + 1);
+	item.style.gridRowEnd = "span "+rowSpan;
+}
+
+function resizeAllGridItems(){
+	allItems = document.getElementsByClassName("item");
+	for(x=0;x<allItems.length;x++){
+		resizeGridItem(allItems[x]);
+	}
+}
+
 
 function init() {
 	load_section(section_open);
@@ -33,7 +49,8 @@ function init() {
 
 function load_body(html, new_selected) {
 	$('#div-body').html(html);
-	section_open = new_selected;
+	section_open = new_selected;	
+	resizeAllGridItems();
 }
 
 function load_section(new_selected) {
@@ -57,21 +74,19 @@ function getDate() {
 	var London = new Date().toLocaleString("en-US", {timeZone: "Europe/London"});
 	var now = new Date(London);
 	var tzo = (now.getTimezoneOffset());
-	console.log(tzo);
 	var gmt = now.getTime();
-	console.log(new Date(gmt - tzo).toString());
 	var dif = tzo >= 0 ? '+' : '-';
 	var pad = function(num) {
-	  var norm = Math.abs(Math.floor(num));     
-	  return (norm < 10 ? '0' : '') + norm;
+		var norm = Math.abs(Math.floor(num));     
+		return (norm < 10 ? '0' : '') + norm;
 	};
 	return pad(now.getMonth()+1) + 
-	       pad(now.getDate()) + 
-		   now.getFullYear() + 'T' + 
-		   pad(now.getHours()) + 
-		   pad(now.getMinutes()) + 
-		   pad(now.getSeconds());
-  }
+		pad(now.getDate()) + 
+		now.getFullYear() + 'T' + 
+		pad(now.getHours()) + 
+		pad(now.getMinutes()) + 
+		pad(now.getSeconds());
+}
 
 $(document).keypress(function (event) {
 	if (event.charCode == edit_keyword[key_start]) {
@@ -103,3 +118,6 @@ $(document).keypress(function (event) {
 });
 
 window.onload = init;
+window.onresize = function () {
+	resizeAllGridItems();
+};
