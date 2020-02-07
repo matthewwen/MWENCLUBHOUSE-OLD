@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-typedef uint8_t type_t;
+typedef uint8_t jtype_t;
 enum {TEXT, NUM, CON, LIST, OBJ, FLOAT};
 
 struct jlist;
@@ -19,14 +19,14 @@ typedef union{
 }data_t;
 
 typedef struct jlist{
-    type_t type;
+    jtype_t type;
     data_t data;
     struct jlist * next;
 }jlist;
 
 typedef struct jobject{
     char * name;
-    type_t type;
+    jtype_t type;
     data_t data;
     struct jobject * next;
 }jobject;
@@ -48,9 +48,9 @@ enum {
 };
 
 jobject *  parse_json(const char * json);
-jobject * create_jobject(char * name, type_t type, data_t data);
-json_err_t append_jobject(jobject ** object, const char * key, type_t type, data_t data);
-json_err_t append_jlist(jlist ** head, type_t type, data_t data);
+jobject * create_jobject(char * name, jtype_t type, data_t data);
+json_err_t append_jobject(jobject ** object, const char * key, jtype_t type, data_t data);
+json_err_t append_jlist(jlist ** head, jtype_t type, data_t data);
 jobject * get_jobject(char * key, jobject * head);
 
 json_err_t json_tostring(char ** a_str, jobject * object, size_t * a_alloc_size);
@@ -58,7 +58,7 @@ bool       free_json(jobject ** json);
 
 // in development
 int get_json_length(jobject * object);
-int get_element_length(type_t type, data_t data);
+int get_element_length(jtype_t type, data_t data);
 
 #define OBJECT_DEFAULT() {.name = NULL, \
                           .next = NULL}

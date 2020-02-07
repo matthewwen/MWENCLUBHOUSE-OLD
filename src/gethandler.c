@@ -7,6 +7,7 @@
 #include "webhandler.h"
 #include "apihandler.h"
 #include "common.h"
+#include "security.h"
 
 static char UNKNOWN[] = "{\"result\": \"unknown\"}";
 

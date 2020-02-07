@@ -92,7 +92,7 @@ jobject * parse_json(const char * json) {
     return obj;
 }
 
-json_err_t append_jlist(jlist ** head, type_t type, data_t data) {
+json_err_t append_jlist(jlist ** head, jtype_t type, data_t data) {
     jlist * nli = malloc(sizeof(*nli));
     memset(nli, 0, sizeof(*nli));
     *nli        = (jlist) {.type = type, .data = data, .next = NULL};
@@ -103,7 +103,7 @@ json_err_t append_jlist(jlist ** head, type_t type, data_t data) {
     return JSON_OKAY;
 }
 
-jobject * create_jobject(char * name, type_t type, data_t data) {
+jobject * create_jobject(char * name, jtype_t type, data_t data) {
     jobject * jobj = malloc(sizeof(*jobj));
     memset(jobj, 0, sizeof(*jobj));
     *jobj = (jobject) {.name = NULL, .type = type, .data = data};
@@ -112,7 +112,7 @@ jobject * create_jobject(char * name, type_t type, data_t data) {
     return jobj;
 }
 
-json_err_t append_jobject(jobject ** a_object, const char * key, type_t type, data_t data) {
+json_err_t append_jobject(jobject ** a_object, const char * key, jtype_t type, data_t data) {
     for (; *a_object != NULL; a_object = &(*a_object)->next) {}
 
     *a_object = malloc(sizeof(**a_object));
@@ -125,7 +125,7 @@ json_err_t append_jobject(jobject ** a_object, const char * key, type_t type, da
     return JSON_OKAY;
 }
 
-json_err_t data_tostring(jstring *, type_t type, data_t data);
+json_err_t data_tostring(jstring *, jtype_t type, data_t data);
 
 void write_str(jstring * jstr, const char * append) {
     int is_used  = jstr->last_pos - jstr->str;
@@ -154,7 +154,7 @@ json_err_t object_tostring(jstring * jstr, jobject * object) {
     return JSON_OKAY;
 }
 
-json_err_t data_tostring(jstring * jstr, type_t type, data_t data) {
+json_err_t data_tostring(jstring * jstr, jtype_t type, data_t data) {
     if (type == TEXT) {
         write_str(jstr, "\"");
         write_str(jstr, data.txt);
@@ -208,7 +208,7 @@ bool free_json(jobject ** obj) {
 
         char * txt  = NULL;
         jlist * head = NULL;
-        type_t type = (*obj)->type;
+        jtype_t type = (*obj)->type;
         if (type == TEXT && (txt = (*obj)->data.txt) != NULL) {
             free(txt);
         }
@@ -280,7 +280,7 @@ int get_json_length(jobject * object) {
     return size + NULL_TERM;
 }
 
-int get_element_length(type_t type, data_t data) {
+int get_element_length(jtype_t type, data_t data) {
     int size = 0;
     if (type == TEXT) {
         size += WRAPPER + strlen(data.txt);

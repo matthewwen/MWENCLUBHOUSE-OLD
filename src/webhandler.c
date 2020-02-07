@@ -33,6 +33,9 @@ char * get_mime_type(const char * url) {
 	else if (strcmp(end, ".pdf") == 0) {
 		return "application/pdf";
 	}
+	else if (strcmp(end, ".webmanifest") == 0) {
+		return "application/manifest+json";
+	}
 	return NULL;
 }
 

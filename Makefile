@@ -5,7 +5,8 @@ SRC=main.c\
     src/posthandler.c\
     src/puthandler.c\
     src/webhandler.c\
-    src/json.c
+    src/json.c\
+	src/security.c
 LIB=-lwebsockets
 CFLAG=-O3 -std=c99 -Wall -Wshadow -Wvla -pedantic
 INCLUDE=header

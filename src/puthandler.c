@@ -4,7 +4,7 @@
 #include "puthandler.h"
 
 int handle_put_request(const char * url, struct lws * wsi, void ** a_request) {
-	struct request * r = *a_request;
+	//struct request * r = *a_request;
 	if (strcmp(url, "/create") == 0) {
 	}
 	return 0;

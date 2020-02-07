@@ -69,10 +69,11 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 		}
 	}
 	else if (reason == LWS_CALLBACK_HTTP_BODY_COMPLETION) {
-		const char * response = NULL;
 		if (r->spa != NULL) {
 			lws_spa_finalize(r->spa);
+		    const char * response = NULL;
 			response = lws_spa_get_string(r->spa, 0);
+            printf("spa response: %s\n", response);
 			if (r->type == PUT || r->type == POST) {
 				if (r->type == PUT) {
 					handle_put_request(in, wsi, &user);
