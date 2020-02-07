@@ -37,17 +37,13 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 		jobject * robj = NULL;
 		if (strcmp("/webedit", url) == 0) {
 			char * token = get_header_data(wsi, WSI_TOKEN_HTTP_AUTHORIZATION);
-			free(token);
 
 			char * date = get_custom_header_data(wsi, "mwen-date:");
 			long time_date = convert_time(get_time()) - convert_time(get_time_from_buffer(date));
 			time_date = time_date < 0 ? time_date * -1: time_date;
 
-
-			if (time_date < 10000) {
-				char * alloc_date = malloc((strlen(date) + 1) * sizeof(*date));
-				strcpy(alloc_date, date);
-				jobject * jobj = create_jobject("time", TEXT, (data_t) {.txt = alloc_date});
+			if (time_date < 500) {
+				jobject * jobj = create_jobject("time", TEXT, (data_t) {.txt = date});
 
 				// get password
 				char * password = "kushal";
@@ -55,23 +51,21 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 				strcpy(alloc_password, password);
 				append_jobject(&jobj, "password", TEXT, (data_t) {.txt = alloc_password});
 
-				// get pull string
+				// get json string
 				char * json_str = NULL;
 				json_tostring(&json_str, jobj, &alloc_size);
 
+				// get token
 				char tokenBuffer[65];
 				memset(tokenBuffer, 0, sizeof(tokenBuffer));
 				sha256_string(json_str, tokenBuffer);
 
-				// token
-				robj = create_jobject("canEdit", CON, (data_t) {.cond = true});
+				// compare token
+				robj = create_jobject("canEdit", CON, (data_t) {.cond = (strcmp(tokenBuffer, token) == 0)});
 
 				free_json(&jobj);
 				free(json_str);
-			}
-
-			if (date != NULL) {
-				free(date);
+				free(token);
 			}
 
 			if (robj != NULL) {
