@@ -1,11 +1,13 @@
 var section_open = 0;
-var section_url = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
-var heading_id = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
-var title_name = ['Home', 'Work', 'School', 'Projects', 'About']
+var section_url  = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
+var heading_id   = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
+var title_name   = ['Home', 'Work', 'School', 'Projects', 'About']
 var section_html = [null, null, null, null, null];
 var edit_keyword = [109, 119, 101, 110];
-var key_start = 0;
-var password = null;
+var key_start    = 0;
+var password     = null;
+var create_link  = null;
+var can_edit     = false;
 
 function resizeGridItem(item){
 	var grid = document.getElementsByClassName("mwen-grid")[0];
@@ -108,8 +110,17 @@ $(document).keypress(function (event) {
 			url: '/webedit',
 			success: function (result) {
 				var j = JSON.parse(result);
-				if (j.canEdit) {
-					console.log("can edit");
+				canEdit = j.canEdit;
+				if (canEdit) {
+					if (create_link == null) {
+						$.ajax({
+							type: 'GET',
+							url: 'www/html/template/add.html',
+							success: function (result) {
+								create_link = result;
+							}
+						});
+					}
 				}
 			},
 		});
