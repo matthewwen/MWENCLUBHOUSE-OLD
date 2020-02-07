@@ -92,7 +92,10 @@ $(document).keypress(function (event) {
 			},
 			url: '/webedit',
 			success: function (result) {
-				console.log('GET request: ' + result);
+				var j = JSON.parse(result);
+				if (j.canEdit) {
+					console.log("can edit");
+				}
 			},
 		});
 		key_start = 0;
