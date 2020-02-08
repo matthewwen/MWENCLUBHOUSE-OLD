@@ -60,6 +60,10 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 			r->response = FILE_REQUEST;
 			n = send_static_page(url, wsi);
 		}
+		else if (strcmp("/createpkg", url) == 0) {
+			r->response = FILE_REQUEST;
+			n = send_static_page("/www/html/create.html", wsi);
+		}
 		else {
 			*found = false;
 		}

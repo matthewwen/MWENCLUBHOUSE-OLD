@@ -1,11 +1,16 @@
-var section_open = 0;
+const cjson = Cookies.get();
+const urlParams  = new URLSearchParams(window.location.search);
+var section_open = Number.isNaN(parseInt(cjson.section_open))? 0: parseInt(cjson.section_open);
+section_open     = urlParams.get('section') == null ? section_open: urlParams.get('section') % 5;
+var password     = Cookies.get('mwen_password');
+
+// responses from server
 var section_url  = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
 var heading_id   = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
 var title_name   = ['Home', 'Work', 'School', 'Projects', 'About']
 var section_html = [null, null, null, null, null];
 var edit_keyword = [109, 119, 101, 110];
 var key_start    = 0;
-var password     = null;
 var create_link  = null;
 var can_edit     = false;
 
@@ -25,6 +30,9 @@ function resizeAllGridItems(){
 }
 
 function add_create_link(password) {
+	if (password == null) {
+		return;
+	}
 	if (can_edit == false) {
 		$.ajax({type: 'GET',
 			headers: {
@@ -52,7 +60,7 @@ function add_create_link(password) {
 				success: function (result) {
 					create_link = result;
 					if (create_link != null) {
-						add_create_link("password");
+						add_create_link(password);
 					}
 					else {
 						console.log("Issue Communicating with the server!");
@@ -62,13 +70,20 @@ function add_create_link(password) {
 		}
 		else {
 			var allItems = document.getElementsByClassName("mwen-grid");
-			console.log("length: " + allItems.length);
 			for (var x=0; x < allItems.length; x++) {
+				// create div element
 				var temp = document.createElement('div');
 				temp.innerHTML = create_link;
-				console.log("adding create element: " + x);
-				allItems[allItems.length - 1 - x].prepend(temp.firstChild);
+				temp = temp.firstChild;
+
+				// put element inside grid
+				allItems[x].prepend(temp);
 				resizeAllGridItems();
+
+				// activate button
+				temp = temp.getElementsByClassName("mdc-fab")[0];
+				mdc.ripple.MDCRipple.attachTo(temp);
+				temp.href = "createpkg?grid=" + allItems[x].getAttribute('id');
 			}
 		}
 	}
@@ -107,11 +122,12 @@ function init() {
 function load_body(html, new_selected) {
 	$('#div-body').html(html);
 	section_open = new_selected;	
-	add_create_link("");
+	add_create_link(password);
 	resizeAllGridItems();
 }
 
 function load_section(new_selected) {
+	Cookies.set('section_open', new_selected);
 	$('#heading-text').html(title_name[new_selected]);
 	if (section_html[new_selected] == null) {
 		$.ajax({
@@ -157,6 +173,7 @@ $(document).keypress(function (event) {
 	if (key_start == 4) {
 		key_start = 0;
 		password = prompt("Hey Vikram. What's up", "password");
+		Cookies.set("mwen_password", password);
 		add_create_link(password);
 	}
 });
