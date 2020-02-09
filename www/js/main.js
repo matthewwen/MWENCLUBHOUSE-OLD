@@ -148,8 +148,6 @@ function getDate() {
 	var London = new Date().toLocaleString("en-US", {timeZone: "Europe/London"});
 	var now = new Date(London);
 	var tzo = (now.getTimezoneOffset());
-	var gmt = now.getTime();
-	var dif = tzo >= 0 ? '+' : '-';
 	var pad = function(num) {
 		var norm = Math.abs(Math.floor(num));     
 		return (norm < 10 ? '0' : '') + norm;

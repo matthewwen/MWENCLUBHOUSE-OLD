@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <libwebsockets.h>
 
 typedef uint8_t free_t;
 enum {
@@ -31,6 +33,7 @@ struct request{
 	free_t    free_type;
 	type_t    type;
 	struct lws_spa * spa;
+	char * url;
 };
 
 #define CREATE_REQUEST(REQUEST, RESPONSE, ALLOC_SIZE, BUFF, FREE_TYPE) do {\
@@ -40,5 +43,8 @@ struct request{
     REQUEST->pos        = BUFF;\
     REQUEST->free_type  = FREE_TYPE;\
 }while(false);
+
+char * get_header_data(struct lws * wsi, enum lws_token_indexes h);
+char * get_custom_header_data(struct lws * wsi, const char * token);
 
 #endif

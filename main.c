@@ -10,7 +10,7 @@
 #include "posthandler.h"
 #include "puthandler.h"
 static int INTERRUPTED;
-const char * PARAM[] = {"data", "token"};
+const char * PARAM[] = {"data", "auth"};
 
 #define MAXBUFFERLEN 1000000
 
@@ -28,6 +28,7 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 	struct request * r = user;
 	if (reason == LWS_CALLBACK_HTTP) {
 		if (lws_hdr_total_length(wsi, WSI_TOKEN_GET_URI)) {
+			r->type = GET;
 			return handle_get_request(in, wsi, &user);
 		}
 		else if (lws_hdr_total_length(wsi, WSI_TOKEN_POST_URI)) {
@@ -35,6 +36,13 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 		}
 		else if (lws_hdr_total_length(wsi, WSI_TOKEN_PUT_URI)) {
 			r->type = PUT;
+		}
+
+		if (r->type != GET) {
+			char * url = in;
+			char * alloc_url = malloc((strlen(url) + 1) * sizeof(*alloc_url));
+			strcpy(alloc_url, url);
+			r->url = alloc_url;
 		}
 		return 0;
 	}
@@ -69,17 +77,23 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 		}
 	}
 	else if (reason == LWS_CALLBACK_HTTP_BODY_COMPLETION) {
-		if (r->spa != NULL) {
+		if (r->spa == NULL) {
+		}
+		else {
 			lws_spa_finalize(r->spa);
 		    const char * response = NULL;
 			response = lws_spa_get_string(r->spa, 0);
             printf("spa response: %s\n", response);
 			if (r->type == PUT || r->type == POST) {
 				if (r->type == PUT) {
-					handle_put_request(in, wsi, &user);
+					handle_put_request(r->url, wsi, &user);
 				}
 				else {
-					handle_post_request(in, wsi, &user);
+					handle_post_request(r->url, wsi, &user);
+				}
+				if (r->url != NULL) {
+					free(r->url);
+					r->url = NULL;
 				}
 
 				const char * getrequest = "/";

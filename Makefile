@@ -6,7 +6,8 @@ SRC=main.c\
     src/puthandler.c\
     src/webhandler.c\
     src/json.c\
-    src/security.c
+    src/security.c\
+    src/common.c
 LIB=-lwebsockets -lcrypto
 #-lguile -lltdl -lssl -pthread -lgmp -lcrypt -lm
 CFLAG=-O3 -std=c99 -Wall -Wshadow -Wvla -pedantic

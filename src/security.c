@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <libwebsockets.h>
 #include "security.h"
+#include "common.h"
+#include "json.h"
 
 static int DAY_IN_MONTH[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -11,10 +14,9 @@ void mwendate_tostring(mwentime_t t, char outputBuffer[16]) {
 }
 
 mwentime_t get_time_from_buffer(const char * datestr) {
-	int len = strlen(datestr);
 	mwentime_t t;
 	memset(&t, 0, sizeof(t));
-	if (len == 15) {
+	if ( (datestr != NULL ? strlen(datestr): 0) == 15) {
 		char buffer[5];
 		memset(buffer, 0, sizeof(buffer));
 		strncpy(buffer, datestr +  0, 2);
@@ -95,5 +97,54 @@ void sha256_string(char * buffer, char outputBuffer[65]) {
 		sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
 	}
 	outputBuffer[64] = 0;
+}
+
+jobject * admin_auth(struct lws * wsi) {
+	char * token = get_header_data(wsi, WSI_TOKEN_HTTP_AUTHORIZATION);
+	char * date  = get_custom_header_data(wsi, "mwen-date:");
+
+	long time_date = convert_time(get_time()) - convert_time(get_time_from_buffer(date));
+	time_date      = time_date < 0 ? time_date * -1: time_date;
+
+	size_t alloc_size = 0;
+	bool allowed = false;
+	if (token != NULL && date != NULL) {
+		if (time_date >= 500) {
+			free(date);
+		}
+		else {
+			jobject * jobj = create_jobject("time", TEXT, (data_t) {.txt = date});
+
+			// get password
+			char * password = "kushal";
+			char * alloc_password = malloc((strlen(password) + 1) * sizeof(*alloc_password));
+			strcpy(alloc_password, password);
+			append_jobject(&jobj, "password", TEXT, (data_t) {.txt = alloc_password});
+
+			// get json string
+			char * json_str = NULL;
+			json_tostring(&json_str, jobj, &alloc_size);
+			free_json(&jobj);
+
+			// get token
+			char tokenBuffer[65];
+			memset(tokenBuffer, 0, sizeof(tokenBuffer));
+			sha256_string(json_str, tokenBuffer);
+			free(json_str);
+
+			// compare token
+			allowed = (strcmp(tokenBuffer, token) == 0);
+		}
+		free(token);
+	}
+	else {
+		if (token != NULL) {
+			free(token);
+		}
+		if (date != NULL) {
+			free(date);
+		}
+	}
+	return create_jobject("canEdit", CON, (data_t) {.cond = allowed});
 }
 /* vim: set tabstop=4 shiftwidth=4 fileencoding=utf-8 noexpandtab: */
