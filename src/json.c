@@ -15,6 +15,7 @@ const int NULL_TERM = 1; // '\0'
 
 #define TRUE "true"
 #define FALSE "false"
+#define NULLSTR "null"
 
 json_err_t check_leakage(const char * json, char * qloc);
 json_err_t parse_jobject(jobject ** obj, const char ** json);
@@ -51,6 +52,11 @@ json_err_t parse_jobject(jobject ** obj, const char ** json) {
 				nobj->type = CON;
 				nobj->data.cond = false;
 				*json = *json + strlen(FALSE);
+			}
+			else if (strncmp(NULLSTR, *json, sizeof(NULLSTR) - 1) == 0) {
+				nobj->type     = TEXT;
+				nobj->data.txt = NULL;
+				*json = *json + strlen(NULLSTR);
 			}
 		}
 

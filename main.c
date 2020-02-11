@@ -57,8 +57,10 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 			if (r->free_type == BUFFER_MALLOC) {
 				free(r->buff);
 			}
-			lws_http_transaction_completed(wsi);
-			return -1;
+			if (lws_http_transaction_completed(wsi)) {
+				return -1;
+			}
+			return 0;
 		}
 		else {
 			r->pos += num_sent;

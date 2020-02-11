@@ -4,6 +4,8 @@ var section_open = Number.isNaN(parseInt(cjson.section_open))? 0: parseInt(cjson
 section_open     = urlParams.get('section') == null ? section_open: urlParams.get('section') % 5;
 var password     = Cookies.get('mwen_password');
 
+Cookies.set("mwen_pkgName", "main");
+
 // responses from server
 var section_url  = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
 var heading_id   = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
@@ -83,7 +85,7 @@ function add_create_link(password) {
 				// activate button
 				temp = temp.getElementsByClassName("mdc-fab")[0];
 				mdc.ripple.MDCRipple.attachTo(temp);
-				temp.href = "createpkg?grid=" + allItems[x].getAttribute('id');
+				temp.href = "createpkg?grid=" + allItems[x].getAttribute('id') + '&name=main';
 			}
 		}
 	}

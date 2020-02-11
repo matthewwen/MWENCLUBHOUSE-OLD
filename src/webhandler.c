@@ -59,6 +59,7 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 	int n = 0;
 	if (*found == false) {
 		char www[] = "/www/";
+		printf("%s\n", url);
 		if (strncmp(www, url, sizeof(www) - sizeof(*www)) == 0) {
 			*found = true;
 			r->response = FILE_REQUEST;
