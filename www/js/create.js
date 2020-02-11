@@ -29,5 +29,14 @@ $.ajax({type: 'GET',
 			'mwen-date': date,
 		},
 		url: '/mwenCreatePROJ',
-		success: function(result) {console.log(result);}
+		success: function(result) {
+			var obj = JSON.parse(result);
+			if (obj.canEdit) {
+				window.location.href = '/pageview?name=' + obj.href;
+			}
+			else {
+				window.location.href = "/www/html/404.html";
+			}
+			console.log(result);
+		}
 });

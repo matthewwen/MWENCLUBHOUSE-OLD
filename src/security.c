@@ -109,6 +109,7 @@ jobject * admin_auth(struct lws * wsi) {
 	size_t alloc_size = 0;
 	bool allowed = false;
 	if (token != NULL && date != NULL) {
+		jobject * robj = NULL;
 		if (time_date >= 500) {
 			free(date);
 		}
@@ -134,17 +135,17 @@ jobject * admin_auth(struct lws * wsi) {
 
 			// compare token
 			allowed = (strcmp(tokenBuffer, token) == 0);
+			robj = create_jobject("canEdit", CON, (data_t) {.cond = allowed});
 		}
 		free(token);
+		return robj;
 	}
-	else {
-		if (token != NULL) {
-			free(token);
-		}
-		if (date != NULL) {
-			free(date);
-		}
+	if (token != NULL) {
+		free(token);
 	}
-	return create_jobject("canEdit", CON, (data_t) {.cond = allowed});
+	if (date != NULL) {
+		free(date);
+	}
+	return NULL;
 }
 /* vim: set tabstop=4 shiftwidth=4 fileencoding=utf-8 noexpandtab: */

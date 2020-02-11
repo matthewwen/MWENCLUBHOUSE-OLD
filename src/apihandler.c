@@ -19,13 +19,6 @@ static const char * TEMPLATE_CSS    = "/main.css";
 #define MAX_FILE_LENGTH  11
 #define ID_LENGTH 10
 
-#define FREE(VAR) do {\
-	if (VAR != NULL) {\
-		free(VAR);\
-		VAR = NULL;\
-	}\
-}while(false);
-
 void webedit_handler(struct lws * wsi, bool * found, struct request * r);
 void createPROJ_handler(struct lws * wsi, bool * found, struct request * r);
 
@@ -36,7 +29,6 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 			webedit_handler(wsi, found, r);
 		}
 		else if (strcmp("/mwenCreatePROJ", url) == 0) {
-			printf("make api call\n");
 			createPROJ_handler(wsi, found, r);
 		}
 	}
@@ -81,6 +73,8 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 		// create database
 		sqlite3 * db = NULL;
 		add_document(&db, "data.db", database_name, tokenBuffer);
+		sqlite3_close(db);
+
 		FREE(database_name);
 
 		// return to response
@@ -93,7 +87,6 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 	}
 	FREE(pkg_name);
 	FREE(grid_name);
-
 
 	char * directory  = NULL; 
 	if ((is_valid = (is_valid && tokenBuffer[0] != '\0'))) {
@@ -112,12 +105,14 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 		sprintf(directory, "%s%s%s", TEMPLATE_PARENT, tokenBuffer, TEMPLATE_MAINJS);
 		FILE * fp, * index;
 		if ((fp = fopen(directory, "w")) != NULL) {
+			fprintf(fp, "const ref = \"%s\";\n", tokenBuffer);
 			fclose(fp);
 		}
 
 		// create css file
 		sprintf(directory, "%s%s%s", TEMPLATE_PARENT, tokenBuffer, TEMPLATE_CSS);
 		if ((fp = fopen(directory, "w")) != NULL) {
+			fprintf(fp, ".%s {\n }\n", tokenBuffer);
 			fclose(fp);
 		}
 		
@@ -134,6 +129,8 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 						fwrite(buffer, sizeof(char), i, fp);
 					}
 				}
+				fprintf(fp, "<script src=\"www/other/%s/main.js\"></script>\n", tokenBuffer);
+				fprintf(fp, "<link rel=\"stylesheet\" href=\"www/other/%s/main.css\"/>\n", tokenBuffer);
 				// close file
 				fclose(index);
 			}

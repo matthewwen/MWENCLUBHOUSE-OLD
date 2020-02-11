@@ -36,6 +36,7 @@ function add_create_link(password) {
 		return;
 	}
 	if (can_edit == false) {
+		$('.addItem').remove();
 		$.ajax({type: 'GET',
 			headers: {
 				'authorization': $.sha256(JSON.stringify({'time': getDate(), 'password': password})),
@@ -49,6 +50,7 @@ function add_create_link(password) {
 				can_edit = j.canEdit;
 				if (can_edit) {
 					add_create_link(password);
+					can_edit = false;
 				}
 			},
 		});
@@ -63,9 +65,6 @@ function add_create_link(password) {
 					create_link = result;
 					if (create_link != null) {
 						add_create_link(password);
-					}
-					else {
-						console.log("Issue Communicating with the server!");
 					}
 				}
 			});

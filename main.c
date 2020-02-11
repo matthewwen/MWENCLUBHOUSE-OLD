@@ -53,14 +53,14 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 		}
 		lws_write(wsi, (uint8_t *) r->pos, num_sent, LWS_WRITE_HTTP_FINAL);
 		r->alloc_size -= num_sent;
-		if (r->alloc_size == 0) {
+		if (r->alloc_size <= 0) {
 			if (r->free_type == BUFFER_MALLOC) {
 				free(r->buff);
 			}
 			if (lws_http_transaction_completed(wsi)) {
 				return -1;
 			}
-			return 0;
+			return -1;
 		}
 		else {
 			r->pos += num_sent;

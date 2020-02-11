@@ -3,9 +3,116 @@
 #include <string.h>
 #include <stdbool.h>
 #include <linux/limits.h>
+#include <dirent.h>
+#include <errno.h>
 #include "webhandler.h"
+#include "json.h"
+#include "common.h"
+#include "security.h"
 
 const char SOURCE_PATH[] = ".";
+int pageview_handler(struct lws * wsi, bool * found, struct request * r);
+char * get_mime_type(const char * url);
+int send_static_page(const char * url, struct lws * wsi);
+
+int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
+	int n = 0;
+	if (*found == false) {
+		char www[] = "/www/";
+		char other[] = "/www/other/";
+		if (strncmp(other, url, sizeof(other) - 1) == 0) {
+			// block html files, not css or javascript files
+			char * mime = get_mime_type(url);
+			if (strcmp(mime, "text/html") != 0) {
+				*found = true;
+				r->response = FILE_REQUEST;
+				n = send_static_page(url, wsi);
+			}
+		}
+		else if (strncmp(www, url, sizeof(www) - sizeof(*www)) == 0) {
+			*found = true;
+			r->response = FILE_REQUEST;
+			n = send_static_page(url, wsi);
+		}
+		else if (strcmp("/createpkg", url) == 0) {
+			*found = true;
+			r->response = FILE_REQUEST;
+			n = send_static_page("/www/html/create.html", wsi);
+		}
+		else if (strcmp("/pageview", url) == 0) {
+			*found = true;
+			n = pageview_handler(wsi, found, r);
+		}
+
+		if (*found) {
+			if (n == -1) {
+				r->response = 0;
+				*found = false;
+				n = 0;
+			}
+			else {
+				r->response = FILE_REQUEST;
+			}
+		}
+	}
+	return n;
+}
+
+int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
+	int n = 0;
+
+	// check the database to make the page visibile
+	bool is_valid = false;
+	if (is_valid == false) {
+		jobject * robj = admin_auth(wsi);
+		r->response = FILE_REQUEST;
+		if (robj == NULL) {
+			return send_static_page("/www/html/template/empty.html", wsi);
+		}
+
+		jobject * temp = get_jobject("canEdit", robj);
+		is_valid = temp != NULL && temp->type == CON && temp->data.cond;
+		free_json(&robj);
+	}
+
+	char * url_arg = NULL, * page_view = NULL;
+	if (is_valid == true) {
+		url_arg = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);
+	}
+	if (url_arg != NULL) {
+		const char * page_key = "name=";
+		page_view  = strstr(url_arg, page_key);
+		page_view += page_view == NULL ? 0: strlen(page_key);
+	}
+
+	char * new_url = NULL;
+	const char * parent = "/www/other/";
+	const char * index  = "/index.html";
+	if (page_view != NULL) {
+		int num_char  = strlen(parent) + strlen(index) + strlen(page_view) + 1;
+		new_url = malloc(num_char * sizeof(*new_url));
+	}
+
+	r->response = FILE_REQUEST;
+	if ((is_valid = (new_url != NULL))) {
+		sprintf(new_url, "%s%s", parent, page_view);
+		DIR * dir = opendir(new_url + 1);
+		is_valid = dir != NULL;
+		if (dir) {closedir(dir);}
+	}
+
+	if (is_valid) {
+		strcat(new_url, index);
+		n = send_static_page(new_url, wsi);
+	}
+	else {
+		n = send_static_page("/www/html/404.html", wsi);
+	}
+
+	FREE(url_arg);
+	FREE(new_url);
+	return n;
+}
 
 char * get_mime_type(const char * url) {
 	char * end  = strrchr(url, '.');
@@ -53,34 +160,5 @@ int send_static_page(const char * url, struct lws * wsi) {
 		lws_serve_http_file(wsi, resource_path, mime, NULL, 0);
 	}
 	return n != -1 ? 0: -1;
-}
-
-int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
-	int n = 0;
-	if (*found == false) {
-		char www[] = "/www/";
-		if (strncmp(www, url, sizeof(www) - sizeof(*www)) == 0) {
-			*found = true;
-			r->response = FILE_REQUEST;
-			n = send_static_page(url, wsi);
-		}
-		else if (strcmp("/createpkg", url) == 0) {
-			*found = true;
-			r->response = FILE_REQUEST;
-			n = send_static_page("/www/html/create.html", wsi);
-		}
-
-		if (*found) {
-			if (n == -1) {
-				r->response = 0;
-				*found = false;
-				n = 0;
-			}
-			else {
-				r->response = FILE_REQUEST;
-			}
-		}
-	}
-	return n;
 }
 /* vim: set tabstop=4 shiftwidth=4 fileencoding=utf-8 noexpandtab: */

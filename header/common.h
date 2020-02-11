@@ -36,6 +36,13 @@ struct request{
 	char * url;
 };
 
+#define FREE(VAR) do {\
+	if (VAR != NULL) {\
+		free(VAR);\
+		VAR = NULL;\
+	}\
+}while(false);
+
 #define CREATE_REQUEST(REQUEST, RESPONSE, ALLOC_SIZE, BUFF, FREE_TYPE) do {\
     REQUEST->response   = RESPONSE;\
     REQUEST->alloc_size = ALLOC_SIZE;\
