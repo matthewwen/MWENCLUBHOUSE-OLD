@@ -27,6 +27,7 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 
 	struct request * r = user;
 	if (reason == LWS_CALLBACK_HTTP) {
+		printf("url: %s\n", (const char *) in);
 		if (lws_hdr_total_length(wsi, WSI_TOKEN_GET_URI)) {
 			r->type = GET;
 			return handle_get_request(in, wsi, &user);
@@ -96,7 +97,7 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 					r->url = NULL;
 				}
 
-				const char * getrequest = "/";
+				const char * getrequest = "/request";
 				if (lws_http_redirect(wsi, HTTP_STATUS_OK, (const unsigned char *) getrequest, strlen(getrequest), &p, end) < 0) {
 					return -1;
 				}
