@@ -21,4 +21,4 @@ clean:
 	rm -rf $(NAME)
 
 add:
-	git add header/* $(SRC) Makefile www/js/* www/css/* www/* www/img/* www/favicon/*
+	git add header/* $(SRC) Makefile www/js/* www/css/* www/* www/img/* www/favicon/* data.db

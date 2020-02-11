@@ -11,6 +11,21 @@
 #include "common.h"
 #include "msqlite.h"
 
+static const char * TEMPLATE_PARENT = "www/other/";
+static const char * TEMPLATE_INDEX  = "/index.html";
+static const char * TEMPLATE_MAINJS = "/main.js";
+static const char * TEMPLATE_CSS    = "/main.css";
+
+#define MAX_FILE_LENGTH  11
+#define ID_LENGTH 10
+
+#define FREE(VAR) do {\
+	if (VAR != NULL) {\
+		free(VAR);\
+		VAR = NULL;\
+	}\
+}while(false);
+
 void webedit_handler(struct lws * wsi, bool * found, struct request * r);
 void createPROJ_handler(struct lws * wsi, bool * found, struct request * r);
 
@@ -21,106 +36,118 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 			webedit_handler(wsi, found, r);
 		}
 		else if (strcmp("/mwenCreatePROJ", url) == 0) {
+			printf("make api call\n");
 			createPROJ_handler(wsi, found, r);
 		}
 	}
 	return n;
 }
 
-static const char * TEMPLATE_PARENT = "www/other/";
-static const char * TEMPLATE_INDEX  = "/index.html";
-static const char * TEMPLATE_MAINJS = "/main.js";
-static const char * TEMPLATE_CSS    = "/main.css";
-#define MAX_FILE_LENGTH  11
-
-#define FREE(VAR) do {\
-	if (VAR != NULL) {\
-		free(VAR);\
-		VAR = NULL;\
-	}\
-}while(false);
-
 void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 	jobject * robj = admin_auth(wsi);
 	jobject * temp = get_jobject("canEdit", robj);
-	if (temp == NULL || temp->type != CON || temp->data.cond == false) {
-		free_json(&robj);
-		return;
+	bool is_valid = temp != NULL && temp->type == CON && temp->data.cond;
+
+	char * pkg_name = NULL, * grid_name = NULL, * date_str = NULL;
+	if (is_valid) {
+		pkg_name  = get_custom_header_data(wsi, "pkg-name:");
+		grid_name = get_custom_header_data(wsi, "grid-name:");
+		date_str  = get_custom_header_data(wsi, "mwen-date:");
 	}
 
-	/*char * pkg_name  = get_custom_header_data(wsi, "pkg-name:");
-	char * grid_name = get_custom_header_data(wsi, "grid-name:");
-	char * date_str  = get_custom_header_data(wsi, "mwen-date:");
-
-	bool is_valid = (pkg_name != NULL) || (grid_name != NULL) || (date_str != NULL);
+	is_valid = (pkg_name != NULL) && (grid_name != NULL) && (date_str != NULL);
 
 	char * database_name = NULL;
-	if (is_valid == true) {
+	if (is_valid) {
 		int num_char  = strlen(pkg_name) + strlen(grid_name) + strlen(date_str) + 1;
 		database_name = malloc(sizeof(*database_name) * num_char);
-		is_valid = database_name != NULL;
 	}
 
-	if (is_valid == true) {
+	if ((is_valid = (is_valid && database_name != NULL))) {
 		sprintf(database_name, "%s%s%s", pkg_name, grid_name, date_str);
+	}
+	FREE(date_str);
+	
+	char tokenBuffer[65];
+	if (database_name != NULL) {
+		sha256_string(database_name, tokenBuffer);
+		tokenBuffer[10] = '\0';		
+		database_name[strlen(pkg_name) + strlen(grid_name)] = '\0';
+		for (int i = 0; database_name[i] != '\0'; i++) {
+			if (database_name[i] == '-') {
+				database_name[i] = '_';
+			}
+		}
+		// create database
+		sqlite3 * db = NULL;
+		add_document(&db, "data.db", database_name, tokenBuffer);
+		FREE(database_name);
+
+		// return to response
+		char * tokenalloc = malloc(sizeof(*tokenalloc) * (strlen(tokenBuffer) + 1));
+		sprintf(tokenalloc, "%s", tokenBuffer);
+		append_jobject(&robj, "href", TEXT, (data_t) {.txt = tokenalloc});
+	}
+	else {
+		tokenBuffer[0] = '\0';
 	}
 	FREE(pkg_name);
 	FREE(grid_name);
-	FREE(date_str);
-	
-	if (is_valid == false) {
-		free_json(&robj);
-		FREE(database_name)
-		return;
+
+
+	char * directory  = NULL; 
+	if ((is_valid = (is_valid && tokenBuffer[0] != '\0'))) {
+		int num_char = strlen(TEMPLATE_PARENT) + ID_LENGTH + MAX_FILE_LENGTH + 1;
+		directory    = malloc(sizeof(*directory) * num_char);
 	}
 
-	char tokenBuffer[65];
-	memset(tokenBuffer, 0, sizeof(tokenBuffer));
-	sha256_string(database_name, tokenBuffer);
-	FREE(database_name);
-	tokenBuffer[16] = '\0';
+	if (directory != NULL) {
+		// create www/other directory
+		sprintf(directory, "%s", TEMPLATE_PARENT);
+		mkdir(directory, S_IRWXU);
+		sprintf(directory, "%s%s", TEMPLATE_PARENT, tokenBuffer);
+		mkdir(directory, S_IRWXU);
 
-	size_t alloc_size = sizeof(char) * (strlen(TEMPLATE_PARENT) + 16 + MAX_FILE_LENGTH);
-	char * directory  = malloc(alloc_size);
-	if (directory == false) {
-		free_json(&robj);
-		return;
-	}
-
-	memset(directory, 0, alloc_size);
-	sprintf(directory, "%s%s", TEMPLATE_PARENT, tokenBuffer);
-	mkdir(directory, S_IRWXU);
-
-	sprintf(directory, "%s%s%s", TEMPLATE_PARENT, tokenBuffer, TEMPLATE_MAINJS);
-	FILE * fp = fopen(directory, "w");
-	if (fp != NULL) {
-		fclose(fp);
-	}
-
-	sprintf(directory, "%s%s%s", TEMPLATE_PARENT, tokenBuffer, TEMPLATE_CSS);
-	fp = fopen(directory, "w");
-	if (fp != NULL) {
-		fclose(fp);
-	}
-	sprintf(directory, "%s%s%s", TEMPLATE_PARENT, tokenBuffer, TEMPLATE_INDEX);
-	fp = fopen(directory, "w");
-	if (fp != NULL) {
-		FILE * fpOld = fopen("www/html/template/template.html", "r");
-		if (fpOld != NULL) {
-			char buffer[21];
-			memset(buffer, 0 , sizeof(buffer));
-			for (long i = 0;(i = fread(buffer, sizeof(char), 20, fpOld)) > 0;) {
-				fwrite(buffer, sizeof(char), i, fp);
-				memset(buffer, 0 , sizeof(buffer));
-			}
-			fclose(fpOld);
+		// create js file
+		sprintf(directory, "%s%s%s", TEMPLATE_PARENT, tokenBuffer, TEMPLATE_MAINJS);
+		FILE * fp, * index;
+		if ((fp = fopen(directory, "w")) != NULL) {
+			fclose(fp);
 		}
-		fclose(fp);
-	}*/
+
+		// create css file
+		sprintf(directory, "%s%s%s", TEMPLATE_PARENT, tokenBuffer, TEMPLATE_CSS);
+		if ((fp = fopen(directory, "w")) != NULL) {
+			fclose(fp);
+		}
+		
+		// create html file
+		sprintf(directory, "%s%s%s", TEMPLATE_PARENT, tokenBuffer, TEMPLATE_INDEX);
+		if ((fp = fopen(directory, "w")) != NULL) {
+			if ((index = fopen("www/html/template/template.html", "r")) != NULL) {
+				// create index file
+				char buffer[21];
+				bool is_finished = false;
+				for (size_t i = 0; !is_finished;) {
+					memset(buffer, 0 , sizeof(buffer));
+					if (!(is_finished = ((i = fread(buffer, sizeof(char), 20, index)) <= 0))) {
+						fwrite(buffer, sizeof(char), i, fp);
+					}
+				}
+				// close file
+				fclose(index);
+			}
+			fclose(fp);
+		}
+
+		FREE(directory);
+	}
 
 	json_tostring(&r->buff, robj, &r->alloc_size);
 	free_json(&robj);
-	CREATE_REQUEST(r, BUFFER_REQUEST, r->alloc_size - 1, r->buff, BUFFER_MALLOC);
+	if ((*found = (r->buff != NULL))) {
+		CREATE_REQUEST(r, BUFFER_REQUEST, r->alloc_size - 1, r->buff, BUFFER_MALLOC);
+	}
 }
 
 void webedit_handler(struct lws * wsi, bool * found, struct request * r) {

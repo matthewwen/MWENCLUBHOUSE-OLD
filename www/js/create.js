@@ -1,6 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const gridID   = urlParams.get('grid');
-const pkgName  = urlParams.get("mwen_pkgName");
+const pkgName  = urlParams.get("name");
 
 var password = Cookies.get("mwen_password");
 
@@ -24,9 +24,9 @@ var date = getDate();
 $.ajax({type: 'GET',
 		headers: {
 			'authorization': $.sha256(JSON.stringify({'time': date, 'password': password})),
-			'mwen-date': date,
 			'grid-name': gridID,
 			'pkg-name': pkgName,
+			'mwen-date': date,
 		},
 		url: '/mwenCreatePROJ',
 		success: function(result) {console.log(result);}
