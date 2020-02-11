@@ -9,7 +9,6 @@ SRC=main.c\
     src/security.c\
     src/common.c
 LIB=-lwebsockets -lcrypto
-#-lguile -lltdl -lssl -pthread -lgmp -lcrypt -lm
 CFLAG=-O3 -std=c99 -Wall -Wshadow -Wvla -pedantic
 INCLUDE=header
 
@@ -20,4 +19,4 @@ clean:
 	rm -rf $(NAME)
 
 add:
-	git add header/* $(SRC) Makefile www/js/* www/css/* www/* www/img/* www/favicon/*
+	git add header/* $(SRC) Makefile www/js/* www/css/* www/* www/img/* www/favicon/* pkg/*

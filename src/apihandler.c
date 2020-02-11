@@ -15,7 +15,7 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 		if (strcmp("/webedit", url) == 0) {
 			webedit_handler(wsi, found, r);
 		}
-		else if (strcmp("/create", url) == 0) {
+		else if (strcmp("/createpkgfiles", url) == 0) {
 			jobject * robj = admin_auth(wsi);
 			if (robj != NULL) {
 				json_tostring(&r->buff, robj, &r->alloc_size);

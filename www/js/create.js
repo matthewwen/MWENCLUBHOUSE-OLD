@@ -25,13 +25,13 @@ function getDate() {
 }
 
 var date = getDate();
-$.ajax({type: 'PUT',
+$.ajax({type: 'GET',
         headers: {
             'authorization': $.sha256(JSON.stringify({'time': date, 'password': password})),
             'mwen-date': date 
         },
-        url: '/create',
-        data: jobj,
+        url: '/createpkgfiles',
+        data: dobj,
         success: function(result) {
             console.log(result);
         }
