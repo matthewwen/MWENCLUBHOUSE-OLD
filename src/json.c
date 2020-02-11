@@ -101,11 +101,8 @@ jobject * parse_json(const char * json) {
 json_err_t append_jlist(jlist ** head, jtype_t type, data_t data) {
 	jlist * nli = malloc(sizeof(*nli));
 	memset(nli, 0, sizeof(*nli));
-	*nli        = (jlist) {.type = type, .data = data, .next = NULL};
-	jlist ** ali = head;
-	for (;*ali != NULL; ali = &(*ali)->next){}
-	*ali = nli;
-	// -> if type != head->type (check at the end??)
+	*nli  = (jlist) {.type = type, .data = data, .next = *head};
+	*head =  nli;
 	return JSON_OKAY;
 }
 
@@ -119,15 +116,11 @@ jobject * create_jobject(char * name, jtype_t type, data_t data) {
 }
 
 json_err_t append_jobject(jobject ** a_object, const char * key, jtype_t type, data_t data) {
-	for (; *a_object != NULL; a_object = &(*a_object)->next) {}
-
-	*a_object = malloc(sizeof(**a_object));
-	**a_object = (jobject) {.name = NULL, .type = type, 
-		.data = data, .next = NULL};
-
-	(*a_object)->name = malloc((strlen(key) + 1) * sizeof(*key));
-	strcpy((*a_object)->name, key);
-
+	jobject * obj = malloc(sizeof(*obj));
+	*obj = (jobject) {.type = type, .data = data, .next = *a_object};
+	obj->name = malloc((strlen(key) + 1) * sizeof(*key));
+	strcpy(obj->name, key);
+	*a_object = obj;
 	return JSON_OKAY;
 }
 
@@ -171,16 +164,19 @@ json_err_t data_tostring(jstring * jstr, jtype_t type, data_t data) {
 		write_str(jstr, cond);
 	}
 	else if (type == LIST) {
+		printf("hello there\n");
 		write_str(jstr, "[");
 		for (jlist * curr = data.list; curr != NULL; curr = curr->next) {
+			printf("repeat\n");
 			data_tostring(jstr, curr->type, curr->data);
 			if (curr->next != NULL) {
-				write_str(jstr, ", ");
+				write_str(jstr, ",");
 			}
 		}
 		write_str(jstr, "]");
 	}
 	else if (type == OBJ) {
+		printf("I am here instead\n");
 		object_tostring(jstr, data.obj);
 	}
 	else if (type == NUM) {
@@ -199,9 +195,7 @@ json_err_t json_tostring(char ** a_str, jobject * object, size_t * a_alloc_size)
 	if (a_alloc_size != NULL) {
 		*a_alloc_size = alloc_size;
 	}
-	jstring jstr = {.alloc_size = alloc_size, 
-		.str        = (*a_str), 
-		.last_pos   = (*a_str)};
+	jstring jstr = {.alloc_size = alloc_size, .str = (*a_str), .last_pos = (*a_str)};
 	return object_tostring(&jstr, object);
 }
 

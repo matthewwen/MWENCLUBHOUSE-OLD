@@ -114,13 +114,13 @@ jobject * admin_auth(struct lws * wsi) {
 			free(date);
 		}
 		else {
-			jobject * jobj = create_jobject("time", TEXT, (data_t) {.txt = date});
-
+			jobject * jobj = NULL;
 			// get password
 			char * password = "kushal";
 			char * alloc_password = malloc((strlen(password) + 1) * sizeof(*alloc_password));
 			strcpy(alloc_password, password);
 			append_jobject(&jobj, "password", TEXT, (data_t) {.txt = alloc_password});
+			append_jobject(&jobj, "time", TEXT, (data_t) {.txt = date});
 
 			// get json string
 			char * json_str = NULL;

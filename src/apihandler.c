@@ -10,6 +10,7 @@
 #include "security.h"
 #include "common.h"
 #include "msqlite.h"
+#include "webdatabase.h"
 
 static const char * TEMPLATE_PARENT = "www/other/";
 static const char * TEMPLATE_INDEX  = "/index.html";
@@ -70,10 +71,8 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 				database_name[i] = '_';
 			}
 		}
-		// create database
-		sqlite3 * db = NULL;
-		add_document(&db, "data.db", database_name, tokenBuffer);
-		sqlite3_close(db);
+		// add to database
+		web_record_href(tokenBuffer, false);
 
 		FREE(database_name);
 
