@@ -6,46 +6,42 @@
 #include "webdatabase.h"
 #include "json.h"
 
-int read_data_lol(void * notused, int argc, char ** argv , char ** azColName) { 
-	jlist  ** a_list = notused;
-	jlist   * list = *a_list;
-	jobject * obj = NULL;
-
-	int var_database = atoi(argv[2]);
-	bool is_visible = var_database != 0;
-	append_jobject(&obj, "visible", CON, (data_t) {.cond = is_visible});
-
-	int count = strlen(argv[1]) + 1;
-	char * str = malloc(count * sizeof(*str));
-	strcpy(str, argv[1]);
-	append_jobject(&obj, "href", TEXT, (data_t) {.txt = str});
-	append_jlist(&list, OBJ, (data_t) {.obj = obj});
-
-	*a_list = list;
-
-	return 0;
-}
-
 int main(int argc, char* argv[]) {
 	if (argc < 2) {
 		return EXIT_FAILURE;
 	}
 	if (strcmp(argv[1], "-h") == 0) {
-		jlist * list = NULL;
-		sqlite3 * db = NULL;
-		get_web_record_href(&db);
-		sqlite3_exec(db, "SELECT * FROM PAGEVIEW", read_data_lol, &list, NULL);
-		assert(list != NULL);
-
-		for (jlist * curr = list; curr != NULL; curr = curr->next) {
+		if (argc > 2) {
+			if 	(strcmp(argv[2], "update") == 0) {
+				if (argc == 5) {
+					char * href  = argv[3];
+					bool visible = atoi(argv[4]) == 0 ? false: true;
+					set_is_visible(href, visible);
+					printf("update href %s to %s\n", href, visible ? "true" : "false");
+				}
+			}
 		}
-		
-		char * str = NULL;
-		jobject * obj = create_jobject("data", LIST, (data_t) {.list = list});
-		json_tostring(&str, obj, NULL);
-		free(str);
-		free_json(&obj);
-    	if (db != NULL) {sqlite3_close(db); db = NULL;}
+
+		printf("printing all elements as href\n");
+		jobject * data = get_web_record_href();
+		for (jlist * curr = data->data.list; curr != NULL; curr = curr->next) {
+			jobject * root = curr->data.obj;
+
+			// get id
+			jobject * temp = get_jobject("id", root);
+			int id = temp != NULL  && temp->type == NUM ? temp->data.num: -1;
+
+			// get href
+			temp = get_jobject("href", root);
+			char * href =  temp != NULL && temp->type == TEXT ? temp->data.txt: "Error";
+
+			// get visibility
+			temp = get_jobject("visible", root);
+			bool is_visible = temp != NULL && temp->type == CON ? temp->data.cond: false;
+
+			printf("id: %d, href: %s, visible: %s\n", id, href, is_visible ? "true": "false");
+		}
+		free_json(&data);
 	}
 	else if (strcmp(argv[1], "-i") == 0) {
 		printf("it is for the images\n");

@@ -164,10 +164,8 @@ json_err_t data_tostring(jstring * jstr, jtype_t type, data_t data) {
 		write_str(jstr, cond);
 	}
 	else if (type == LIST) {
-		printf("hello there\n");
 		write_str(jstr, "[");
 		for (jlist * curr = data.list; curr != NULL; curr = curr->next) {
-			printf("repeat\n");
 			data_tostring(jstr, curr->type, curr->data);
 			if (curr->next != NULL) {
 				write_str(jstr, ",");
@@ -176,7 +174,6 @@ json_err_t data_tostring(jstring * jstr, jtype_t type, data_t data) {
 		write_str(jstr, "]");
 	}
 	else if (type == OBJ) {
-		printf("I am here instead\n");
 		object_tostring(jstr, data.obj);
 	}
 	else if (type == NUM) {

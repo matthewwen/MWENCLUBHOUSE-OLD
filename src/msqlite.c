@@ -33,7 +33,6 @@ sqlite_err_t create_table(sqlite3 ** db, char * database_name, char * table_name
 }
 
 int read_data(void * notused, int argc, char ** argv , char ** azColName) { 
-    jobject_holder_t * h = notused; 
     for (int i = 0; i < argc; i++) {
         printf("%s\n", argv[i]);
     }

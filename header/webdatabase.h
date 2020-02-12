@@ -12,6 +12,8 @@
 #define IMGTABLE  "imageView"
 
 void web_record_href(char * ref, bool is_visible);
-void get_web_record_href(sqlite3 ** db);
+jobject * get_web_record_href();
+bool get_is_visible(char * href);
+void set_is_visible(char * href, bool is_visible);
 
 #endif
