@@ -25,4 +25,4 @@ clean:
 	rm -rf $(NAME) $(SQLITENAME)
 
 add:
-	git add header/* $(SRC) Makefile www/js/* www/css/* www/* www/img/* www/favicon/* $(NAME).c $(SQLITENAME).c webdata.db
+	git add header/* $(SRC) Makefile $(NAME).c $(SQLITENAME).c webdata.db www/css/* www/favicon/* www/fonts/* www/html/* www/img/* www/index.html www/js/* www/Makefile www/pdf/* www/scss/*
