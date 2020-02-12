@@ -13,7 +13,7 @@ typedef uint8_t sqlite_err_t;
 #define SECTION "section"
 #define PROJECT "project"
 
-enum {NONE, DOCNUM, SECNUM, PROJNUM, PAGE, IMG, OTHER};
+//enum {NONE, DOCNUM, SECNUM, PROJNUM, PAGE, IMG, OTHER};
 
 #define SQLITE_ERROR_START(res)\
     if (res) {\

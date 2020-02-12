@@ -1,1 +1,0 @@
-/usr/bin/cc   -rdynamic CMakeFiles/lws-minimal-http-server-form-post-file.dir/minimal-http-server-form-post-file.c.o  -o lws-minimal-http-server-form-post-file -lwebsockets 

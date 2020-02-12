@@ -17,12 +17,10 @@ int main(int argc, char* argv[]) {
 					char * href  = argv[3];
 					bool visible = atoi(argv[4]) == 0 ? false: true;
 					set_is_visible(href, visible);
-					printf("update href %s to %s\n", href, visible ? "true" : "false");
 				}
 			}
 		}
 
-		printf("printing all elements as href\n");
 		jobject * data = get_web_record_href();
 		for (jlist * curr = data->data.list; curr != NULL; curr = curr->next) {
 			jobject * root = curr->data.obj;

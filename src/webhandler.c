@@ -9,6 +9,7 @@
 #include "json.h"
 #include "common.h"
 #include "security.h"
+#include "webdatabase.h"
 
 const char SOURCE_PATH[] = ".";
 int pageview_handler(struct lws * wsi, bool * found, struct request * r);
@@ -40,7 +41,6 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 			n = send_static_page("/www/html/create.html", wsi);
 		}
 		else if (strcmp("/pageview", url) == 0) {
-			*found = true;
 			n = pageview_handler(wsi, found, r);
 		}
 
@@ -61,34 +61,33 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 	int n = 0;
 
+	// get url arguments
+	char * url_arg = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);
+
+	char * page_view = NULL;
+	if (url_arg != NULL) {
+		page_view = get_url_arg(url_arg, "name=");
+		FREE(url_arg);
+	}
+
 	// check the database to make the page visibile
-	bool is_valid = false;
+	bool is_valid = get_is_visible(page_view);
 	if (is_valid == false) {
 		jobject * robj = admin_auth(wsi);
 		r->response = FILE_REQUEST;
 		if (robj == NULL) {
+			FREE(page_view);
 			return send_static_page("/www/html/template/empty.html", wsi);
 		}
-
 		jobject * temp = get_jobject("canEdit", robj);
 		is_valid = temp != NULL && temp->type == CON && temp->data.cond;
 		free_json(&robj);
 	}
 
-	char * url_arg = NULL, * page_view = NULL;
-	if (is_valid == true) {
-		url_arg = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);
-	}
-	if (url_arg != NULL) {
-		const char * page_key = "name=";
-		page_view  = strstr(url_arg, page_key);
-		page_view += page_view == NULL ? 0: strlen(page_key);
-	}
-
 	char * new_url = NULL;
 	const char * parent = "/www/other/";
 	const char * index  = "/index.html";
-	if (page_view != NULL) {
+	if (page_view != NULL && is_valid) {
 		int num_char  = strlen(parent) + strlen(index) + strlen(page_view) + 1;
 		new_url = malloc(num_char * sizeof(*new_url));
 	}
@@ -100,6 +99,7 @@ int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 		is_valid = dir != NULL;
 		if (dir) {closedir(dir);}
 	}
+	FREE(page_view);
 
 	if (is_valid) {
 		strcat(new_url, index);
@@ -109,8 +109,8 @@ int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 		n = send_static_page("/www/html/404.html", wsi);
 	}
 
-	FREE(url_arg);
-	FREE(new_url);
+	FREE(new_url)
+	//*found = true;
 	return n;
 }
 

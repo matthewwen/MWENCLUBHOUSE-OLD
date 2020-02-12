@@ -22,6 +22,16 @@ static const char * TEMPLATE_CSS    = "/main.css";
 
 void webedit_handler(struct lws * wsi, bool * found, struct request * r);
 void createPROJ_handler(struct lws * wsi, bool * found, struct request * r);
+void getPROJ_handler(struct lws * wsi, bool * found, struct request * r);
+
+void format_href(char * href) {
+	for (int i = 0; href[i] != '\0'; i++) {
+		if (href[i] == '-') {
+			href[i] = '_';
+		}
+	}
+
+}
 
 int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
 	int n = 0;
@@ -32,8 +42,38 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 		else if (strcmp("/mwenCreatePROJ", url) == 0) {
 			createPROJ_handler(wsi, found, r);
 		}
+		else if (strcmp("/mwenGetPROJ", url) == 0) {
+			getPROJ_handler(wsi, found, r);
+		}
 	}
 	return n;
+}
+void getPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
+	// get url arguments
+	char * url_arg = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);
+
+	char * pkg_name  = get_url_arg(url_arg, "pkg-name=");
+	char * grid_name = get_url_arg(url_arg, "grid-name=");
+	if (url_arg != NULL) {free(url_arg); url_arg = NULL;}
+	jobject * obj = NULL;
+	if (pkg_name != NULL && grid_name != NULL) {
+		int count = strlen(pkg_name) + strlen(grid_name) + 1;
+		char * href = malloc(count * sizeof(*href));
+		sprintf(href, "%s%s", pkg_name, grid_name);
+		if (href != NULL) {
+			format_href(href);
+			obj = get_project_view(href);
+		}
+		if (href != NULL) {free(href);}
+	}
+	if (pkg_name != NULL)  {free(pkg_name);}
+	append_jobject(&obj, "gridName", TEXT, (data_t) {.txt = grid_name});
+
+	json_tostring(&r->buff, obj, &r->alloc_size);
+	free_json(&obj);
+	if ((*found = (r->buff != NULL))) {
+		CREATE_REQUEST(r, BUFFER_REQUEST, r->alloc_size - 1, r->buff, BUFFER_MALLOC);
+	}
 }
 
 void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
@@ -66,13 +106,12 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 		sha256_string(database_name, tokenBuffer);
 		tokenBuffer[10] = '\0';		
 		database_name[strlen(pkg_name) + strlen(grid_name)] = '\0';
-		for (int i = 0; database_name[i] != '\0'; i++) {
-			if (database_name[i] == '-') {
-				database_name[i] = '_';
-			}
-		}
+		format_href(database_name);
+
 		// add to database
 		web_record_href(tokenBuffer, false);
+		insert_grid(database_name, NEWPAGE);
+		set_project_view(database_name, tokenBuffer, 100, "<div><h1>Title</h1><p>body</p></div>");
 
 		FREE(database_name);
 

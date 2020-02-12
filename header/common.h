@@ -53,5 +53,6 @@ struct request{
 
 char * get_header_data(struct lws * wsi, enum lws_token_indexes h);
 char * get_custom_header_data(struct lws * wsi, const char * token);
+char * get_url_arg(const char * url_arg, const char * key);
 
 #endif

@@ -31,4 +31,23 @@ char * get_custom_header_data(struct lws * wsi, const char * token) {
 	}
 	return str;
 }
+
+char * get_url_arg(const char * url_arg, const char * key) {
+	char * str = NULL;
+	if (url_arg != NULL && key != NULL) {
+		char * keyloc  = strstr(url_arg, key);
+		if (keyloc != NULL) {
+			keyloc    += strlen(key);
+			char * end = strchr(keyloc, ',');
+			int count  = (end != NULL ? (end - keyloc) / sizeof(*str): strlen(keyloc)) + 1;
+			size_t alloc_size = count * sizeof(*str);
+			str = malloc(alloc_size);
+			if (str != NULL) {
+				memset(str, 0, alloc_size);
+				strncpy(str, keyloc, alloc_size - sizeof(*str));
+			}
+		}
+	}
+	return str;
+}
 /* vim: set tabstop=4 shiftwidth=4 fileencoding=utf-8 noexpandtab: */
