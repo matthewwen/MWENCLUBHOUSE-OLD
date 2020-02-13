@@ -137,6 +137,7 @@ function load_body(html, new_selected) {
 			$.ajax({type: 'GET',
 					url: '/mwenGetPROJ?pkg-name='+ref+'&grid-name='+gridName,
 		            success: function(result){
+				    console.log(result);
 						var json = JSON.parse(result);
 						if (json == null || json.data == null)  {
 							return;
