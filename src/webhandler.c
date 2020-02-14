@@ -38,6 +38,7 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 		else if (strcmp("/createpkg", url) == 0) {
 			*found = true;
 			r->response = FILE_REQUEST;
+			printf("add create html file\n");
 			n = send_static_page("/www/html/create.html", wsi);
 		}
 		else if (strcmp("/pageview", url) == 0) {
@@ -72,11 +73,12 @@ int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 
 	// check the database to make the page visibile
 	bool is_valid = get_is_visible(page_view);
+	r->response = FILE_REQUEST;
 	if (is_valid == false) {
 		jobject * robj = admin_auth(wsi);
-		r->response = FILE_REQUEST;
 		if (robj == NULL) {
 			FREE(page_view);
+			*found = true;
 			return send_static_page("/www/html/template/empty.html", wsi);
 		}
 		jobject * temp = get_jobject("canEdit", robj);
@@ -110,7 +112,7 @@ int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 	}
 
 	FREE(new_url)
-	//*found = true;
+	*found = true;
 	return n;
 }
 

@@ -33,12 +33,12 @@ $.ajax({type: 'GET',
 		contentType: "plain/text",
 		success: function(result) {
 			var obj = JSON.parse(result);
+			console.log(result);
 			if (obj.canEdit) {
 				window.location.href = '/pageview?name=' + obj.href;
 			}
 			else {
 				window.location.href = "/www/html/404.html";
 			}
-			console.log(result);
 		}
 });

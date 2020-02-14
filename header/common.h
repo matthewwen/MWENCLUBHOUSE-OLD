@@ -35,7 +35,7 @@ struct request{
 	type_t    type;
 	struct lws_spa * spa;
 	char * url;
-	char header[HEADER_SIZE];
+	unsigned char header[HEADER_SIZE];
 };
 
 #define FREE(VAR) do {\

@@ -85,8 +85,8 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 		}
 		else {
 			lws_spa_finalize(r->spa);
-			const char * response = NULL;
-			response = lws_spa_get_string(r->spa, 0);
+			const char * response = lws_spa_get_string(r->spa, 0);
+			printf("response: %s\n", response);
 			if (r->type == PUT || r->type == POST) {
 				if (r->type == PUT) {
 					handle_put_request(r->url, wsi, &user);
