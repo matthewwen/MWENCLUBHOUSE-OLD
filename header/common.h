@@ -25,6 +25,7 @@ enum {
 	GET
 };
 
+#define HEADER_SIZE 5000
 struct request{
 	request_t response;
 	size_t    alloc_size;
@@ -34,6 +35,7 @@ struct request{
 	type_t    type;
 	struct lws_spa * spa;
 	char * url;
+	char header[HEADER_SIZE];
 };
 
 #define FREE(VAR) do {\

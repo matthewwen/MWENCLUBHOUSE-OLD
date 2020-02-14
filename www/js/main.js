@@ -47,7 +47,6 @@ function add_create_link(password) {
 			url: '/webedit',
 			contentType: "application/json",
 			success: function (result) {
-				console.log("result: " + result);
 				var j = JSON.parse(result);
 				can_edit = j.canEdit;
 				if (can_edit) {
@@ -130,40 +129,38 @@ function load_body(html, new_selected) {
 
 	function add_content_grid() {
 		$('.dynamic').remove();
-		console.log("main\n");
 		var allItems = document.getElementsByClassName("mwen-grid");
 		for (var x = 0; x < allItems.length; x++) {
 			var gridName = allItems[x].getAttribute('id');
 			$.ajax({type: 'GET',
-					url: '/mwenGetPROJ?pkg-name='+ref+'&grid-name='+gridName,
-		            success: function(result){
-				    console.log(result);
-						var json = JSON.parse(result);
-						if (json == null || json.data == null)  {
-							return;
-						}
-						if (json.gridName == null) {
-							return;
-						}
-						var gridName = json.gridName;
-						for (var i = 0; i < json.data.length; i++) {
+				url: '/mwenGetPROJ?pkg-name='+ref+'&grid-name='+gridName,
+				contentType: 'plain/text',
+				success: function(result){
+					var json = JSON.parse(result);
+					if (json == null || json.data == null)  {
+						return;
+					}
+					if (json.gridName == null) {
+						return;
+					}
+					var gridName = json.gridName;
+					for (var i = 0; i < json.data.length; i++) {
 
-							// create div element
-							console.log(json.data[i].body);
-							var content = document.createElement('div');
-							content.setAttribute('class', 'content');
-							content.innerHTML = json.data[i].body;
+						// create div element
+						var content = document.createElement('div');
+						content.setAttribute('class', 'content');
+						content.innerHTML = json.data[i].body;
 
-							var item = document.createElement('a');
-							item.setAttribute('class', 'item dynamic');
-							item.setAttribute('href', 'pageview?name=' + json.data[i].ref)
-							item.appendChild(content);
+						var item = document.createElement('a');
+						item.setAttribute('class', 'item dynamic');
+						item.setAttribute('href', 'pageview?name=' + json.data[i].ref );
+						item.appendChild(content);
 
-							// put element inside grid
-							document.getElementById(gridName).append(item);
-							resizeAllGridItems();
-						}
-					}});
+						// put element inside grid
+						document.getElementById(gridName).append(item);
+						resizeAllGridItems();
+					}
+				}});
 		}
 	}
 

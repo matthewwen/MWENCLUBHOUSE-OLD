@@ -21,6 +21,7 @@ function getDate() {
 
 var date = getDate();
 
+console.log("start of load\n");
 $.ajax({type: 'GET',
 		headers: {
 			'authorization': $.sha256(JSON.stringify({'time': date, 'password': password})),
@@ -29,6 +30,7 @@ $.ajax({type: 'GET',
 			'mwen-date': date,
 		},
 		url: '/mwenCreatePROJ',
+		contentType: "plain/text",
 		success: function(result) {
 			var obj = JSON.parse(result);
 			if (obj.canEdit) {

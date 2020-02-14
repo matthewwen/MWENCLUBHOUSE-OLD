@@ -26,8 +26,9 @@ $.ajax({type: 'GET',
 		'mwen-date': getDate()
 	},
 	url: '/pageview?name=' + section_open,
-	contentType: "application/json",
+	contentType: "plain/text",
 	success: function (result) {
+		console.log("hello there: " + result);
 		var doc = (new DOMParser()).parseFromString(result, "text/html");
 		$('head').html(doc.querySelector('head').innerHTML);
 		$('body').html(doc.querySelector('body').innerHTML);

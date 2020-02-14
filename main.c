@@ -52,11 +52,13 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 			num_sent = MAXBUFFERLEN;
 		}
 		lws_write(wsi, (uint8_t *) r->pos, num_sent, LWS_WRITE_HTTP_FINAL);
+
 		r->alloc_size -= num_sent;
 		if (r->alloc_size <= 0) {
 			if (r->free_type == BUFFER_MALLOC) {
 				free(r->buff);
 			}
+
 			if (lws_http_transaction_completed(wsi)) {
 				return -1;
 			}
@@ -83,7 +85,7 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 		}
 		else {
 			lws_spa_finalize(r->spa);
-		    const char * response = NULL;
+			const char * response = NULL;
 			response = lws_spa_get_string(r->spa, 0);
 			if (r->type == PUT || r->type == POST) {
 				if (r->type == PUT) {
