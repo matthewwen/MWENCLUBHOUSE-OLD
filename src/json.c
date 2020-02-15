@@ -154,7 +154,7 @@ json_err_t object_tostring(jstring * jstr, jobject * object) {
 }
 
 json_err_t data_tostring(jstring * jstr, jtype_t type, data_t data) {
-	if (type == TEXT) {
+	if (type == TEXT || type == TEXT_STATIC) {
 		write_str(jstr, "\"");
 		write_str(jstr, data.txt);
 		write_str(jstr, "\"");
@@ -279,7 +279,7 @@ int get_json_length(jobject * object) {
 
 int get_element_length(jtype_t type, data_t data) {
 	int size = 0;
-	if (type == TEXT) {
+	if (type == TEXT || type == TEXT_STATIC) {
 		size += WRAPPER + strlen(data.txt);
 	}
 	else if (type == NUM) {

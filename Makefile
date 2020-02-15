@@ -9,8 +9,9 @@ SRC=src/apihandler.c\
     src/security.c\
     src/common.c \
     src/msqlite.c\
-    src/webdatabase.c
-LIB=-lwebsockets -lcrypto -lsqlite3
+    src/webdatabase.c \
+    src/moreyIOT.c
+LIB=-lwebsockets -lcrypto -lsqlite3 
 #-lguile -lltdl -lssl -pthread -lgmp -lcrypt -lm
 CFLAG=-O6 -std=c99 -Wall -Wshadow -Wvla -pedantic
 INCLUDE=header

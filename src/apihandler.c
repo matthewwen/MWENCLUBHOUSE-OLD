@@ -12,6 +12,8 @@
 #include "msqlite.h"
 #include "webdatabase.h"
 
+#include "moreyIOT.h"
+
 static const char * TEMPLATE_PARENT = "www/other/";
 static const char * TEMPLATE_INDEX  = "/index.html";
 static const char * TEMPLATE_MAINJS = "/main.js";
@@ -45,9 +47,13 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 		else if (strcmp("/mwenGetPROJ", url) == 0) {
 			getPROJ_handler(wsi, found, r);
 		}
+		else if (strncmp(MOREYIOT, url, strlen(MOREYIOT)) == 0) {
+			morey_handler(url, wsi, found, r);
+		}
 	}
 	return n;
 }
+
 void getPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 	// get url arguments
 	char * url_arg = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);

@@ -4,7 +4,7 @@
 #include <inttypes.h>
 
 typedef uint8_t jtype_t;
-enum {TEXT, NUM, CON, LIST, OBJ, FLOAT};
+enum {TEXT, TEXT_STATIC, NUM, CON, LIST, OBJ, FLOAT};
 
 struct jlist;
 struct jobject;
