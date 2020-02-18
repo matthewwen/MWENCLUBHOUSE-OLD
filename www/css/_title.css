@@ -7,19 +7,20 @@
   align-items: center;
   padding: 0 10vw;
   color: #fff; }
-  .hero h1 {
+  .hero h1, .hero h2, .hero h3, .hero h4 {
     position: relative;
-    font-size: 4rem;
     text-transform: uppercase;
     text-align: center;
     background: rgba(0, 0, 0, 0.2);
     padding: 2rem;
     border-radius: 20px 20px; }
-    .hero h1::before, .hero h1::after {
+    .hero h1::before, .hero h1::after, .hero h2::before, .hero h2::after, .hero h3::before, .hero h3::after, .hero h4::before, .hero h4::after {
       content: '';
       position: absolute;
       top: 0;
       height: 100%;
       width: 50%; }
+  .hero h1 {
+    font-size: 4rem; }
 
 /*# sourceMappingURL=_title.css.map */

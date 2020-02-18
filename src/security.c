@@ -105,11 +105,15 @@ jobject * admin_auth(struct lws * wsi) {
 
 	long time_date = convert_time(get_time()) - convert_time(get_time_from_buffer(date));
 	time_date      = time_date < 0 ? time_date * -1: time_date;
+	do {
+		mwentime_t t = get_time();
+		char buffer[16];
+		mwendate_tostring(t, buffer);
+	}while(false);
 
 	size_t alloc_size = 0;
-	bool allowed = false;
 	if (token != NULL && date != NULL) {
-		jobject * robj = NULL;
+		bool canEdit = false;
 		if (time_date >= 500) {
 			free(date);
 		}
@@ -134,11 +138,10 @@ jobject * admin_auth(struct lws * wsi) {
 			free(json_str);
 
 			// compare token
-			allowed = (strcmp(tokenBuffer, token) == 0);
-			robj = create_jobject("canEdit", CON, (data_t) {.cond = allowed});
+			canEdit = (strcmp(tokenBuffer, token) == 0);
 		}
 		free(token);
-		return robj;
+		return create_jobject("canEdit", CON, (data_t) {.cond = canEdit});
 	}
 	if (token != NULL) {
 		free(token);

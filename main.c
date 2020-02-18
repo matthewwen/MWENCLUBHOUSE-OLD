@@ -1,3 +1,4 @@
+//#include <python3.7/Python.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -119,6 +120,8 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 void sigint_handler(int sig) {printf("signal stopped\n"); INTERRUPTED = 1;}
 
 int main(int argc, char* argv[]) {
+	//Py_Initialize();
+	//Py_Finalize();
 	INTERRUPTED = 0;
 	const struct lws_protocols protocol = {"http", callback_dynamic_http, sizeof(struct request), 0};
 	const struct lws_protocols *pprotocols[] = {&protocol, NULL };

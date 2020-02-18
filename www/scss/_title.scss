@@ -8,9 +8,8 @@
 	padding: 0 10vw;
 	color: #fff;
 	
-	h1 {
+	h1,h2,h3,h4 {
 		position: relative;
-		font-size: 4rem;
 		text-transform: uppercase;
 		text-align: center;
 		background: rgba(0,0,0,0.2);
@@ -24,5 +23,9 @@
 			height: 100%;
 			width: 50%;
 		}
+	}
+	
+	h1 {
+		font-size: 4rem;
 	}
 }
