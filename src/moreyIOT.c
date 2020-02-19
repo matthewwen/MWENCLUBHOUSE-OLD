@@ -1,3 +1,4 @@
+#include "Python.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +36,7 @@ void light_handler(struct lws * wsi, bool * found, struct request * r) {
     char * jsonservice = "unknown";
     if (service == 1) {
         jsonservice = "aws";
-	system("python3 py/pub.py");
+	system("python3.8 py/pub.py &");
     }
     else if (service == 2) {
         jsonservice = "azure";

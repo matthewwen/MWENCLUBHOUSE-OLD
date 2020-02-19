@@ -11,13 +11,14 @@ SRC=src/apihandler.c\
     src/msqlite.c\
     src/webdatabase.c \
     src/moreyIOT.c
-LIB=-lwebsockets -lcrypto -lsqlite3
+LIB=-lwebsockets -lcrypto -lsqlite3 -lpython3.8
 #-lguile -lltdl -lssl -pthread -lgmp -lcrypt -lm
 CFLAG=-O6 -std=c99 -Wall -Wshadow -Wvla -pedantic
-INCLUDE=header
+INCLUDE=-I header\
+	-I /usr/include/python3.8
 
 $(NAME):
-	$(CC) $(NAME).c $(SRC) $(CFLAG) -I $(INCLUDE) -o $(NAME) $(LIB)
+	$(CC) $(NAME).c $(SRC) $(CFLAG) $(INCLUDE) -o $(NAME) $(LIB)
 
 $(SQLITENAME): 
 	$(CC) $(SQLITENAME).c $(SRC) -I $(INCLUDE) -o $(SQLITENAME) $(LIB) -g

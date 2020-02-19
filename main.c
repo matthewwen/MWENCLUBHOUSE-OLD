@@ -1,4 +1,4 @@
-//#include <python3.7/Python.h>
+#include "Python.h" 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,6 +18,30 @@ const char * PARAM[] = {"data", "auth"};
 typedef struct{
 	int n;
 }handle_t;
+
+void setup_python() {
+	Py_Initialize();
+	// import
+	PyRun_SimpleString("import sys");
+	PyRun_SimpleString("from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient");
+	PyRun_SimpleString("import time");
+	PyRun_SimpleString("import json");
+
+	// read local scripts
+	PyRun_SimpleString("sys.path.append(\"py\")");
+	PyRun_SimpleString("import pub");	
+
+	// start aws
+	//PyRun_SimpleString("a = pub.setup()");
+}
+
+void destroy_python() {
+	// kill aws
+	//PyRun_SimpleString("pub.disconnect(a)");
+	
+	// kill python
+	Py_Finalize();
+}
 
 int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len) {
 	uint8_t buf[LWS_PRE + LWS_RECOMMENDED_MIN_HEADER_SPACE];
@@ -120,8 +144,9 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 void sigint_handler(int sig) {printf("signal stopped\n"); INTERRUPTED = 1;}
 
 int main(int argc, char* argv[]) {
-	//Py_Initialize();
-	//Py_Finalize();
+	// set up python
+	// setup_python();	
+
 	INTERRUPTED = 0;
 	const struct lws_protocols protocol = {"http", callback_dynamic_http, sizeof(struct request), 0};
 	const struct lws_protocols *pprotocols[] = {&protocol, NULL };
@@ -163,7 +188,12 @@ int main(int argc, char* argv[]) {
 	while (n >= 0 && !INTERRUPTED) {
 		n = lws_service(context, 0);
 	}
+
+	// destroy web server
 	lws_context_destroy(context);
+
+	// destroy python
+	// destroy_python();
 
 	return EXIT_SUCCESS;
 }
