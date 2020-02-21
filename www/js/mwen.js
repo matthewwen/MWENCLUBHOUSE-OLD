@@ -142,3 +142,75 @@ function add_content_gpage() {
 		});
 	}
 }
+
+
+// edit html with code on it
+do {
+	/*function function_char(h) {
+		var className = "";
+		function f(x) {
+			return '<span class=\'' + className + '\'>' + x + '</span>';
+		}
+
+		function g(x) {
+			if (x.includes('}') == false) {
+				var first_char = x[0];
+				var last_char  = x[x.length - 1];
+				x = x.substring(1, x.length - 1);
+				return first_char + '<span class=\'' + className + '\'>' + x + '</span>' + last_char;
+			}
+			return x;
+		}
+
+		function hh(x) {
+			var last_char  = x[x.length - 1];
+			x = x.substring(0, x.length - 1);
+			return '<span class=\'' + className + '\'>' + x + '</span>' + last_char;
+		}
+
+		function i(x) {
+			var first_char = x[0];
+			x = x.substring(1, x.length);
+			return first_char + '<span class=\'' + className + '\'>' + x + '</span>';
+		}
+
+		className = "string";
+		h = h.replace(/(const char)\s/g, hh);
+		h = h.replace(/[(, ](static const char)\s/g, g);
+		h = h.replace(/[(, ](unsigned const char)\s/g, g);
+		h = h.replace(/[(, ](char)\s/g, g);
+		h = h.replace(/[(, ](bool)\s/g, g);
+
+		className = "intdata";
+		h = h.replace(/\s(int)\s/g, g);
+		h = h.replace(/\s(float)\s/g, g);
+		h = h.replace(/\s(size_t)\s/g, g);
+
+		className = "direction";
+		h = h.replace(/(else)/g, f);
+		h = h.replace(/(for)/g, f);
+		h = h.replace(/(if)/g, f);
+		h = h.replace(/(return)/g, f);
+
+		className = "custom_function";
+		h = h.replace(/^[a-zA-Z_]+\s/g,g);
+		h = h.replace(/\s[a-zA-Z_]+(?=\()/g, i);
+
+		className = "cap";
+		h = h.replace(/[A-Z]/g, f);
+
+		className = "return";
+		h = h.replace(/\n.*?\s/g, g);
+
+
+		return h;
+	}
+
+	var list = document.getElementsByTagName("code");
+	console.log(list.length);
+	for (var i = 0; i < list.length; i++) {
+		var html = list[i].textContent;
+		html = function_char(html);
+		list[i].innerHTML = html;
+	}*/
+}while (false);

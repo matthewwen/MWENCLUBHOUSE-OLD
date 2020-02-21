@@ -31,6 +31,67 @@ body {
 	p {
 		margin: 1rem 0;
 	}
+
+	table, td, th {
+		border: 1px solid #ddd;
+		text-align: left;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		table-layout:fixed;
+		word-wrap:break-all;
+	}
+
+	th, td {
+		padding: 15px;
+	}
+
+	table td {
+		width:100px;
+	}
+
+	table tr td div {
+		word-break:break-all;
+	}
+
+	h1, h2, h3, h4 {
+		margin: 20px 0;
+	}
+
+	pre {
+		background-color: #eee;
+		padding: 10px;
+		overflow: scroll;
+	}
+
+	code {
+		.direction {
+			color: #EB6841
+		}
+
+		.intdata {
+			color: #c70a0a;
+		}
+
+		.cap {
+			color: #396;
+		}
+
+		.string {
+			color: #39C;
+		}
+
+		.custom_function {
+			color: #932;
+		}
+
+		.return {
+			color: #11D;
+		}
+
+	}
 }
 
 .mwen-grid {

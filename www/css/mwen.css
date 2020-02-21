@@ -22,6 +22,38 @@ body {
     text-decoration: none; }
   .container p {
     margin: 1rem 0; }
+  .container table, .container td, .container th {
+    border: 1px solid #ddd;
+    text-align: left; }
+  .container table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    word-wrap: break-all; }
+  .container th, .container td {
+    padding: 15px; }
+  .container table td {
+    width: 100px; }
+  .container table tr td div {
+    word-break: break-all; }
+  .container h1, .container h2, .container h3, .container h4 {
+    margin: 20px 0; }
+  .container pre {
+    background-color: #eee;
+    padding: 10px;
+    overflow: scroll; }
+  .container code .direction {
+    color: #EB6841; }
+  .container code .intdata {
+    color: #c70a0a; }
+  .container code .cap {
+    color: #396; }
+  .container code .string {
+    color: #39C; }
+  .container code .custom_function {
+    color: #932; }
+  .container code .return {
+    color: #11D; }
 
 .mwen-grid {
   width: 100%;
