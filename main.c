@@ -13,7 +13,8 @@
 static int INTERRUPTED;
 const char * PARAM[] = {"data", "auth"};
 
-#define MAXBUFFERLEN 1000000
+#define MAXBUFFERLEN (LWS_PRE + 2048)
+#define MIN15 (60 * 15)
 
 typedef struct{
 	int n;
@@ -32,96 +33,116 @@ void setup_python() {
 	PyRun_SimpleString("import pub");	
 
 	// start aws
-	//PyRun_SimpleString("a = pub.setup()");
+	PyRun_SimpleString("a = pub.setup()");
+	PyRun_SimpleString("running = 0");
 }
 
 void destroy_python() {
 	// kill aws
-	//PyRun_SimpleString("pub.disconnect(a)");
-	
+	PyRun_SimpleString("pub.disconnect(a)");
+
 	// kill python
 	Py_Finalize();
 }
 
-int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len) {
-	uint8_t buf[LWS_PRE + LWS_RECOMMENDED_MIN_HEADER_SPACE];
-	memset(buf, 0, sizeof(buf));
-	uint8_t * start = &buf[LWS_PRE];
-	uint8_t * p     = start;
-	uint8_t * end   = &buf[sizeof(buf) - 1];
+static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason,
+		void *user, void *in, size_t len) {
+	struct request *pss = (struct request *)user;
+	uint8_t buf[LWS_PRE + 2048], *start = &buf[LWS_PRE], *p = start,
+		*end = &buf[sizeof(buf) - LWS_PRE - 1];
 
-	struct request * r = user;
+	char msg_buffer[MAXBUFFERLEN];
+
+	int n;
 	if (reason == LWS_CALLBACK_HTTP) {
+
+		lws_snprintf(pss->path, sizeof(pss->path), "%s", (const char *)in);
+
+
 		if (lws_hdr_total_length(wsi, WSI_TOKEN_GET_URI)) {
-			r->type = GET;
+			pss->type = GET;
 			return handle_get_request(in, wsi, &user);
 		}
 		else if (lws_hdr_total_length(wsi, WSI_TOKEN_POST_URI)) {
-			r->type = POST;
+			pss->type = POST;
 		}
 		else if (lws_hdr_total_length(wsi, WSI_TOKEN_PUT_URI)) {
-			r->type = PUT;
+			pss->type = PUT;
 		}
 
-		if (r->type != GET) {
+		if (pss->type != GET) {
 			char * url = in;
 			char * alloc_url = malloc((strlen(url) + 1) * sizeof(*alloc_url));
 			strcpy(alloc_url, url);
-			r->url = alloc_url;
+			pss->url = alloc_url;
 		}
+
 		return 0;
+
 	}
 	else if (reason == LWS_CALLBACK_HTTP_WRITEABLE) {
-		size_t num_sent = r->alloc_size;
-		if (num_sent > MAXBUFFERLEN) {
-			num_sent = MAXBUFFERLEN;
-		}
-		lws_write(wsi, (uint8_t *) r->pos, num_sent, LWS_WRITE_HTTP_FINAL);
 
-		r->alloc_size -= num_sent;
-		if (r->alloc_size <= 0) {
-			if (r->free_type == BUFFER_MALLOC) {
-				free(r->buff);
-			}
+		if (!pss || pss->times > pss->budget) {
 
-			if (lws_http_transaction_completed(wsi)) {
-				return -1;
-			}
-			return -1;
 		}
 		else {
-			r->pos += num_sent;
-			lws_callback_on_writable(wsi);
+			memset(msg_buffer, 0, sizeof(msg_buffer));
+			size_t num_sent = pss->alloc_size;
+			if (num_sent > MAXBUFFERLEN) {
+				num_sent = MAXBUFFERLEN;
+			}
+			pss->alloc_size -= num_sent;
+
+			if (pss->alloc_size <= 0) {
+				n = LWS_WRITE_HTTP_FINAL;
+			}
+			memcpy(msg_buffer, pss->pos, num_sent);
+
+			if (lws_write(wsi, (uint8_t *) msg_buffer, num_sent, n) != num_sent) {
+				return 1;
+			}
+
+			pss->pos = pss->pos + (num_sent / sizeof(pss->pos));
+
+			if (n == LWS_WRITE_HTTP_FINAL && pss->free_type == BUFFER_MALLOC) {
+				free(pss->buff);
+			}
+
+			if (n == LWS_WRITE_HTTP_FINAL && lws_http_transaction_completed(wsi)) {
+				return -1;
+			} else {
+				lws_callback_on_writable(wsi);
+			}
+
 			return 0;
 		}
 	}
 	else if (reason == LWS_CALLBACK_HTTP_BODY) {
-		if (r->type == PUT || r->type == POST) {
-			if (r->spa == NULL) {
-				r->spa = lws_spa_create(wsi, PARAM, LWS_ARRAY_SIZE(PARAM), 1024, NULL, user);
+		if (pss->type == PUT || pss->type == POST) {
+			if (pss->spa == NULL) {
+				pss->spa = lws_spa_create(wsi, PARAM, LWS_ARRAY_SIZE(PARAM), 1024, NULL, user);
 			}
-			if (lws_spa_process(r->spa, in, (int) len)) {
+			if (lws_spa_process(pss->spa, in, (int) len)) {
 				return -1;
 			}
 		}
 	}
 	else if (reason == LWS_CALLBACK_HTTP_BODY_COMPLETION) {
-		if (r->spa == NULL) {
+		if (pss->spa == NULL) {
 		}
 		else {
-			lws_spa_finalize(r->spa);
-			const char * response = lws_spa_get_string(r->spa, 0);
-			printf("response: %s\n", response);
-			if (r->type == PUT || r->type == POST) {
-				if (r->type == PUT) {
-					handle_put_request(r->url, wsi, &user);
+			lws_spa_finalize(pss->spa);
+			const char * response = lws_spa_get_string(pss->spa, 0);
+			if (pss->type == PUT || pss->type == POST) {
+				if (pss->type == PUT) {
+					handle_put_request(pss->url, wsi, &user);
 				}
 				else {
-					handle_post_request(r->url, wsi, &user);
+					handle_post_request(pss->url, wsi, &user);
 				}
-				if (r->url != NULL) {
-					free(r->url);
-					r->url = NULL;
+				if (pss->url != NULL) {
+					free(pss->url);
+					pss->url = NULL;
 				}
 
 				const char * getrequest = "/request";
@@ -132,20 +153,22 @@ int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, voi
 		}
 	}
 	else if (reason == LWS_CALLBACK_HTTP_DROP_PROTOCOL) {
-		if (r->spa != NULL) {
-			lws_spa_destroy(r->spa);
-			r->spa = NULL;
+		if (pss->spa != NULL) {
+			lws_spa_destroy(pss->spa);
+			pss->spa = NULL;
 		}
 	}
 
 	return lws_callback_http_dummy(wsi, reason, user, in, len);
 }
 
+
 void sigint_handler(int sig) {printf("signal stopped\n"); INTERRUPTED = 1;}
 
 int main(int argc, char* argv[]) {
 	// set up python
-	// setup_python();	
+	// TODO -> fix custom header!! printf("token to string: %s\n", lws_token_to_string(WSI_TOKEN_HTTP_EXPIRES));
+	setup_python();	
 
 	INTERRUPTED = 0;
 	const struct lws_protocols protocol = {"http", callback_dynamic_http, sizeof(struct request), 0};
@@ -154,6 +177,7 @@ int main(int argc, char* argv[]) {
 	//override the default mount for /dyn in the URL space 
 	const struct lws_http_mount mount_dyn = {NULL      , "/", NULL   , NULL        , "http", NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, LWSMPRO_CALLBACK, 4, NULL};
 	const struct lws_http_mount mount     = {&mount_dyn, "/", "./www", "index.html", NULL  , NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, LWSMPRO_FILE    , 1, NULL};
+	const struct lws_http_mount mount80   = {NULL, "/", "www.matthewwen.com", "/", NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, LWSMPRO_REDIR_HTTPS, 1, NULL,};
 
 	int n = 0, logs = LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE;
 	signal(SIGINT, sigint_handler);
@@ -168,10 +192,25 @@ int main(int argc, char* argv[]) {
 		lwsl_err("lws init failed\n");
 		return EXIT_FAILURE;
 	}
+	info.options &= ~LWS_SERVER_OPTION_REDIRECT_HTTP_TO_HTTPS;
 	info.port       = 80;
+	info.mounts     = &mount80;
+	info.vhost_name = "www.matthewwen.com";
+
+	if (!lws_create_vhost(context, &info)) {
+		lwsl_err("Failed to create tls vhost\n");
+		lws_context_destroy(context);
+		return EXIT_FAILURE;
+	}
+
+	info.port = 443;
+	info.options = LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT | LWS_SERVER_OPTION_EXPLICIT_VHOSTS;
 	info.pprotocols = pprotocols;
-	info.mounts     = &mount;
-	info.vhost_name = "http";
+	info.mounts = &mount;
+	info.error_document_404 = "/404.html";
+	info.ssl_cert_filepath = "/etc/letsencrypt/live/www.matthewwen.com/fullchain.pem";
+	info.ssl_private_key_filepath = "/etc/letsencrypt/live/www.matthewwen.com/privkey.pem";
+	info.vhost_name = "www.matthewwen.com";
 
 	if (!lws_create_vhost(context, &info)) {
 		lwsl_err("Failed to create tls vhost\n");
@@ -179,21 +218,19 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	if (!lws_create_vhost(context, &info)) {
-		lwsl_err("Failed to create tls vhost\n");
-		lws_context_destroy(context);
-		return EXIT_FAILURE;
-	}
-
-	while (n >= 0 && !INTERRUPTED) {
+	PyRun_SimpleString("a = pub.subscribe(a)");
+	for (int i = 0; n >= 0 && !INTERRUPTED; i++) {
 		n = lws_service(context, 0);
+		if ((i = (i % MIN15)) == 0) {
+			PyRun_SimpleString("a = pub.publish(a, \"update\")");
+		}
 	}
 
 	// destroy web server
 	lws_context_destroy(context);
 
 	// destroy python
-	// destroy_python();
+	destroy_python();
 
 	return EXIT_SUCCESS;
 }

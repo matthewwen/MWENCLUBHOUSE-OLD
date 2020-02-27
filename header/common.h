@@ -36,6 +36,12 @@ struct request{
 	struct lws_spa * spa;
 	char * url;
 	unsigned char header[HEADER_SIZE];
+	char * mime;
+
+	char path[128]; // delete afterwards
+	int times;
+	int budget;
+	int content_lines;
 };
 
 #define FREE(VAR) do {\

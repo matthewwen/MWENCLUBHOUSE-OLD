@@ -69,4 +69,9 @@
     .main-header.scrolled .menu-icon__line, .main-header.scrolled .menu-icon__line::before, .main-header.scrolled .menu-icon__line::after {
       background: #fff; }
 
+.basic_header {
+  background-color: #000;
+  color: #fff;
+  padding: 20px; }
+
 /*# sourceMappingURL=_header.css.map */

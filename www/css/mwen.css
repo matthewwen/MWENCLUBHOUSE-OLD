@@ -39,21 +39,24 @@ body {
   .container h1, .container h2, .container h3, .container h4 {
     margin: 20px 0; }
   .container pre {
-    background-color: #eee;
     padding: 10px;
-    overflow: scroll; }
-  .container code .direction {
-    color: #EB6841; }
-  .container code .intdata {
-    color: #c70a0a; }
-  .container code .cap {
-    color: #396; }
-  .container code .string {
-    color: #39C; }
-  .container code .custom_function {
-    color: #932; }
-  .container code .return {
-    color: #11D; }
+    font-family: monospace;
+    color: #dadada;
+    background-color: #303030;
+    overflow-x: auto; }
+    .container pre .DraculaYellow {
+      color: #ffff87; }
+    .container pre .DraculaCyanItalic {
+      color: #87d7ff;
+      font-style: italic; }
+    .container pre .LineNr {
+      color: #af5f00; }
+    .container pre .DraculaPurple {
+      color: #af87ff; }
+    .container pre .DraculaComment {
+      color: #5f5faf; }
+    .container pre .DraculaPink {
+      color: #ff87d7; }
 
 .mwen-grid {
   width: 100%;
@@ -70,5 +73,9 @@ body {
       background-color: #bbb; }
   .mwen-grid .mdc-fab {
     background-color: red; }
+
+footer {
+  padding: 10px;
+  text-align: center; }
 
 /*# sourceMappingURL=mwen.css.map */

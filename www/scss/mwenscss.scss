@@ -60,38 +60,38 @@ body {
 		margin: 20px 0;
 	}
 
-	pre {
-		background-color: #eee;
+	pre { 
 		padding: 10px;
-		overflow: scroll;
+		font-family: monospace; 
+		color: #dadada; 
+		background-color: #303030; 
+		overflow-x: auto;
+
+		.DraculaYellow { 
+			color: #ffff87; 
+		}
+
+		.DraculaCyanItalic { 
+			color: #87d7ff; font-style: italic; 
+		}
+
+		.LineNr { 
+			color: #af5f00; 
+		}
+
+		.DraculaPurple { 
+			color: #af87ff; 
+		}
+
+		.DraculaComment { 
+			color: #5f5faf; 
+		}
+
+		.DraculaPink { 
+			color: #ff87d7; 
+		}
 	}
 
-	code {
-		.direction {
-			color: #EB6841
-		}
-
-		.intdata {
-			color: #c70a0a;
-		}
-
-		.cap {
-			color: #396;
-		}
-
-		.string {
-			color: #39C;
-		}
-
-		.custom_function {
-			color: #932;
-		}
-
-		.return {
-			color: #11D;
-		}
-
-	}
 }
 
 .mwen-grid {
@@ -116,4 +116,9 @@ body {
 		background-color: red;
 	}
 
+}
+
+footer  {
+	padding: 10px;
+	text-align: center;
 }

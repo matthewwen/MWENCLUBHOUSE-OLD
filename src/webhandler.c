@@ -11,10 +11,9 @@
 #include "security.h"
 #include "webdatabase.h"
 
-const char SOURCE_PATH[] = ".";
+const char SOURCE_PATH[] = "/home/mwen/server";
 int pageview_handler(struct lws * wsi, bool * found, struct request * r);
 char * get_mime_type(const char * url);
-int send_static_page(const char * url, struct lws * wsi);
 
 int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
 	int n = 0;
@@ -25,21 +24,20 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 			// block html files, not css or javascript files
 			char * mime = get_mime_type(url);
 			if (strcmp(mime, "text/html") != 0) {
-				*found = true;
 				r->response = FILE_REQUEST;
-				n = send_static_page(url, wsi);
+				n = send_static_page(url, wsi, r);
+				*found = n == 0;
 			}
 		}
 		else if (strncmp(www, url, sizeof(www) - sizeof(*www)) == 0) {
-			*found = true;
 			r->response = FILE_REQUEST;
-			n = send_static_page(url, wsi);
+			n = send_static_page(url, wsi, r);
+			*found = n == 0;
 		}
 		else if (strcmp("/createpkg", url) == 0) {
-			*found = true;
 			r->response = FILE_REQUEST;
-			printf("add create html file\n");
-			n = send_static_page("/www/html/create.html", wsi);
+			n = send_static_page("/www/html/create.html", wsi, r);
+			*found = n == 0;
 		}
 		else if (strcmp("/pageview", url) == 0) {
 			n = pageview_handler(wsi, found, r);
@@ -79,7 +77,7 @@ int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 		if (robj == NULL) {
 			FREE(page_view);
 			*found = true;
-			return send_static_page("/www/html/template/empty.html", wsi);
+			return send_static_page("/www/html/template/empty.html", wsi, r);
 		}
 		jobject * temp = get_jobject("canEdit", robj);
 		is_valid = temp != NULL && temp->type == CON && temp->data.cond;
@@ -105,10 +103,10 @@ int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 
 	if (is_valid) {
 		strcat(new_url, index);
-		n = send_static_page(new_url, wsi);
+		n = send_static_page(new_url, wsi, r);
 	}
 	else {
-		n = send_static_page("/www/html/404.html", wsi);
+		n = send_static_page("/www/html/404.html", wsi, r);
 	}
 
 	FREE(new_url)
@@ -148,11 +146,15 @@ char * get_mime_type(const char * url) {
 	else if (strcmp(end, ".webmanifest") == 0) {
 		return "application/manifest+json";
 	}
-	return NULL;
+	else if (strcmp(end, ".txt") == 0) {
+		return "plain/text";
+	}
+	return "plain/text";
 }
 
-int send_static_page(const char * url, struct lws * wsi) {
+int send_static_page(const char * url, struct lws * wsi, struct request * r) {
 	char * mime = get_mime_type(url);
+	r->mime = mime;
 	char resource_path[PATH_MAX];
 	memset(resource_path, 0, sizeof(resource_path));
 	sprintf(resource_path, "%s%s", SOURCE_PATH, url);

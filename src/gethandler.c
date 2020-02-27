@@ -27,20 +27,27 @@ int handle_get_request(const char * url, struct lws * wsi, void ** a_request) {
 			CREATE_REQUEST(r, BUFFER_REQUEST, sizeof(UNKNOWN) - 1, UNKNOWN, BUFFER_STATIC);
 		}
 
+		char * mime = r->mime;
 		if (r->response == BUFFER_REQUEST && r->buff != NULL) {
+			mime = "plain/text";
+
 			// TODO writing header part 1
 			uint8_t * buff = r->header;
 			uint8_t * end  = &r->header[HEADER_SIZE - 1];
-			if (lws_add_http_common_headers(wsi, HTTP_STATUS_OK, "plain/text", LWS_ILLEGAL_HTTP_CONTENT_LEN, &buff, end)) {
-				n = 0;
+			if (lws_add_http_common_headers(wsi, HTTP_STATUS_OK, mime, LWS_ILLEGAL_HTTP_CONTENT_LEN, &buff, end)) {
+				n = 1;
 			}
 
 			// TODO check if this is correct part 2
-			if (lws_finalize_write_http_header(wsi, r->header, &buff, end)) {
-				n = 0;
+			if (n != 1 && lws_finalize_write_http_header(wsi, r->header, &buff, end)) {
+				n = 1;
 			}
-			lws_callback_on_writable(wsi);
+
+			if (r->response == BUFFER_REQUEST && r->buff != NULL && n != 1) {
+				lws_callback_on_writable(wsi);
+			}
 		}
+
 	}
 
 	return n;

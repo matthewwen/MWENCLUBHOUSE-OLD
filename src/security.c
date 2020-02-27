@@ -101,7 +101,7 @@ void sha256_string(char * buffer, char outputBuffer[65]) {
 
 jobject * admin_auth(struct lws * wsi) {
 	char * token = get_header_data(wsi, WSI_TOKEN_HTTP_AUTHORIZATION);
-	char * date  = get_custom_header_data(wsi, "mwen-date:");
+	char * date  = get_header_data(wsi, WSI_TOKEN_HTTP_EXPIRES); // edit where cookie is a json string instead
 
 	long time_date = convert_time(get_time()) - convert_time(get_time_from_buffer(date));
 	time_date      = time_date < 0 ? time_date * -1: time_date;
@@ -143,12 +143,8 @@ jobject * admin_auth(struct lws * wsi) {
 		free(token);
 		return create_jobject("canEdit", CON, (data_t) {.cond = canEdit});
 	}
-	if (token != NULL) {
-		free(token);
-	}
-	if (date != NULL) {
-		free(date);
-	}
+	if (token != NULL) {free(token);}
+	if (date != NULL) {free(date);}
 	return NULL;
 }
 /* vim: set tabstop=4 shiftwidth=4 fileencoding=utf-8 noexpandtab: */

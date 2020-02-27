@@ -73,7 +73,9 @@ void getPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 		if (href != NULL) {free(href);}
 	}
 	if (pkg_name != NULL)  {free(pkg_name);}
-	append_jobject(&obj, "gridName", TEXT, (data_t) {.txt = grid_name});
+	if (grid_name != NULL) {
+		append_jobject(&obj, "gridName", TEXT, (data_t) {.txt = grid_name});
+	}
 
 	json_tostring(&r->buff, obj, &r->alloc_size);
 	free_json(&obj);
@@ -87,11 +89,13 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 	jobject * temp = get_jobject("canEdit", robj);
 	bool is_valid = temp != NULL && temp->type == CON && temp->data.cond;
 
-	char * pkg_name = NULL, * grid_name = NULL, * date_str = NULL;
+	char * url_arg   = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);
+	char * pkg_name  = get_url_arg(url_arg, "pkg-name=");
+	char * grid_name = get_url_arg(url_arg, "grid-name="); 
+	char * date_str  = NULL;
+	if (url_arg != NULL) {free(url_arg);}
 	if (is_valid) {
-		pkg_name  = get_custom_header_data(wsi, "pkg-name:");
-		grid_name = get_custom_header_data(wsi, "grid-name:");
-		date_str  = get_custom_header_data(wsi, "mwen-date:");
+		date_str  = get_header_data(wsi, WSI_TOKEN_HTTP_EXPIRES);
 	}
 
 	is_valid = (pkg_name != NULL) && (grid_name != NULL) && (date_str != NULL);
@@ -117,7 +121,7 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 		// add to database
 		web_record_href(tokenBuffer, false);
 		insert_grid(database_name, NEWPAGE);
-		set_project_view(database_name, tokenBuffer, 100, "<div><h1>Title</h1><p>body</p></div>");
+		set_project_view(database_name, tokenBuffer, 100, "<h3>Title</h3><p>body</p>");
 
 		FREE(database_name);
 

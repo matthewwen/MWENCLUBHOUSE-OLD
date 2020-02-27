@@ -14,20 +14,24 @@ char * get_header_data(struct lws * wsi, enum lws_token_indexes h) {
 	int count = lws_hdr_total_length(wsi, h) + 1;
 	if (count > 1 && count < BYTE_LIMIT) {
 		str = malloc(count * sizeof(*str));
-		memset(str, 0, count * sizeof(*str));
-		lws_hdr_copy(wsi, str, count, h);
+		if (str != NULL) {
+			memset(str, 0, count * sizeof(*str));
+			lws_hdr_copy(wsi, str, count, h);
+		}
 	}
 	return str;
 }
 
 char * get_custom_header_data(struct lws * wsi, const char * token) {
 	char * str = NULL;
-	int token_len = strlen(token);
+	int token_len = token != NULL ? strlen(token): 0;
 	int count = lws_hdr_custom_length(wsi, token, token_len) + 1;
 	if (count > 1 && count < BYTE_LIMIT) {
 		str = malloc(count * sizeof(*str));
-		memset(str, 0, count * sizeof(*str));
-		lws_hdr_custom_copy(wsi, str, count, token, token_len);
+		if (str != NULL) {
+			memset(str, 0, count * sizeof(*str));
+			lws_hdr_custom_copy(wsi, str, count, token, token_len);
+		}
 	}
 	return str;
 }

@@ -25,11 +25,9 @@ console.log("start of load\n");
 $.ajax({type: 'GET',
 		headers: {
 			'authorization': $.sha256(JSON.stringify({'time': date, 'password': password})),
-			'grid-name': gridID,
-			'pkg-name': pkgName,
-			'mwen-date': date,
+			'expires': date,
 		},
-		url: '/mwenCreatePROJ',
+		url: '/mwenCreatePROJ?pkg-name='+ pkgName + '&grid-name=' + gridID,
 		contentType: "plain/text",
 		success: function(result) {
 			var obj = JSON.parse(result);

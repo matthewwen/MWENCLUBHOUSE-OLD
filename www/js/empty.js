@@ -23,7 +23,7 @@ console.log(section_open);
 $.ajax({type: 'GET',
 	headers: {
 		'authorization': $.sha256(JSON.stringify({'time': getDate(), 'password': password})),
-		'mwen-date': getDate()
+		'expires': getDate()
 	},
 	url: '/pageview?name=' + section_open,
 	contentType: "plain/text",

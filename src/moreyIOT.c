@@ -14,6 +14,9 @@ void morey_handler(const char * url, struct lws * wsi, bool * found, struct requ
     if (strcmp(url, "/light") == 0) {
         light_handler(wsi, found, r);
     }
+    else if (strcmp(url, "/lightstates") == 0) {
+	PyRun_SimpleString("a = pub.publish(a, \"update\")");
+    }
 }
 
 void light_handler(struct lws * wsi, bool * found, struct request * r) {
@@ -36,7 +39,12 @@ void light_handler(struct lws * wsi, bool * found, struct request * r) {
     char * jsonservice = "unknown";
     if (service == 1) {
         jsonservice = "aws";
-	system("python3.8 py/pub.py &");
+	//system("python3.8 py/pub.py &");
+	char * pythoncode = "if running == 0:\n"
+		             "\trunning = 1\n"
+			     "\ta = pub.publish(a, \"light\")\n"
+			     "\trunning = 0\n";
+	PyRun_SimpleString(pythoncode);
     }
     else if (service == 2) {
         jsonservice = "azure";

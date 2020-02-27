@@ -4,7 +4,7 @@
 #include "common.h"
 
 char * get_mime_type(const char * );
-int send_static_page(const char * , struct lws * );
+int send_static_page(const char * url, struct lws * wsi, struct request * r);
 int handle_gweb_request(const char * , struct lws * , bool * , struct request *);
 
 #endif
