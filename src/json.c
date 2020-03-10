@@ -177,8 +177,8 @@ json_err_t data_tostring(jstring * jstr, jtype_t type, data_t data) {
 		object_tostring(jstr, data.obj);
 	}
 	else if (type == NUM) {
-		char num[10];
-		sprintf(num, "%d", data.num);
+		char num[21];
+		sprintf(num, "%ld", data.num);
 		write_str(jstr, num);
 	}
 

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <signal.h>
 #include <time.h>
+#include <stdbool.h>
 
 #include "gethandler.h"
 #include "posthandler.h"
@@ -21,6 +22,7 @@ typedef struct{
 }handle_t;
 
 void setup_python() {
+#ifdef ALLOWPYTHON
 	Py_Initialize();
 	// import
 	PyRun_SimpleString("import sys");
@@ -35,14 +37,17 @@ void setup_python() {
 	// start aws
 	PyRun_SimpleString("a = pub.setup()");
 	PyRun_SimpleString("running = 0");
+#endif
 }
 
 void destroy_python() {
+#ifdef ALLOWPYTHON
 	// kill aws
 	PyRun_SimpleString("pub.disconnect(a)");
 
 	// kill python
 	Py_Finalize();
+#endif
 }
 
 static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason,
@@ -81,9 +86,8 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 
 	}
 	else if (reason == LWS_CALLBACK_HTTP_WRITEABLE) {
-
+		n = LWS_WRITE_HTTP;
 		if (!pss || pss->times > pss->budget) {
-
 		}
 		else {
 			memset(msg_buffer, 0, sizeof(msg_buffer));
@@ -102,7 +106,7 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 				return 1;
 			}
 
-			pss->pos = pss->pos + (num_sent / sizeof(pss->pos));
+			pss->pos = pss->pos + (num_sent / sizeof(*pss->pos));
 
 			if (n == LWS_WRITE_HTTP_FINAL && pss->free_type == BUFFER_MALLOC) {
 				free(pss->buff);
@@ -113,7 +117,7 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 			} else {
 				lws_callback_on_writable(wsi);
 			}
-
+			
 			return 0;
 		}
 	}
@@ -218,12 +222,16 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	PyRun_SimpleString("a = pub.subscribe(a)");
+#ifdef ALLOWPYTHON
+	//PyRun_SimpleString("a = pub.subscribe(a)");
+#endif
 	for (int i = 0; n >= 0 && !INTERRUPTED; i++) {
 		n = lws_service(context, 0);
+#ifdef ALLOWPYTHON
 		if ((i = (i % MIN15)) == 0) {
-			PyRun_SimpleString("a = pub.publish(a, \"update\")");
+			//PyRun_SimpleString("a = pub.publish(a, \"update\")");
 		}
+#endif
 	}
 
 	// destroy web server

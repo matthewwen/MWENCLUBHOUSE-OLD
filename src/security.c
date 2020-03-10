@@ -6,6 +6,7 @@
 #include "security.h"
 #include "common.h"
 #include "json.h"
+#include "munqlite.h"
 
 static int DAY_IN_MONTH[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -146,5 +147,45 @@ jobject * admin_auth(struct lws * wsi) {
 	if (token != NULL) {free(token);}
 	if (date != NULL) {free(date);}
 	return NULL;
+}
+
+jobject * user_auth(struct lws * wsi) {
+	char * token    = get_header_data(wsi, WSI_TOKEN_HTTP_AUTHORIZATION);
+	char * date     = get_header_data(wsi, WSI_TOKEN_HTTP_EXPIRES);
+	char * urlarg   = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);
+	char * username = get_url_arg(urlarg, "username=");
+	if (urlarg != NULL) {free(urlarg);}
+	char * password = get_password(username);
+
+	bool is_valid = (token != NULL) && (date != NULL) && 
+		         (username != NULL) && (password != NULL);
+	long time_date = convert_time(get_time()) - convert_time(get_time_from_buffer(date));
+	time_date      = time_date < 0 ? time_date * -1: time_date;
+	bool canEdit = false;
+	if (is_valid) {
+		// create json to token
+		jobject * json_tokenstr = create_jobject("password", TEXT_STATIC, (data_t) {.txt = password});
+		append_jobject(&json_tokenstr, "username", TEXT_STATIC, (data_t) {.txt = username});
+		append_jobject(&json_tokenstr, "time", TEXT_STATIC, (data_t) {.txt = date});
+
+		// get json string
+		char * tokenstr = NULL;
+		json_tostring(&tokenstr, json_tokenstr, NULL);
+		free_json(&json_tokenstr);
+
+		// get token
+		char tokenBuffer[65];
+		memset(tokenBuffer, 0, sizeof(tokenBuffer));
+		sha256_string(tokenstr, tokenBuffer);
+		free(tokenstr);
+
+		canEdit = (strcmp(tokenBuffer, token) == 0);
+	}
+
+	if (token != NULL) {free(token);}
+	if (date != NULL) {free(date);}
+	if (username != NULL) {free(username);}
+
+	return create_jobject("canEdit", CON, (data_t) {.cond = canEdit});
 }
 /* vim: set tabstop=4 shiftwidth=4 fileencoding=utf-8 noexpandtab: */

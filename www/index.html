@@ -16,28 +16,41 @@
 		<link href="www/css/material/font.css" rel="stylesheet">
 		<!-- <link rel="stylesheet" href="www/css/material/icon.css"> -->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="www/css/main.css" />
 	</head>
 
 	<body>
-		<header class="main-header">
+
+		<div id="popup-window">
+			<div>
+				<h1>Credentials</h1>
+				<input type="text" id="input-username"/>
+				<input type="password" id="input-password"/>
+				<div>
+					<button id="btn-cancel">Cancel</button>
+					<button id="btn-okay">Okay</button>
+				</div>
+			</div>
+		</div>
+
+		<header class="basic_header">
 			<h1>Matthew Wen</h1>
 
-			<input type="checkbox" class="menu-btn" id="menu-btn">
-			<label for="menu-btn" class="menu-icon">
-				<span class="menu-icon__line"></span>
-			</label>
-			<ul class="nav-links">
-				<li class="nav-link" id="home-menu"><div>Home</div></li>
-				<li class="nav-link" id="workexp-menu"><div>Work</div></li>
-				<li class="nav-link" id="school-menu"><div>School</div></li>
-				<li class="nav-link" id="project-menu"><div>Projects</div></li>
-				<li class="nav-link" id="about-menu"><div>About</div></li>
-			</ul>
+			<div class="nav-links">
+				<div class="nav-link" id="home-menu">Home</div>
+				<div class="nav-link" id="workexp-menu">Work</div>
+				<div class="nav-link" id="school-menu">School</div>
+				<div class="nav-link" id="project-menu">Projects</div>
+				<div class="nav-link" id="about-menu">About</div>
+			</div>
+
+			<div id="icon">
+				<div class="bar1"></div>
+				<div class="bar2"></div>
+				<div class="bar3"></div>
+			</div>
 		</header>
 
-		<div class="hero">
-			<h1 id="heading-text"></h1>
-		</div>
 
 		<div id="div-body" class="container"></div>
 		<footer style="text-align: center;">Copyright &copy; 2020 Matthew Wen</footer>

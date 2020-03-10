@@ -13,6 +13,7 @@
 #include "webdatabase.h"
 
 #include "moreyIOT.h"
+#include "todo.h"
 
 static const char * TEMPLATE_PARENT = "www/other/";
 static const char * TEMPLATE_INDEX  = "/index.html";
@@ -49,6 +50,9 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 		}
 		else if (strncmp(MOREYIOT, url, strlen(MOREYIOT)) == 0) {
 			morey_handler(url, wsi, found, r);
+		}
+		else if (strncmp(TODOURL, url, strlen(TODOURL)) == 0) {
+			todo_handler(url, wsi, found, r);
 		}
 	}
 	return n;

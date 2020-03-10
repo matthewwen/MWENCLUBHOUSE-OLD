@@ -16,10 +16,10 @@
 #define NEWPAGEPROPERTIES "(Id INTEGER PRIMARY KEY, ref TEXT, weight INTEGER, body TEXT);"
 
 int get_num_char(int val) {
-    int count = val <= 0 ? 1: 0;
-    val       = val < 0 ? -1 * val: val;
-    for (; val > 0; val /= 10) {count++;}
-    return count;
+	int count = val <= 0 ? 1: 0;
+	val       = val < 0 ? -1 * val: val;
+	for (; val > 0; val /= 10) {count++;}
+	return count;
 }
 
 void web_record_href(char * ref, bool is_visible) {
@@ -169,25 +169,25 @@ void set_is_visible(char * href, bool is_visible) {
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct{
-    char * grid_name; 
-    grid_type_t type;
-    bool found;
-    int id;
+	char * grid_name; 
+	grid_type_t type;
+	bool found;
+	int id;
 }grid_find_t;
 
 int grid_find_handler(void * notused, int argc, char ** argv, char ** azColName) {
 	grid_find_t * h = notused;
 	if (strcmp(h->grid_name, argv[1]) == 0) {
 		h->type  = atoi(argv[2]);
-        h->found = true;
-        h->id    = atoi(argv[0]);
+		h->found = true;
+		h->id    = atoi(argv[0]);
 	}
 	return 0;
 }
 
 grid_find_t get_grid(char * table_name) {
 	grid_find_t h = (grid_find_t) {.type = NONE, .grid_name = table_name, .found = false};
-    h.id = 0;
+	h.id = 0;
 	if (table_name != NULL) {
 		sqlite3 * db = NULL;
 		create_table(&db, WEBDATABASE, TABLEVIEW, TABLEVIEWPROPERTIES);
@@ -205,18 +205,18 @@ grid_find_t get_grid(char * table_name) {
 }
 
 grid_type_t get_table_type(char * table_name) {
-    grid_find_t h = get_grid(table_name);
-    return h.type;
+	grid_find_t h = get_grid(table_name);
+	return h.type;
 }
 
 void insert_grid(char * table_name, grid_type_t type) {
 	if (table_name == NULL || type == NONE) {
 		return;
 	}
-    if (get_grid(table_name).found) {
-        set_grid_type(table_name, type);
-        return;
-    }
+	if (get_grid(table_name).found) {
+		set_grid_type(table_name, type);
+		return;
+	}
 	sqlite3 * db = NULL;
 	sqlite_err_t res = create_table(&db, WEBDATABASE, TABLEVIEW, TABLEVIEWPROPERTIES);
 	SQLITE_ERROR_START(res);
@@ -225,9 +225,9 @@ void insert_grid(char * table_name, grid_type_t type) {
 
 	char * insertstr = "INSERT INTO "TABLEVIEW" (name, type) VALUES('%s', %d);";
 
-    // get num char
+	// get num char
 	int count = strlen(insertstr) + strlen(table_name) + 2;
-    for (int cptype = type; cptype > 0; cptype /= 10) {count++;}
+	for (int cptype = type; cptype > 0; cptype /= 10) {count++;}
 	char * buffer = malloc(count * sizeof(*buffer));
 
 	if (buffer != NULL) {
@@ -245,7 +245,7 @@ void set_grid_type(char * table_name, grid_type_t type) {
 	if (h.found) {
 		int count = (strlen(response_buffer) - 3) + 2;
 		for (int id = h.id; id > 0; id /= 10) {count++;}
-        for (int id = h.type; id > 0; id /= 10) {count++;}
+		for (int id = h.type; id > 0; id /= 10) {count++;}
 		char * response = malloc(count * sizeof(*response));
 
 		if (response != NULL) {
@@ -265,46 +265,46 @@ void set_grid_type(char * table_name, grid_type_t type) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void set_project_view(char * table_name, char * ref, int weight, char * body) {
 	char * insertstr = "INSERT INTO %s (ref, weight, body) VALUES('%s', %d, '%s');";
-    int count = get_num_char(weight) + strlen(insertstr) + strlen(ref); 
-    count     = count + strlen(body) + strlen(table_name) + 1;
+	int count = get_num_char(weight) + strlen(insertstr) + strlen(ref); 
+	count     = count + strlen(body) + strlen(table_name) + 1;
 
-    char * response = malloc(count * sizeof(*response));
-    sprintf(response, insertstr, table_name, ref, weight, body);
+	char * response = malloc(count * sizeof(*response));
+	sprintf(response, insertstr, table_name, ref, weight, body);
 
-    sqlite3 * db = NULL;
-    sqlite_err_t res = create_table(&db, WEBDATABASE, table_name, NEWPAGEPROPERTIES);
-    if (res == SQLITE_OK && response != NULL) {
-        sqlite3_exec(db, response, NULL, NULL, NULL);
-    }
+	sqlite3 * db = NULL;
+	sqlite_err_t res = create_table(&db, WEBDATABASE, table_name, NEWPAGEPROPERTIES);
+	if (res == SQLITE_OK && response != NULL) {
+		sqlite3_exec(db, response, NULL, NULL, NULL);
+	}
 
-    if (response != NULL) {free(response);}
-    if (db != NULL) {sqlite3_close(db); db = NULL;}
+	if (response != NULL) {free(response);}
+	if (db != NULL) {sqlite3_close(db); db = NULL;}
 }
 
 jobject * get_project_view(char * table_name) {
-    // check if grid exists
-    grid_find_t h = get_grid(table_name);
-    if (h.found == false) {
-        return NULL;
-    }
+	// check if grid exists
+	grid_find_t h = get_grid(table_name);
+	if (h.found == false) {
+		return NULL;
+	}
 
 	jlist * list = NULL;
-    // create database
+	// create database
 	sqlite3 * db = NULL;
 	create_table(&db, WEBDATABASE, table_name, NEWPAGEPROPERTIES);
-    
-    char * format = "SELECT * FROM %s;";
-    int count = (strlen(format) - 2) + strlen(table_name) + 1;
-    char * response = malloc(count * sizeof(*response));
-    sprintf(response, format, table_name);
 
-    if (db != NULL) {
-	    sqlite3_exec(db, response, all_handler, &list, NULL);
-    }
+	char * format = "SELECT * FROM %s;";
+	int count = (strlen(format) - 2) + strlen(table_name) + 1;
+	char * response = malloc(count * sizeof(*response));
+	sprintf(response, format, table_name);
 
-    // free data
+	if (db != NULL) {
+		sqlite3_exec(db, response, all_handler, &list, NULL);
+	}
+
+	// free data
 	if (db != NULL) {sqlite3_close(db); db = NULL;}
-    if (response != NULL) {free(response); }
+	if (response != NULL) {free(response); }
 
 	return create_jobject("data", LIST, (data_t) {.list = list});
 }

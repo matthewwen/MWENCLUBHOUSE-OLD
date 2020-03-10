@@ -6,6 +6,8 @@ section_open = urlParams.get('section') == null ? section_open : urlParams.get('
 
 Cookies.set("mwen_pkgName", "main");
 
+var enterLogin = false;
+
 // responses from server
 var section_url = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
 var heading_id = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
@@ -73,19 +75,46 @@ window.onload = init;
 // all webpages should check if they have admin privalges
 var MWENKEYSTART = 0;
 $(document).keypress(function (event) {
-	console.log('key press: ' + MWENKEYSTART + ", char code: " + event.charCode);
-	var edit_keyword = [109, 119, 101, 110];
-	if (event.charCode == edit_keyword[MWENKEYSTART]) {
-		MWENKEYSTART++;
+	if (enterLogin && event.keyCode == 13) {
+		// attempt login
+		attempt_login();
 	}
 	else {
-		MWENKEYSTART = 0;
-	}
+		var edit_keyword = [109, 119, 101, 110];
+		if (event.charCode == edit_keyword[MWENKEYSTART]) {
+			MWENKEYSTART++;
+		}
+		else {
+			MWENKEYSTART = 0;
+		}
 
-	if (MWENKEYSTART == 4) {
-		MWENKEYSTART = 0;
-		var password = prompt("Hey Vikram. What's up", "password");
-		Cookies.set("mwen_password", password);
-		add_create_page(password);
+		if (MWENKEYSTART == 4) {
+			$('#popup-window').css("display", "block");
+			enterLogin = true;
+		}
 	}
 });
+
+$('#popup-window').click(function(e) {
+	if (e.target == this) {
+		hide_login();
+	}
+});
+
+$('#btn-cancel').click(hide_login);
+
+function hide_login() {
+	$('#popup-window').css("display", "none");
+	enterLogin = false;
+}
+
+$('#btn-okay').click(attempt_login);
+
+function attempt_login() {
+	hide_login();
+	var username = $('#input-username').val();
+	var password = $('#input-password').val();
+
+	Cookies.set('mwen_password', password);
+	add_create_page(password);
+}

@@ -11,7 +11,7 @@ struct jobject;
 
 typedef union{
     char * txt;
-    int    num;
+    long   num;
     bool   cond;
     float  flt;
     struct jlist * list;

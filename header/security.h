@@ -21,5 +21,6 @@ mwentime_t get_time();
 void mwendate_tostring(mwentime_t t, char outputBuffer[16]);
 void sha256_string(char * buffer, char outputBuffer[65]);
 jobject * admin_auth(struct lws *);
+jobject * user_auth(struct lws * wsi);
 
 #endif

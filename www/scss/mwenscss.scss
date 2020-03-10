@@ -1,8 +1,86 @@
 @import url(/www/css/montserrat.css);
-@import url(/www/css/_title.css);
-@import url(/www/css/_header.css);
-@import url(/www/css/_media.css);
-@import url(/www/css/_animation.css);
+
+@media screen and (min-width: 636px) {
+	.nav-links {
+		display: flex;
+	}
+
+	#icon {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 636px) {
+	.nav-links {
+		display: none;
+	}
+
+	#icon {
+		display: block;
+	}
+}
+
+.basic_header {
+	background-color:#000;
+	color:#fff;
+	padding: 20px;
+	height:fit-content;
+	display:flex;
+	flex-flow:left;
+	justify-content:space-between;
+
+	.nav-links {
+		flex-flow:left;
+		.nav-link {
+			margin: 10px;
+			display: block;
+		}
+	}
+
+	#icon {
+		div {
+			width: 35px;
+			height: 5px;
+			background-color: #fff;
+			margin: 6px 0;
+			transition: 0.4s;
+		}
+	}
+}
+
+#popup-window {
+	display:none;
+}
+
+.mwen-grid {
+	width: 100%;
+	display: grid;
+	grid-gap: 10px;
+	grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));
+	grid-auto-rows: 30px;
+	margin: 20px 0;
+
+	.item {
+		padding: 10px;
+		min-width: 250px;
+		box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+
+		&:hover {
+			background-color: #bbb;
+		}
+	}
+
+	.mdc-fab {
+		background-color: red;
+	}
+
+}
+
+
+footer  {
+	padding: 10px;
+	text-align: center;
+}
 
 *, *::before, *::after {
 	box-sizing: border-box;
@@ -60,65 +138,36 @@ body {
 		margin: 20px 0;
 	}
 
-	pre { 
+	pre {
 		padding: 10px;
-		font-family: monospace; 
-		color: #dadada; 
-		background-color: #303030; 
+		font-family: monospace;
+		color: #dadada;
+		background-color: #303030;
 		overflow-x: auto;
 
-		.DraculaYellow { 
-			color: #ffff87; 
+		.DraculaYellow {
+			color: #ffff87;
 		}
 
-		.DraculaCyanItalic { 
-			color: #87d7ff; font-style: italic; 
+		.DraculaCyanItalic {
+			color: #87d7ff; font-style: italic;
 		}
 
-		.LineNr { 
-			color: #af5f00; 
+		.LineNr {
+			color: #af5f00;
 		}
 
-		.DraculaPurple { 
-			color: #af87ff; 
+		.DraculaPurple {
+			color: #af87ff;
 		}
 
-		.DraculaComment { 
-			color: #5f5faf; 
+		.DraculaComment {
+			color: #5f5faf;
 		}
 
-		.DraculaPink { 
-			color: #ff87d7; 
-		}
-	}
-
-}
-
-.mwen-grid {
-	width: 100%;
-	display: grid;
-	grid-gap: 10px;
-	grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));
-	grid-auto-rows: 30px;
-	margin: 20px 0;
-
-	.item {
-		padding: 10px;
-		min-width: 250px;
-		box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
-
-		&:hover {
-			background-color: #bbb;
+		.DraculaPink {
+			color: #ff87d7;
 		}
 	}
 
-	.mdc-fab {
-		background-color: red;
-	}
-
-}
-
-footer  {
-	padding: 10px;
-	text-align: center;
 }
