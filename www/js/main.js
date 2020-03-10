@@ -10,9 +10,44 @@ var enterLogin = false;
 
 // responses from server
 var section_url = ['/www/html/home.html', '/www/html/work.html', '/www/html/school.html', '/www/html/project.html', '/www/html/about.html'];
-var heading_id = ['#home-menu', '#workexp-menu', '#school-menu', '#project-menu', '#about-menu'];
+var heading_id = ['.home-menu', '.workexp-menu', '.school-menu', '.project-menu', '.about-menu'];
 var title_name = ['Home', 'Work', 'School', 'Projects', 'About']
 var section_html = [null, null, null, null, null];
+
+function switch_x() {
+	var b1 = document.getElementById("bar1");
+	var b2 = document.getElementById("bar2");
+	var b3 = document.getElementById("bar3");
+	if (b1.className === "bar1") {
+		b1.className = "";
+		b2.className = "";
+		b3.className = "";
+	}
+	else {
+		b1.className = "bar1";
+		b2.className = "bar2";
+		b3.className = "bar3";
+	}
+}
+
+var menu_clicked = false;
+function open_menu() {
+	switch_x();
+	var menu = document.getElementById("menu-option");
+	menu_clicked = !menu_clicked;
+	if (menu_clicked) {
+		menu.style = "display: block;";
+		setTimeout(function () {
+			menu.className = "option-links fade_out";
+		}, 300);
+	}
+	else {
+		menu.className = "option-links fade_in";
+		setTimeout(function () {
+			menu.style = "display: none;";
+		}, 300);
+	}
+}
 
 function init() {
 	load_section(section_open);
@@ -53,6 +88,13 @@ function load_body(html, new_selected) {
 }
 
 function load_section(new_selected) {
+	// remove all section with the 
+	var navList = document.getElementsByClassName("active-nav-link");
+	for (var i = 0; i < navList.length; i++) {
+		navList[i].classList.remove("active-nav-link");
+	}
+	$(heading_id[new_selected]).addClass("active-nav-link");
+
 	Cookies.set('section_open', new_selected);
 	$('#heading-text').html(title_name[new_selected]);
 	if (section_html[new_selected] == null) {
@@ -118,3 +160,11 @@ function attempt_login() {
 	Cookies.set('mwen_password', password);
 	add_create_page(password);
 }
+
+$(".option-link").click(open_menu);
+$(window).resize(function() {
+	if (menu_clicked) {
+		open_menu();
+	}
+});
+

@@ -18,18 +18,32 @@
   height: fit-content;
   display: flex;
   flex-flow: left;
-  justify-content: space-between; }
-  .basic_header .nav-links {
-    flex-flow: left; }
-    .basic_header .nav-links .nav-link {
-      margin: 10px;
-      display: block; }
-  .basic_header #icon div {
-    width: 35px;
-    height: 5px;
-    background-color: #fff;
-    margin: 6px 0;
-    transition: 0.4s; }
+  justify-content: space-between;
+  padding-bottom: 0px;
+  padding-top: 0px; }
+  .basic_header h1 {
+    padding-bottom: 5px;
+    padding-top: 5px;
+    margin: 0px; }
+  .basic_header .nav-links .nav-link {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    cursor: pointer; }
+    .basic_header .nav-links .nav-link:hover {
+      background: #333; }
+    .basic_header .nav-links .nav-link:active {
+      background: #933; }
+  .basic_header .nav-links .active-nav-link {
+    background: #933; }
+  .basic_header #icon {
+    margin: auto 0; }
+    .basic_header #icon div {
+      width: 35px;
+      height: 5px;
+      background-color: #fff;
+      margin: 6px 0;
+      transition: 0.4s; }
 
 #popup-window {
   display: none; }
@@ -108,5 +122,36 @@ body {
       color: #5f5faf; }
     .container pre .DraculaPink {
       color: #ff87d7; }
+  .container .default-pre {
+    font-family: monospace;
+    background-color: #fff;
+    color: #000;
+    width: fit-content;
+    padding: 0px;
+    margin: 0px; }
+
+.noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+                   /* Non-prefixed version, currently
+supported by Chrome, Opera and Firefox */ }
+
+.div-flex-content {
+  display: flex;
+  flex-flow: right;
+  flex-wrap: wrap;
+  word-break: normal; }
+  .div-flex-content * {
+    margin-bottom: 20px;
+    margin-right: 20px; }
 
 /*# sourceMappingURL=mwen.css.map */

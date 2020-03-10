@@ -1,0 +1,62 @@
+@media screen and (min-width: 1000px) {
+  .content-split {
+    display: flex; }
+    .content-split .main-content {
+      width: calc(100% - 300px); }
+
+  #grid-about-me {
+    max-width: 250px; }
+
+  #about-me-div {
+    margin: 20px; }
+    #about-me-div h1 {
+      font-size: 1em;
+      margin-bottom: 5px; } }
+@media screen and (max-width: 1000px) {
+  .content-split {
+    display: block; }
+    .content-split .main-content {
+      width: 100%; }
+
+  #grid-about-me {
+    max-width: 100%; }
+
+  #about-me-div {
+    margin: 0px; }
+
+  h1 {
+    font-size: 2em;
+    margin-bottom: 20px; } }
+.container {
+  overflow: auto; }
+
+.bar1 {
+  -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+  transform: rotate(-45deg) translate(-9px, 6px); }
+
+.bar2 {
+  opacity: 0; }
+
+.bar3 {
+  -webkit-transform: rotate(45deg) translate(-8px, -8px);
+  transform: rotate(45deg) translate(-8px, -8px); }
+
+.fade_in {
+  opacity: 0; }
+
+.fade_out {
+  opacity: 1; }
+
+.option-links {
+  width: 100%;
+  display: none;
+  position: absolute; }
+  .option-links .option-link {
+    cursor: pointer;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    background-color: #000;
+    text-size: 2em; }
+
+/*# sourceMappingURL=main.css.map */
