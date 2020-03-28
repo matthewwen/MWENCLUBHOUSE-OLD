@@ -10,30 +10,25 @@
 #include "common.h"
 #include "security.h"
 #include "webdatabase.h"
+#include "apihandler.h"
 
 #ifndef TESTDEPLOYMENT
 const char SOURCE_PATH[] = "/home/mwen/server";
+static const char * PAGEVIEW_PARENT = "/home/mwen/other/";
+#define PAGEVIEW_PARENT_LEN 17
 #else
 const char SOURCE_PATH[] = ".";
+static const char * PAGEVIEW_PARENT = "/home/mwen/Dropbox/outsideprojects/other/";
+#define PAGEVIEW_PARENT_LEN 41
 #endif
-int pageview_handler(struct lws * wsi, bool * found, struct request * r);
+int pageview_handler(struct lws * wsi, const char * url, bool * found, struct request * r);
 char * get_mime_type(const char * url);
 
 int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
 	int n = 0;
 	if (*found == false) {
 		char www[] = "/www/";
-		char other[] = "/www/other/";
-		if (strncmp(other, url, sizeof(other) - 1) == 0) {
-			// block html files, not css or javascript files
-			char * mime = get_mime_type(url);
-			if (strcmp(mime, "text/html") != 0) {
-				r->response = FILE_REQUEST;
-				n = send_static_page(url, wsi, r);
-				*found = n == 0;
-			}
-		}
-		else if (strncmp(www, url, sizeof(www) - sizeof(*www)) == 0) {
+		if (strncmp(www, url, sizeof(www) - sizeof(*www)) == 0) {
 			r->response = FILE_REQUEST;
 			n = send_static_page(url, wsi, r);
 			*found = n == 0;
@@ -43,8 +38,8 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 			n = send_static_page("/www/html/create.html", wsi, r);
 			*found = n == 0;
 		}
-		else if (strcmp("/pageview", url) == 0) {
-			n = pageview_handler(wsi, found, r);
+		else if (strncmp("/pageview", url, strlen("/pageview")) == 0) {
+			n = pageview_handler(wsi, url, found, r);
 		}
 
 		if (*found) {
@@ -61,16 +56,18 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 	return n;
 }
 
-int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
+#define PAGEVIEW_NAME_LEN 10
+
+int pageview_handler(struct lws * wsi, const char * url, bool * found, struct request * r) {
+	url += strlen("/pageview") + 1;
 	int n = 0;
 
 	// get url arguments
-	char * url_arg = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);
-
-	char * page_view = NULL;
-	if (url_arg != NULL) {
-		page_view = get_url_arg(url_arg, "name=");
-		FREE(url_arg);
+	char page_view[PAGEVIEW_NAME_LEN + 1];
+	memset(page_view, 0, sizeof(page_view));
+	if (strlen(url) >= PAGEVIEW_NAME_LEN) {
+		strncpy(page_view, url, PAGEVIEW_NAME_LEN);
+		url += PAGEVIEW_NAME_LEN;
 	}
 
 	// check the database to make the page visibile
@@ -79,7 +76,6 @@ int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 	if (is_valid == false) {
 		jobject * robj = admin_auth(wsi);
 		if (robj == NULL) {
-			FREE(page_view);
 			*found = true;
 			return send_static_page("/www/html/template/empty.html", wsi, r);
 		}
@@ -88,85 +84,42 @@ int pageview_handler(struct lws * wsi, bool * found, struct request * r) {
 		free_json(&robj);
 	}
 
-	char * new_url = NULL;
-	const char * parent = "/www/other/";
-	const char * index  = "/index.html";
-	if (page_view != NULL && is_valid) {
-		int num_char  = strlen(parent) + strlen(index) + strlen(page_view) + 1;
-		new_url = malloc(num_char * sizeof(*new_url));
+	char new_url[PAGEVIEW_PARENT_LEN + PAGEVIEW_NAME_LEN + 1];
+	memset(new_url, 0, sizeof(new_url));
+	if (is_valid) {
+		sprintf(new_url, "%s%s", PAGEVIEW_PARENT, page_view);
 	}
 
 	r->response = FILE_REQUEST;
-	if ((is_valid = (new_url != NULL))) {
-		sprintf(new_url, "%s%s", parent, page_view);
-		DIR * dir = opendir(new_url + 1);
+	if (is_valid) {
+		DIR * dir = opendir(new_url);
 		is_valid = dir != NULL;
 		if (dir) {closedir(dir);}
 	}
-	FREE(page_view);
 
 	if (is_valid) {
-		strcat(new_url, index);
-		n = send_static_page(new_url, wsi, r);
+		url += (*url == '/') ? 1: 0;
+		const char * file_name = (*url == '\0') ? "index.html": url;
+		size_t alloc_size = strlen(file_name) + strlen(new_url) + 2;
+		char * file_path = malloc(alloc_size);
+		if (file_path != NULL) {
+			sprintf(file_path, "%s/%s", new_url, file_name);
+			n = send_file(file_path, wsi, r);
+			free(file_path);
+		}
 	}
 	else {
 		n = send_static_page("/www/html/404.html", wsi, r);
 	}
 
-	FREE(new_url)
 	*found = true;
 	return n;
 }
 
-char * get_mime_type(const char * url) {
-	char * end  = strrchr(url, '.');
-	if (end == NULL) {
-		return NULL;
-	}
-	else if (strcmp(end, ".js"  ) == 0) {
-		return "application/javascript";
-	}
-	else if (strcmp(end, ".mjs" ) == 0) {
-		return "text/javascript";
-	}
-	else if (strcmp(end, ".css" ) == 0 || strcmp(end, ".scss") == 0) {
-		return "text/css";
-	}
-	else if (strcmp(end, ".html") == 0) {
-		return "text/html";
-	}
-	else if (strcmp(end, ".map" ) == 0) {
-		return "application/octet-stream";
-	}
-	else if (strcmp(end, ".jpg") == 0) {
-		return "image/jpg";
-	}
-	else if (strcmp(end, ".png") == 0) {
-		return "image/png";
-	}
-	else if (strcmp(end, ".pdf") == 0) {
-		return "application/pdf";
-	}
-	else if (strcmp(end, ".webmanifest") == 0) {
-		return "application/manifest+json";
-	}
-	else if (strcmp(end, ".txt") == 0) {
-		return "plain/text";
-	}
-	return "plain/text";
-}
-
 int send_static_page(const char * url, struct lws * wsi, struct request * r) {
-	char * mime = get_mime_type(url);
-	r->mime = mime;
 	char resource_path[PATH_MAX];
 	memset(resource_path, 0, sizeof(resource_path));
 	sprintf(resource_path, "%s%s", SOURCE_PATH, url);
-
-	int n = access(resource_path, F_OK);
-	if ( (mime != NULL) &&  (n != -1) ) {
-		lws_serve_http_file(wsi, resource_path, mime, NULL, 0);
-	}
-	return n != -1 ? 0: -1;
+	return send_file(resource_path, wsi, r);
 }
 /* vim: set tabstop=4 shiftwidth=4 fileencoding=utf-8 noexpandtab: */

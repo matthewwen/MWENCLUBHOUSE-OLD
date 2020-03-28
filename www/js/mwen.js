@@ -136,7 +136,7 @@ function add_content_gpage() {
 
 					var item = document.createElement('a');
 					item.setAttribute('class', 'item dynamic');
-					item.setAttribute('href', 'pageview?name=' + json.data[i].ref);
+					item.setAttribute('href', 'pageview/' + json.data[i].ref);
 					item.appendChild(content);
 
 					// put element inside grid

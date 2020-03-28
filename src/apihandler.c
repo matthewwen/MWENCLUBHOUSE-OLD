@@ -24,8 +24,8 @@ static const char * TEMPLATE_CSS    = "/main.css";
 #define ID_LENGTH 10
 
 void webedit_handler(struct lws * wsi, bool * found, struct request * r);
-void createPROJ_handler(struct lws * wsi, bool * found, struct request * r);
-void getPROJ_handler(struct lws * wsi, bool * found, struct request * r);
+void createproj_handler(struct lws * wsi, bool * found, struct request * r);
+void getproj_handler(struct lws * wsi, bool * found, struct request * r);
 
 void format_href(char * href) {
 	for (int i = 0; href[i] != '\0'; i++) {
@@ -36,6 +36,55 @@ void format_href(char * href) {
 
 }
 
+char * get_mime_type(const char * url) {
+	char * end  = strrchr(url, '.');
+	if (end == NULL) {
+		return NULL;
+	}
+	else if (strcmp(end, ".js"  ) == 0) {
+		return "application/javascript";
+	}
+	else if (strcmp(end, ".mjs" ) == 0) {
+		return "text/javascript";
+	}
+	else if (strcmp(end, ".css" ) == 0 || strcmp(end, ".scss") == 0) {
+		return "text/css";
+	}
+	else if (strcmp(end, ".html") == 0) {
+		return "text/html";
+	}
+	else if (strcmp(end, ".map" ) == 0) {
+		return "application/octet-stream";
+	}
+	else if (strcmp(end, ".jpg") == 0) {
+		return "image/jpg";
+	}
+	else if (strcmp(end, ".png") == 0) {
+		return "image/png";
+	}
+	else if (strcmp(end, ".pdf") == 0) {
+		return "application/pdf";
+	}
+	else if (strcmp(end, ".webmanifest") == 0) {
+		return "application/manifest+json";
+	}
+	else if (strcmp(end, ".txt") == 0) {
+		return "plain/text";
+	}
+	return "plain/text";
+}
+
+int send_file(const char * file_path, struct lws * wsi, struct request * r) {
+	char * mime = get_mime_type(file_path);
+	r->mime = mime;
+
+	int n = access(file_path, F_OK);
+	if ( (mime != NULL) &&  (n != -1) ) {
+		lws_serve_http_file(wsi, file_path, mime, NULL, 0);
+	}
+	return n != -1 ? 0: -1;
+}
+
 int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
 	int n = 0;
 	if (*found == false) {
@@ -43,10 +92,10 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 			webedit_handler(wsi, found, r);
 		}
 		else if (strcmp("/mwenCreatePROJ", url) == 0) {
-			createPROJ_handler(wsi, found, r);
+			createproj_handler(wsi, found, r);
 		}
 		else if (strcmp("/mwenGetPROJ", url) == 0) {
-			getPROJ_handler(wsi, found, r);
+			getproj_handler(wsi, found, r);
 		}
 		else if (strncmp(MOREYIOT, url, strlen(MOREYIOT)) == 0) {
 			morey_handler(url, wsi, found, r);
@@ -58,7 +107,7 @@ int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct
 	return n;
 }
 
-void getPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
+void getproj_handler(struct lws * wsi, bool * found, struct request * r) {
 	// get url arguments
 	char * url_arg = get_header_data(wsi, WSI_TOKEN_HTTP_URI_ARGS);
 
@@ -88,7 +137,7 @@ void getPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 	}
 }
 
-void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
+void createproj_handler(struct lws * wsi, bool * found, struct request * r) {
 	jobject * robj = admin_auth(wsi);
 	jobject * temp = get_jobject("canEdit", robj);
 	bool is_valid = temp != NULL && temp->type == CON && temp->data.cond;
@@ -115,23 +164,25 @@ void createPROJ_handler(struct lws * wsi, bool * found, struct request * r) {
 	}
 	FREE(date_str);
 	
-	char tokenBuffer[65];
+	char tokenBuffer[11];
 	if (database_name != NULL) {
-		sha256_string(database_name, tokenBuffer);
-		tokenBuffer[10] = '\0';		
+		char tokenTemp[65];
+		sha256_string(database_name, tokenTemp);
+		tokenTemp[10] = '\0';		
+		strcpy(tokenBuffer, tokenTemp);
 		database_name[strlen(pkg_name) + strlen(grid_name)] = '\0';
 		format_href(database_name);
 
 		// add to database
-		web_record_href(tokenBuffer, false);
+		web_record_href(tokenTemp, false);
 		insert_grid(database_name, NEWPAGE);
-		set_project_view(database_name, tokenBuffer, 100, "<h3>Title</h3><p>body</p>");
+		set_project_view(database_name, tokenTemp, 100, "<h3>Title</h3><p>body</p>");
 
 		FREE(database_name);
 
 		// return to response
-		char * tokenalloc = malloc(sizeof(*tokenalloc) * (strlen(tokenBuffer) + 1));
-		sprintf(tokenalloc, "%s", tokenBuffer);
+		char * tokenalloc = malloc(sizeof(*tokenalloc) * (strlen(tokenTemp) + 1));
+		sprintf(tokenalloc, "%s", tokenTemp);
 		append_jobject(&robj, "href", TEXT, (data_t) {.txt = tokenalloc});
 	}
 	else {
