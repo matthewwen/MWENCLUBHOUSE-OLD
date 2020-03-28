@@ -196,6 +196,8 @@ int main(int argc, char* argv[]) {
 		lwsl_err("lws init failed\n");
 		return EXIT_FAILURE;
 	}
+
+#ifndef TESTDEPLOYMENT
 	info.options &= ~LWS_SERVER_OPTION_REDIRECT_HTTP_TO_HTTPS;
 	info.port       = 80;
 	info.mounts     = &mount80;
@@ -221,6 +223,19 @@ int main(int argc, char* argv[]) {
 		lws_context_destroy(context);
 		return EXIT_FAILURE;
 	}
+#else
+	info.options = LWS_SERVER_OPTION_EXPLICIT_VHOSTS;
+	info.port       = 80;
+	info.pprotocols = pprotocols;
+	info.mounts     = &mount;
+	info.vhost_name = "192.168.0.21";
+
+	if (!lws_create_vhost(context, &info)) {
+		lwsl_err("Failed to create tls vhost\n");
+		lws_context_destroy(context);
+		return EXIT_FAILURE;
+	}
+#endif
 
 #ifdef ALLOWPYTHON
 	//PyRun_SimpleString("a = pub.subscribe(a)");

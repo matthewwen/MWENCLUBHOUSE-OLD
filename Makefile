@@ -16,7 +16,8 @@ SRC=src/apihandler.c\
 
 LIB=-lwebsockets -lcrypto -lsqlite3 -lpython3.8 -lunqlite 
 #-lguile -lltdl -lssl -pthread -lgmp -lcrypt -lm
-CFLAG=-O6 -std=c99 -Wall -Wshadow -Wvla -pedantic
+CFLAG=-O6 -std=c99 -Wshadow -Wvla -pedantic -Wall
+#CFLAG=-O6 -std=c99 
 INCLUDE=-I header\
 	-I /usr/include/python3.8
 
@@ -24,7 +25,7 @@ $(NAME):
 	$(CC) $(NAME).c $(SRC) $(CFLAG) -DALLOWPYTHON $(INCLUDE) -o $(NAME) $(LIB)
 
 test: 
-	$(CC) $(NAME).c $(SRC) $(CFLAG) $(INCLUDE) -o $(NAME) $(LIB)
+	$(CC) $(NAME).c $(SRC) $(CFLAG) -DTESTDEPLOYMENT $(INCLUDE) -o $(NAME) $(LIB)
 
 $(SQLITENAME): 
 	$(CC) $(SQLITENAME).c $(SRC) -I $(INCLUDE) -o $(SQLITENAME) $(LIB) -g

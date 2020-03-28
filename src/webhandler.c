@@ -11,7 +11,11 @@
 #include "security.h"
 #include "webdatabase.h"
 
+#ifndef TESTDEPLOYMENT
 const char SOURCE_PATH[] = "/home/mwen/server";
+#else
+const char SOURCE_PATH[] = ".";
+#endif
 int pageview_handler(struct lws * wsi, bool * found, struct request * r);
 char * get_mime_type(const char * url);
 
