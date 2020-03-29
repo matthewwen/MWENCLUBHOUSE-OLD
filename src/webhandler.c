@@ -65,54 +65,45 @@ int pageview_handler(struct lws * wsi, const char * url, bool * found, struct re
 	// get url arguments
 	char page_view[PAGEVIEW_NAME_LEN + 1];
 	memset(page_view, 0, sizeof(page_view));
-	if (strlen(url) >= PAGEVIEW_NAME_LEN) {
+	bool is_valid = *url != '\0' && strlen(url) >= PAGEVIEW_NAME_LEN;
+	if (is_valid) {
 		strncpy(page_view, url, PAGEVIEW_NAME_LEN);
 		url += PAGEVIEW_NAME_LEN;
-	}
-
-	// check the database to make the page visibile
-	bool is_valid = get_is_visible(page_view);
-	r->response = FILE_REQUEST;
-	if (is_valid == false) {
-		jobject * robj = admin_auth(wsi);
-		if (robj == NULL) {
-			*found = true;
-			return send_static_page("/www/html/template/empty.html", wsi, r);
-		}
-		jobject * temp = get_jobject("canEdit", robj);
-		is_valid = temp != NULL && temp->type == CON && temp->data.cond;
-		free_json(&robj);
 	}
 
 	char new_url[PAGEVIEW_PARENT_LEN + PAGEVIEW_NAME_LEN + 1];
 	memset(new_url, 0, sizeof(new_url));
 	if (is_valid) {
 		sprintf(new_url, "%s%s", PAGEVIEW_PARENT, page_view);
-	}
-
-	r->response = FILE_REQUEST;
-	if (is_valid) {
+		r->response = FILE_REQUEST;
 		DIR * dir = opendir(new_url);
 		is_valid = dir != NULL;
 		if (dir) {closedir(dir);}
 	}
 
+	// check the database to make the page visibile
 	if (is_valid) {
+		is_valid = get_is_visible(page_view);
+		r->response = FILE_REQUEST;
+	}
+
+	if (is_valid == false) {
+		n = send_static_page("/www/html/404.html", wsi, r);
+	}
+	else {
 		url += (*url == '/') ? 1: 0;
 		const char * file_name = (*url == '\0') ? "index.html": url;
 		size_t alloc_size = strlen(file_name) + strlen(new_url) + 2;
 		char * file_path = malloc(alloc_size);
+		memset(file_path, 0, alloc_size);
 		if (file_path != NULL) {
 			sprintf(file_path, "%s/%s", new_url, file_name);
 			n = send_file(file_path, wsi, r);
 			free(file_path);
 		}
 	}
-	else {
-		n = send_static_page("/www/html/404.html", wsi, r);
-	}
 
-	*found = true;
+	*found = n == 0;
 	return n;
 }
 

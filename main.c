@@ -181,7 +181,9 @@ int main(int argc, char* argv[]) {
 	//override the default mount for /dyn in the URL space 
 	const struct lws_http_mount mount_dyn = {NULL      , "/", NULL   , NULL        , "http", NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, LWSMPRO_CALLBACK, 4, NULL};
 	const struct lws_http_mount mount     = {&mount_dyn, "/", "./www", "index.html", NULL  , NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, LWSMPRO_FILE    , 1, NULL};
+#ifndef TESTDEPLOYMENT
 	const struct lws_http_mount mount80   = {NULL, "/", "www.matthewwen.com", "/", NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, LWSMPRO_REDIR_HTTPS, 1, NULL,};
+#endif
 
 	int n = 0, logs = LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE;
 	signal(SIGINT, sigint_handler);

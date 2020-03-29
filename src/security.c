@@ -10,8 +10,31 @@
 
 static int DAY_IN_MONTH[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-void mwendate_tostring(mwentime_t t, char outputBuffer[16]) {
-	sprintf(outputBuffer, "%02d%02d%04dT%02d%02d%02d", t.month, t.day, t.year, t.hour, t.min, t.sec);
+void mwendate_tostring(mwentime_t t, char * outputBuffer) {
+	memset(outputBuffer, 0, 16);
+	// month
+	outputBuffer[0] = '0' + (t.month >= 10 ? t.month / 10: 0);
+	outputBuffer[1] = '0' + (t.month % 10);
+	// day
+	outputBuffer[2] = '0' + (t.day >= 10 ? t.day / 10: 0);
+	outputBuffer[3] = '0' + (t.day % 10);
+	// year
+	outputBuffer[4] = '0' + (t.year > 1000 ? t.year / 1000: 0); 
+	outputBuffer[5] = '0' + (t.year > 100 ? t.year / 100 % 10: 0); 
+	outputBuffer[6] = '0' + (t.year > 10 ? t.year / 10 % 10: 0); 
+	outputBuffer[7] = '0' + (t.year % 10); 
+
+	outputBuffer[8] = 'T';
+
+	// hour
+	outputBuffer[9] = '0' + (t.hour >= 10 ? t.hour / 10: 0);
+	outputBuffer[10] = '0' + (t.hour % 10);
+	// min
+	outputBuffer[11] = '0' + (t.min >= 10 ? t.min / 10: 0);
+	outputBuffer[12] = '0' + (t.min % 10);
+	//sec
+	outputBuffer[13] = '0' + (t.sec >= 10 ? t.sec / 10: 0);
+	outputBuffer[14] = '0' + (t.sec % 10);
 }
 
 mwentime_t get_time_from_buffer(const char * datestr) {
