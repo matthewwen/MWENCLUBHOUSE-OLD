@@ -12,9 +12,11 @@ SRC=src/apihandler.c\
     src/webdatabase.c\
     src/munqlite.c\
     src/moreyIOT.c\
-    src/todo.c
+    src/todo.c\
+    src/mqtthandler.c
 
-LIB=-lwebsockets -lcrypto -lsqlite3 -lpython3.8 -lunqlite 
+LIB=-lwebsockets -lcrypto -lsqlite3 -lpython3.8 -lunqlite \
+-lczmq -lzmq
 #-lguile -lltdl -lssl -pthread -lgmp -lcrypt -lm
 CFLAG=-O6 -std=c99 -Wshadow -Wvla -pedantic -Wall
 #CFLAG=-O6 -std=c99 
