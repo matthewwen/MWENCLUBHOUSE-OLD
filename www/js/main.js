@@ -82,7 +82,6 @@ function load_body(html, new_selected) {
 	$('#div-body').html(html);
 	section_open = new_selected;
 	var password = Cookies.get('mwen_password');
-	add_create_page(password);
 	resizeAllGridItems();
 	add_content_gpage();
 }
@@ -158,7 +157,6 @@ function attempt_login() {
 	var password = $('#input-password').val();
 
 	Cookies.set('mwen_password', password);
-	add_create_page(password);
 }
 
 $(".option-link").click(open_menu);

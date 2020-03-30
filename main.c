@@ -215,7 +215,7 @@ int main(int argc, char* argv[]) {
 	info.options = LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT | LWS_SERVER_OPTION_EXPLICIT_VHOSTS;
 	info.pprotocols = pprotocols;
 	info.mounts = &mount;
-	info.error_document_404 = "/404.html";
+	info.error_document_404 = "/html/404.html";
 	info.ssl_cert_filepath = "/etc/letsencrypt/live/www.matthewwen.com/fullchain.pem";
 	info.ssl_private_key_filepath = "/etc/letsencrypt/live/www.matthewwen.com/privkey.pem";
 	info.vhost_name = "www.matthewwen.com";

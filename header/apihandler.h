@@ -4,6 +4,6 @@
 #include "common.h"
 
 int handle_gapi_request(const char *, struct lws *, bool *, struct request *);
-int send_file(const char * file_path, struct lws * wsi, struct request * r);
+int send_file(const char * file_path, bool * found, struct lws * wsi, struct request * r);
 
 #endif
