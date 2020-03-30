@@ -49,12 +49,12 @@
   display: none; }
 
 .mwen-grid {
-  width: 100%;
+  width: calc(100% - 20px);
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-auto-rows: 30px;
-  margin: 20px 0; }
+  margin: 20px 10px; }
   .mwen-grid .item {
     padding: 10px;
     min-width: 250px;
@@ -143,7 +143,8 @@ body {
   /* Internet Explorer/Edge */
   user-select: none;
                    /* Non-prefixed version, currently
-supported by Chrome, Opera and Firefox */ }
+supported by Chrome, Opera and Firefox */
+  -webkit-tap-highlight-color: transparent; }
 
 .div-flex-content {
   display: flex;
