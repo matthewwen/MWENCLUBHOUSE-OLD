@@ -22,6 +22,7 @@ static const char * PAGEVIEW_PARENT = "/home/mwen/Dropbox/outsideprojects/other/
 #define PAGEVIEW_PARENT_LEN 41
 #endif
 int pageview_handler(struct lws * wsi, const char * url, bool * found, struct request * r);
+int admin_pageview_handler(struct lws * wsi, bool * found, struct request * r);
 char * get_mime_type(const char * url);
 
 int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
@@ -38,7 +39,10 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 			n = send_static_page("/www/html/create.html", wsi, r);
 			*found = n == 0;
 		}
-		else if (strncmp("/pageview", url, strlen("/pageview")) == 0) {
+		else if (strcmp("/pageview", url) == 0 || strcmp("/pageview/", url) == 0) {
+			admin_pageview_handler(wsi, found, r);
+		}
+		else if (strncmp("/pageview/", url, strlen("/pageview/")) == 0) {
 			n = pageview_handler(wsi, url, found, r);
 		}
 
@@ -57,6 +61,13 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 }
 
 #define PAGEVIEW_NAME_LEN 10
+
+int admin_pageview_handler(struct lws * wsi, bool * found, struct request * r) {
+	r->response = FILE_REQUEST;
+	int n = send_static_page("/www/html/pageview.html", wsi, r);
+	*found = n == 0;
+	return n;
+}
 
 int pageview_handler(struct lws * wsi, const char * url, bool * found, struct request * r) {
 	url += strlen("/pageview") + 1;

@@ -227,7 +227,7 @@ int main(int argc, char* argv[]) {
 	}
 #else
 	info.options = LWS_SERVER_OPTION_EXPLICIT_VHOSTS;
-	info.port       = 80;
+	info.port       = 8888;
 	info.pprotocols = pprotocols;
 	info.mounts     = &mount;
 	info.vhost_name = "192.168.0.21";
