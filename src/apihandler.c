@@ -74,15 +74,16 @@ char * get_mime_type(const char * url) {
 	return "plain/text";
 }
 
-int send_file(const char * file_path, struct lws * wsi, struct request * r) {
+int send_file(const char * file_path, bool * found, struct lws * wsi, struct request * r) {
 	char * mime = get_mime_type(file_path);
 	r->mime = mime;
-
 	int n = access(file_path, F_OK);
+	*found = n != -1;
 	if ( (mime != NULL) &&  (n != -1) ) {
 		lws_serve_http_file(wsi, file_path, mime, NULL, 0);
+		r->response = FILE_REQUEST;
 	}
-	return n != -1 ? 0: -1;
+	return *found ? 0: -1;
 }
 
 int handle_gapi_request(const char * url, struct lws * wsi, bool * found, struct request * r) {
@@ -232,8 +233,8 @@ void createproj_handler(struct lws * wsi, bool * found, struct request * r) {
 						fwrite(buffer, sizeof(char), i, fp);
 					}
 				}
-				fprintf(fp, "<script src=\"www/other/%s/main.js\"></script>\n", tokenBuffer);
-				fprintf(fp, "<link rel=\"stylesheet\" href=\"www/other/%s/main.css\"/>\n", tokenBuffer);
+				fprintf(fp, "<script src=\"%s/main.js\"></script>\n", tokenBuffer);
+				fprintf(fp, "<link rel=\"stylesheet\" href=\"%s/main.css\"/>\n", tokenBuffer);
 				// close file
 				fclose(index);
 			}

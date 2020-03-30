@@ -16,7 +16,14 @@
 		h1 {
 			font-size:1em;
 			margin-bottom: 5px;
+			margin-left: 20px;
 		}
+	}
+}
+
+.container {
+	h1 {
+		margin-left:10px;
 	}
 }
 
@@ -79,5 +86,8 @@
 		color:#fff;
 		background-color:#000;
 		text-size:2em;
+		&:hover {
+			background: #666;
+		}
 	}
 }

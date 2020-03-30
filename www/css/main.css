@@ -11,7 +11,11 @@
     margin: 20px; }
     #about-me-div h1 {
       font-size: 1em;
-      margin-bottom: 5px; } }
+      margin-bottom: 5px;
+      margin-left: 20px; } }
+.container h1 {
+  margin-left: 10px; }
+
 @media screen and (max-width: 1000px) {
   .content-split {
     display: block; }
@@ -58,5 +62,7 @@
     color: #fff;
     background-color: #000;
     text-size: 2em; }
+    .option-links .option-link:hover {
+      background: #666; }
 
 /*# sourceMappingURL=main.css.map */

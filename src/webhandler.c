@@ -31,19 +31,23 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 		char www[] = "/www/";
 		if (strncmp(www, url, sizeof(www) - sizeof(*www)) == 0) {
 			r->response = FILE_REQUEST;
-			n = send_static_page(url, wsi, r);
+			n = send_static_page(url, found, wsi, r);
 			*found = n == 0;
 		}
 		else if (strcmp("/createpkg", url) == 0) {
 			r->response = FILE_REQUEST;
-			n = send_static_page("/www/html/create.html", wsi, r);
+			n = send_static_page("/www/html/create.html", found, wsi, r);
 			*found = n == 0;
 		}
 		else if (strcmp("/pageview", url) == 0 || strcmp("/pageview/", url) == 0) {
-			admin_pageview_handler(wsi, found, r);
+			n = admin_pageview_handler(wsi, found, r);
 		}
 		else if (strncmp("/pageview/", url, strlen("/pageview/")) == 0) {
 			n = pageview_handler(wsi, url, found, r);
+		}
+		else if (strcmp("/resume", url) == 0 || strcmp("/resume/", url) == 0) {
+			n = send_static_page("/www/pdf/matthewwen.pdf", found, wsi, r);
+			*found = n == 0;
 		}
 
 		if (*found) {
@@ -63,10 +67,7 @@ int handle_gweb_request(const char * url, struct lws * wsi, bool * found, struct
 #define PAGEVIEW_NAME_LEN 10
 
 int admin_pageview_handler(struct lws * wsi, bool * found, struct request * r) {
-	r->response = FILE_REQUEST;
-	int n = send_static_page("/www/html/pageview.html", wsi, r);
-	*found = n == 0;
-	return n;
+	return send_static_page("/www/html/pageview.html", found, wsi, r);
 }
 
 int pageview_handler(struct lws * wsi, const char * url, bool * found, struct request * r) {
@@ -99,7 +100,7 @@ int pageview_handler(struct lws * wsi, const char * url, bool * found, struct re
 	}
 
 	if (is_valid == false) {
-		n = send_static_page("/www/html/404.html", wsi, r);
+		n = send_static_page("/www/html/404.html", found, wsi, r);
 	}
 	else {
 		url += (*url == '/') ? 1: 0;
@@ -109,7 +110,7 @@ int pageview_handler(struct lws * wsi, const char * url, bool * found, struct re
 		memset(file_path, 0, alloc_size);
 		if (file_path != NULL) {
 			sprintf(file_path, "%s/%s", new_url, file_name);
-			n = send_file(file_path, wsi, r);
+			n = send_file(file_path, found, wsi, r);
 			free(file_path);
 		}
 	}
@@ -118,10 +119,10 @@ int pageview_handler(struct lws * wsi, const char * url, bool * found, struct re
 	return n;
 }
 
-int send_static_page(const char * url, struct lws * wsi, struct request * r) {
+int send_static_page(const char * url, bool * found, struct lws * wsi, struct request * r) {
 	char resource_path[PATH_MAX];
 	memset(resource_path, 0, sizeof(resource_path));
 	sprintf(resource_path, "%s%s", SOURCE_PATH, url);
-	return send_file(resource_path, wsi, r);
+	return send_file(resource_path, found, wsi, r);
 }
 /* vim: set tabstop=4 shiftwidth=4 fileencoding=utf-8 noexpandtab: */
