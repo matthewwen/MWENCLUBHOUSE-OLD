@@ -156,7 +156,8 @@ function attempt_login() {
 	var username = $('#input-username').val();
 	var password = $('#input-password').val();
 
-	Cookies.set('mwen_password', password);
+	// TODO should not set password as cookie
+	// Cookies.set('mwen_password', password);
 }
 
 $(".option-link").click(open_menu);

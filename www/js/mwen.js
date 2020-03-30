@@ -42,7 +42,7 @@ function add_content_gpage() {
 					content.innerHTML = json.data[i].body;
 
 					var item = document.createElement('a');
-					item.setAttribute('class', 'item dynamic');
+					item.setAttribute('class', 'item dynamic item-hover');
 					item.setAttribute('href', 'pageview/' + json.data[i].ref);
 					item.appendChild(content);
 
