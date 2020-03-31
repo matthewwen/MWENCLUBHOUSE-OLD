@@ -8,6 +8,7 @@
 
 #define MQTT_MAX_LENGTH 1000000
 
-void handle_mqtt_request(int n, void * context, void * responder, char * buffer);
+void handle_mqtt_request(int n, void * context, char * buffer);
+void set_mqtt_response(void * responder);
 
 #endif

@@ -10,6 +10,8 @@
 
 #include <czmq.h>
 #include <zcert.h>
+#include <error.h>
+
 
 #include "gethandler.h"
 #include "posthandler.h"
@@ -246,24 +248,25 @@ int main(int argc, char* argv[]) {
 #endif
 
 	// MQTT SETUP
-	int mqtt_n = -1;
-	char mqtt_buff[MQTT_MAX_LENGTH];
 	void * mqtt_context = zmq_ctx_new();
-	void * mqtt_responder = zmq_socket(context, ZMQ_REP);
-	mqtt_n = zmq_bind(mqtt_responder, "tcp://*:1883");
+	void * mqtt_responder = zmq_socket(mqtt_context, ZMQ_REP);
+	int mqtt_n = zmq_bind(mqtt_responder, "tcp://*:1883");
+	printf("mqtt_n: %d\n", mqtt_n);
+	set_mqtt_response(mqtt_responder);
+
+	char mqtt_buff[MQTT_MAX_LENGTH];
+	memset(mqtt_buff, 0, sizeof(mqtt_buff));
 
 #ifdef ALLOWPYTHON
 	//PyRun_SimpleString("a = pub.subscribe(a)");
 #endif
 	for (int i = 0; n >= 0 && !INTERRUPTED; i++) {
+		// mqtt broker
+		mqtt_n = zmq_recv(mqtt_responder, mqtt_buff, MQTT_MAX_LENGTH - 1, ZMQ_DONTWAIT);
+		handle_mqtt_request(mqtt_n, mqtt_context, mqtt_buff);
+
 		// libwebsockets
 		n = lws_service(context, 0);
-
-		// mqtt broker
-		memset(mqtt_buff, 0, sizeof(mqtt_buff));
-		mqtt_n = zmq_recv(mqtt_responder, mqtt_buff, MQTT_MAX_LENGTH - 1, ZMQ_DONTWAIT);
-		handle_mqtt_request(mqtt_n, mqtt_context, mqtt_responder, mqtt_buff);
-
 #ifdef ALLOWPYTHON
 		if ((i = (i % MIN15)) == 0) {
 			//PyRun_SimpleString("a = pub.publish(a, \"update\")");
