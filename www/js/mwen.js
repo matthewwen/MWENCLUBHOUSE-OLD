@@ -25,8 +25,7 @@ function add_content_gpage() {
 			type: 'GET',
 			url: '/mwenGetPROJ?pkg-name=' + ref + '&grid-name=' + gridName,
 			contentType: 'plain/text',
-			success: function (result) {
-				var json = JSON.parse(result);
+			success: function (json) {
 				if (json == null || json.data == null) {
 					return;
 				}

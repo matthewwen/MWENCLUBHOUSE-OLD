@@ -29,7 +29,7 @@ int handle_get_request(const char * url, struct lws * wsi, void ** a_request) {
 
 		char * mime = r->mime;
 		if (r->response == BUFFER_REQUEST && r->buff != NULL) {
-			mime = "plain/text";
+			mime = "application/json";
 
 			// TODO writing header part 1
 			uint8_t * buff = r->header;
