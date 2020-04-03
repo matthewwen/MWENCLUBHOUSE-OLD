@@ -24,7 +24,7 @@ function add_content_gpage() {
 		$.ajax({
 			type: 'GET',
 			url: '/mwenGetPROJ?pkg-name=' + ref + '&grid-name=' + gridName,
-			contentType: 'plain/text',
+			contentType: 'application/json',
 			success: function (json) {
 				if (json == null || json.data == null) {
 					return;

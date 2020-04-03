@@ -24,7 +24,7 @@ INCLUDE=-I header\
 	-I /usr/include/python3.8
 
 $(NAME):
-	$(CC) $(NAME).c $(SRC) $(CFLAG) -DALLOWPYTHON $(INCLUDE) -o $(NAME) $(LIB)
+	$(CC) $(NAME).c $(SRC) $(CFLAG) $(INCLUDE) -o $(NAME) $(LIB)
 
 test: 
 	$(CC) $(NAME).c $(SRC) $(CFLAG) -DTESTDEPLOYMENT $(INCLUDE) -o $(NAME) $(LIB)

@@ -183,7 +183,8 @@ int main(int argc, char* argv[]) {
 	INTERRUPTED = 0;
 
 	// LIBWEBSOCKETS SETUP
-	const struct lws_protocols protocol = {"http", callback_dynamic_http, sizeof(struct request), 0};
+	const struct lws_protocols protocol = {"https", callback_dynamic_http, sizeof(struct request), 0};
+	//const struct lws_protocols protocol = {"http", callback_dynamic_http, sizeof(struct request), 0};
 	const struct lws_protocols *pprotocols[] = {&protocol, NULL };
 
 	//override the default mount for /dyn in the URL space 
