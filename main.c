@@ -56,6 +56,16 @@ void destroy_python() {
 #endif
 }
 
+static int file_upload_cb(void * data, const char * name, const char * filename, 
+    char * buff, int len, enum lws_spa_fileupload_states state) {
+
+	if (state == LWS_UFS_OPEN) {
+
+	}
+
+	return 0;
+}
+
 static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason,
 		void *user, void *in, size_t len) {
 	struct request *pss = (struct request *)user;
@@ -76,6 +86,7 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 		}
 		else if (lws_hdr_total_length(wsi, WSI_TOKEN_POST_URI)) {
 			pss->type = POST;
+			printf("post request\n");
 		}
 		else if (lws_hdr_total_length(wsi, WSI_TOKEN_PUT_URI)) {
 			pss->type = PUT;
