@@ -38,6 +38,18 @@ int handle_get_request(const char * url, struct lws * wsi, void ** a_request) {
 				n = 1;
 			}
 
+			const unsigned char * cred_str = (uint8_t *) "access-control-allow-credentials";
+			const unsigned char * cred_val = (uint8_t *) "true";
+			if (n != 1 && lws_add_http_header_by_name(wsi, cred_str, cred_val, 4, &buff, end)) {
+				n = 1;
+			}
+
+			const unsigned char * origin_str = (uint8_t *) "access-control-allow-origin";
+			const unsigned char * origin_val = (uint8_t *) "*";
+			if (n != 1 && lws_add_http_header_by_name(wsi, origin_str, origin_val, 1, &buff, end)) {
+				n = 1;
+			}
+
 			// TODO check if this is correct part 2
 			if (n != 1 && lws_finalize_write_http_header(wsi, r->header, &buff, end)) {
 				n = 1;
