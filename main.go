@@ -6,11 +6,14 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/hello", func (w http.ResponseWriter, req * http.Request) {
+
+	fmt.Println("Main")
+
+	http.HandleFunc("/hello", func(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "hello\n")
 	})
 
-	http.HandleFunc("/headers", func (w http.ResponseWriter, req * http.Request) {
+	http.HandleFunc("/headers", func(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "header\n")
 	})
 

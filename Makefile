@@ -25,8 +25,8 @@ INCLUDE=-I header\
 
 GOSRC=main.go
 
-run:
-	go run $(GOSRC)
+build:
+	go build $(GOSRC)
 
 $(NAME):
 	$(CC) $(NAME).c $(SRC) $(CFLAG) $(INCLUDE) -o $(NAME) $(LIB)
@@ -41,4 +41,4 @@ clean:
 	rm -rf $(NAME) $(SQLITENAME) test
 
 add:
-	git add header/* $(SRC) Makefile $(NAME).c $(SQLITENAME).c webdata.db www/css/* www/favicon/* www/fonts/* www/html/* www/img/* www/index.html www/js/* www/scss/Makefile www/pdf/* www/scss/* py/*  $(GOSRC)
+	git add header/* $(SRC) Makefile cfiles/$(NAME).c cfiles/$(SQLITENAME).c webdata.db www/css/* www/favicon/* www/fonts/* www/html/* www/img/* www/index.html www/js/* www/scss/Makefile www/pdf/* www/scss/* py/*  $(GOSRC)
