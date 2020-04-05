@@ -23,6 +23,11 @@ CFLAG=-O6 -std=c99 -Wshadow -Wvla -pedantic -Wall
 INCLUDE=-I header\
 	-I /usr/include/python3.8
 
+GOSRC=main.go
+
+run:
+	go run $(GOSRC)
+
 $(NAME):
 	$(CC) $(NAME).c $(SRC) $(CFLAG) $(INCLUDE) -o $(NAME) $(LIB)
 
@@ -36,4 +41,4 @@ clean:
 	rm -rf $(NAME) $(SQLITENAME) test
 
 add:
-	git add header/* $(SRC) Makefile $(NAME).c $(SQLITENAME).c webdata.db www/css/* www/favicon/* www/fonts/* www/html/* www/img/* www/index.html www/js/* www/scss/Makefile www/pdf/* www/scss/* py/* 
+	git add header/* $(SRC) Makefile $(NAME).c $(SQLITENAME).c webdata.db www/css/* www/favicon/* www/fonts/* www/html/* www/img/* www/index.html www/js/* www/scss/Makefile www/pdf/* www/scss/* py/*  $(GOSRC)
