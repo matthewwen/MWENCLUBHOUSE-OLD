@@ -25,6 +25,9 @@ function add_content_gpage() {
 			type: 'GET',
 			url: '/mwenGetPROJ?pkg-name=' + ref + '&grid-name=' + gridName,
 			contentType: 'application/json',
+			headers: {"Accept": "application/json; odata=verbose"},
+			credentials: 'include',
+			dataType: "json",
 			success: function (json) {
 				if (json == null || json.data == null) {
 					return;
@@ -49,6 +52,9 @@ function add_content_gpage() {
 					document.getElementById(gridName).append(item);
 					resizeAllGridItems();
 				}
+			},
+			failure: function () {
+				console.log("failed");
 			}
 		});
 	}
