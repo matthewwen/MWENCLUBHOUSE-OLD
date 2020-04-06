@@ -14,6 +14,10 @@ import (
 	gosrc "github.com/matthewwen/MWENCLUBHOUSE/gosrc"
 )
 
+func redirect(w http.ResponseWriter, req * http.Request) {
+	http.Redirect(w, req, "https://" + req.Host + req.URL.String(), http.StatusMovedPermanently)
+}
+
 func main() {
 	var h gosrc.Handler;
 
@@ -41,6 +45,7 @@ func main() {
 			WriteTimeout:   10 * time.Second,
 			MaxHeaderBytes: 1 << 20,
 		}
+		go http.ListenAndServe(":80", http.HandlerFunc(redirect))
 		s.ListenAndServeTLS("/etc/letsencrypt/live/www.matthewwen.com/fullchain.pem", "/etc/letsencrypt/live/www.matthewwen.com/privkey.pem")
 	}
 }
