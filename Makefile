@@ -23,7 +23,7 @@ uninstall:
 	ldconfig
 
 clean:
-	rm -rf $(NAME) $(SQLITENAME) test object
+	rm -rf main $(SQLITENAME) test object
 
 add:
 	git add header/* src/* Makefile \
