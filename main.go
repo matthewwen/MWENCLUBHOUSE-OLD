@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	_ "fmt"
 	"net/http"
 	"time"
 	_ "strings"
@@ -23,7 +23,7 @@ func main() {
 		dev = str.Compare(argsWithProg[1], "dep") != 0
 	}
 
-	var s &http.Server;
+	var s *http.Server;
 	if (dev) {
 		s = &http.Server{
 			Addr:           ":80",
