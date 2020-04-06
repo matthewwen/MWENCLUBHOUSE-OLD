@@ -1,13 +1,12 @@
 package clubhouse
 
 import (
-	"fmt"
+	_ "fmt"
 	"net/http"
 	str "strings"
 )
 
 func (h * Handler) handle_gweb_request(found *bool, w http.ResponseWriter, r * http.Request) int {
-	fmt.Println("GET")
 	n := 0
 	if (*found) == false {
 		url := r.URL.Path

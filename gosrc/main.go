@@ -44,7 +44,6 @@ func strchr(path string, c byte) string {
 
 func get_mime_type(path string) (string, bool) {
 	end  := strrchr(path, '.');
-	fmt.Println("end", end)
 	if (str.Compare(end, ".js") == 0) {
 		return "application/javascript" , true
 	} else if (str.Compare(end, ".mjs") == 0) {
@@ -80,7 +79,6 @@ func send_file(path string, found * bool, w http.ResponseWriter, r * http.Reques
 	file.Read(FileHeader)
 
 	FileContentType , _ := get_mime_type(path)
-	fmt.Println(FileContentType)
 
 	FileStat, _ := file.Stat()                     
 	FileSize := strconv.FormatInt(FileStat.Size(), 10) 
