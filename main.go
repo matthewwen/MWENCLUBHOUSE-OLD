@@ -17,7 +17,7 @@ func main() {
 	var h gosrc.Handler;
 
 	s := &http.Server{
-		Addr:           ":8080",
+		Addr:           ":80",
 		Handler:        h,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,

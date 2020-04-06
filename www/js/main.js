@@ -1,3 +1,5 @@
+console.log("Hello There");
+
 var ref = "main";
 const cjson = Cookies.get();
 const urlParams = new URLSearchParams(window.location.search);

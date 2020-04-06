@@ -13,7 +13,7 @@ var (
 	TEMPLATE_CSS    string = "/main.css"
 )
 
-func (h Handler) handle_gapi_request(w http.ResponseWriter, r * http.Request) {
+func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * http.Request) {
 
 }
 
