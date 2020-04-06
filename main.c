@@ -62,6 +62,9 @@ static int file_upload_cb(void * data, const char * name, const char * filename,
 	if (state == LWS_UFS_OPEN) {
 
 	}
+	else if (state == LWS_UFS_FINAL_CONTENT || state == LWS_UFS_CONTENT) {
+
+	}
 
 	return 0;
 }
@@ -76,10 +79,7 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 
 	int n;
 	if (reason == LWS_CALLBACK_HTTP) {
-
 		lws_snprintf(pss->path, sizeof(pss->path), "%s", (const char *)in);
-
-
 		if (lws_hdr_total_length(wsi, WSI_TOKEN_GET_URI)) {
 			pss->type = GET;
 			return handle_get_request(in, wsi, &user);
