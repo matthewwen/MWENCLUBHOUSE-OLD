@@ -10,7 +10,8 @@ import (
 	str "strings"
 	//"strconv"
 
-	// goczmq "gopkg.in/zeromq/goczmq.v4"
+	goczmq "gopkg.in/zeromq/goczmq.v4"
+	"log"
 	gosrc "github.com/matthewwen/MWENCLUBHOUSE/gosrc"
 )
 
@@ -20,6 +21,12 @@ func redirect(w http.ResponseWriter, req * http.Request) {
 
 func main() {
 	var h gosrc.Handler;
+
+	router, err := goczmq.NewRouter("tcp://*:1883")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer router.Destroy()
 
 	argsWithProg := os.Args
 	var dev bool = true 
