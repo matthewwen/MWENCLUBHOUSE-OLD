@@ -1,7 +1,7 @@
 package clubhouse
 
 import (
-	"fmt"
+	_ "fmt"
 	"net/http"
 	str "strings"
 /*
@@ -53,10 +53,9 @@ func (h * Handler) handle_gweb_request(found *bool, w http.ResponseWriter, r * h
 			n = send_file("www/html/pageview.html", found, w, r)
 		} else if len(url) > len("/pageview/") && (str.Compare("/pageview/", url[:len("/pageview/")]) == 0) {
 			// getting ref
-			ref := url[len("/pageview/"):len("/pageview/") + 10]
+			ref := url[len("/pageview/"):]
 
-			isVisible := C.get_is_visible(C.CString(ref))
-			fmt.Println("isVisible", isVisible)
+			isVisible := len(ref) >= 10 && C.get_is_visible(C.CString(ref[:10]))
 
 			if (isVisible) {
 				path := "../other/" + ref
