@@ -8,6 +8,7 @@ import (
 #include <stdio.h>
 #include <stdlib.h>
 #include "webdatabase.h"
+#include "mpython.h"
 */
 	"C"
 )
@@ -48,10 +49,10 @@ func (h * Handler) handle_gweb_request(found *bool, w http.ResponseWriter, r * h
 			n = send_file("www/index.html", found, w, r)
 		} else if (str.Compare(www, url[:len(www)]) == 0) {
 			n = send_file(url[1:], found, w, r)
-		} else if (str.Compare("/createpkg", url) == 0 || str.Compare("/createpkg/", url) == 0) {
-		} else if (str.Compare("/pageview", url) == 0 || str.Compare("/pageview/", url) == 0) {
+		} else if compare_url("/createpkg", url) {
+		} else if compare_url("/pageview", url)  {
 			n = send_file("www/html/pageview.html", found, w, r)
-		} else if len(url) > len("/pageview/") && (str.Compare("/pageview/", url[:len("/pageview/")]) == 0) {
+		} else if compare_sub("/pageview/", url) {
 			// getting ref
 			ref := url[len("/pageview/"):]
 

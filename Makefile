@@ -17,7 +17,9 @@ install:
 	$(CC) -fPIC -c csrc/json.c -I cheader -o object/json.o
 	$(CC) -fPIC -c csrc/msqlite.c -I cheader -o object/msqlite.o 
 	$(CC) -fPIC -c csrc/webdatabase.c -I cheader -o object/webdatabase.o 
-	$(CC) -shared -o object/libclubhouse.so  object/json.o object/msqlite.o object/webdatabase.o -lsqlite3
+	$(CC) -fPIC -c csrc/mpython.c -I cheader -I /usr/local/include/python3.7m -o object/mpython.o 
+	$(CC) -shared -o object/libclubhouse.so  object/json.o object/msqlite.o \
+		object/webdatabase.o object/mpython.o -lsqlite3 -lpython3.7m
 	mv object/libclubhouse.so /usr/local/lib/
 	ldconfig
 

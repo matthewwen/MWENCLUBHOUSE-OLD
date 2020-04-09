@@ -1,0 +1,19 @@
+table {
+    tbody {
+        .table_option {
+            overflow: auto;
+        }
+        .warning {
+            color: red;
+            font-weight: bold;
+        }
+        .true {
+            color: green;
+            font-weight: bold;
+        }
+        .false {
+            color: red;
+            font-weight: bold;
+        }
+    }
+}

@@ -9,6 +9,7 @@
 		<title>Matthew Wen</title>
 		<link rel="stylesheet" href="/www/css/mwen.css" />
 		<link rel="stylesheet" href="/www/css/main.css" />
+		<link rel="stylesheet" href="/www/css/pageview.css" />
 		<link href="/www/css/material/material-components-web.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     </head>
@@ -19,13 +20,22 @@
         </header>
 
         <div class="container">
-            <p>This page will only be allowed by the admin soon. It currently have no purpose now. Please go back to 
-                <a href="/">www.matthewwen.com</a>.
-            </p>
+            <table id="pageview_table">
+                <tr>
+                    <th>REF</th>
+                    <th>Parent</th>
+                    <th>HTML</th>
+                    <th>Visible</th>
+                </tr>
+            </table>
         </div>
 
     </body>
 
-	<script src="/www/js/material/material-components-web.min.js"></script>
-	<script src="/www/js/jquery/less.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script src="/www/js/jquery/jquery.sha256.min.js"></script>
+	<script src="/www/js/jquery/js.cookie.min.js"></script>
+    <script src="/www/js/jquery/less.min.js"></script>
+    <script src="/www/js/mwen.js"></script>
+    <script src="/www/js/pageview.js"></script>
 </html>

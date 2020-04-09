@@ -9,6 +9,7 @@ import (
 	#include <string.h>
 	#include "json.h"
 	#include "webdatabase.h"
+	#include "mpython.h"
 
 	void format_href(char * href) {
 		for (int i = 0; href[i] != '\0'; i++) {
@@ -58,6 +59,15 @@ var (
 	TEMPLATE_CSS    string = "/main.css"
 )
 
+func Init_Clubhouse() {
+	C.init_mpython()
+}
+
+func Close_Clubhouse() {
+	C.close_mpython()
+}
+
+
 func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * http.Request) {
 	var url string = r.URL.Path
 
@@ -75,6 +85,19 @@ func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * 
 					*found = true
 					w.Header().Set("Content-Type", "application/json")
 					fmt.Fprintf(w, C.GoString(a));
+				}
+			}
+		} else if compare_sub("/apipageview/", url) {
+			url = url[len("/apipageview/"):]
+			if compare_url(url, "all") {
+				a := C.get_pageview()
+				if unsafe.Pointer(a) != nil {
+					defer C.free(unsafe.Pointer(a))
+					*found = true
+					w.Header().Set("Content-Type", "application/json")
+					fmt.Fprintf(w, C.GoString(a));
+				} else {
+					http.Error(w, "Server Error", 404)
 				}
 			}
 		} else if compare_sub("/todo", url) {

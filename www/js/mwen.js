@@ -60,3 +60,14 @@ function add_content_gpage() {
 	}
 }
 
+function get_all_pageview(callback=function(result){console.log(result)}) {
+	$.ajax({type: 'GET',
+			url: '/apipageview/all',
+			contentType: 'application/json',
+			headers: {"Accept": "application/json; odata=verbose"},
+			credentials: 'include',
+			dataType: "json",
+			success: callback
+	});
+}
+

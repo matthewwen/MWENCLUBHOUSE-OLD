@@ -1,0 +1,13 @@
+table tbody .table_option {
+  overflow: auto; }
+table tbody .warning {
+  color: red;
+  font-weight: bold; }
+table tbody .true {
+  color: green;
+  font-weight: bold; }
+table tbody .false {
+  color: red;
+  font-weight: bold; }
+
+/*# sourceMappingURL=pageview.css.map */

@@ -34,6 +34,9 @@ func main() {
 		dev = str.Compare(argsWithProg[1], "dep") != 0
 	}
 
+	gosrc.Init_Clubhouse()
+	defer gosrc.Close_Clubhouse()
+
 	var s *http.Server;
 	if (dev) {
 		s = &http.Server{
