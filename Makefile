@@ -33,5 +33,5 @@ clean:
 add:
 	git add header/* src/* Makefile \
 	webdata.db www/css/* www/favicon/* www/fonts/* www/html/* www/img/* \
-	www/index.html www/js/* www/scss/Makefile www/pdf/* www/scss/* py/*  \
+	www/index.html www/js/* www/scss/Makefile www/pdf/* www/scss/* py/*.py  \
 	$(GOSRC) gosrc/* cheader/* csrc/*
