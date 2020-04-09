@@ -1,5 +1,3 @@
-console.log("Hello There");
-
 var ref = "main";
 const cjson = Cookies.get();
 const urlParams = new URLSearchParams(window.location.search);
@@ -158,8 +156,9 @@ function attempt_login() {
 	var username = $('#input-username').val();
 	var password = $('#input-password').val();
 
-	// TODO should not set password as cookie
-	// Cookies.set('mwen_password', password);
+	// TODO should not set password as cookie -> use jwt
+	console.log("setting password");
+	Cookies.set('mwen_password', password);
 }
 
 $(".option-link").click(open_menu);

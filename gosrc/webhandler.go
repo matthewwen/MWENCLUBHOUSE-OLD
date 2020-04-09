@@ -57,6 +57,11 @@ func (h * Handler) handle_gweb_request(found *bool, w http.ResponseWriter, r * h
 
 			isVisible := len(ref) >= 10 && C.get_is_visible(C.CString(ref[:10]))
 
+			pwd, err := r.Cookie("mwen_password")
+			if err == nil && isVisible == false {
+				isVisible = str.Compare(pwd.Value, "kushal") == 0
+			}
+
 			if (isVisible) {
 				path := "../other/" + ref
 				_, mime := get_mime_type(path)
