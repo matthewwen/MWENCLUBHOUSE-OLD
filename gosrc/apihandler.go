@@ -50,6 +50,7 @@ import (
 	str "strings"
 	"unsafe"
 	"fmt"
+	"strconv"
 )
 
 var (
@@ -108,12 +109,25 @@ func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * 
 				a := C.get_college()
 				send_c_buffer(w, a, found)
 			} else if compare_url("/detail", url) {
-				a := C.get_detail(C.long(1))
-				send_c_buffer(w, a, found)
+				ids, ok := r.URL.Query()["id"]
+				if ok && len(ids) > 0  {
+					i64, err := strconv.ParseInt(ids[0], 10, 32)
+					if err == nil {
+						a := C.get_detail(C.long(i64))
+						send_c_buffer(w, a, found)
+					}
+				} else {
+					*found = true
+					http.Error(w, "Error Searching", 404)
+				}
 			} else if compare_url("/addhref", url) {
 			} else if compare_url("/search", url) {
-				a := C.search_query(C.CString("Austin"))
-				send_c_buffer(w, a, found)
+				qs, ok := r.URL.Query()["query"]
+				if ok && len(qs) > 0 {
+					q := qs[0]
+					a := C.search_query(C.CString(q))
+					send_c_buffer(w, a, found)
+				}
 			} else if compare_url("/update", url) {
 			}
 		} else if compare_sub("/todo", url) {
@@ -143,9 +157,9 @@ func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * 
 }
 
 func send_c_buffer(w http.ResponseWriter, a * C.char, found * bool) {
+	*found = true
 	if unsafe.Pointer(a) != nil {
 		defer C.free(unsafe.Pointer(a))
-		*found = true
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, C.GoString(a));
 	} else {

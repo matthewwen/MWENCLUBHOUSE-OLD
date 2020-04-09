@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "fmt"
+	"fmt"
 	"net/http"
 	"time"
 	_ "strings"
@@ -34,11 +34,12 @@ func main() {
 		dev = str.Compare(argsWithProg[1], "dep") != 0
 	}
 
-	gosrc.Init_Clubhouse()
+	go gosrc.Init_Clubhouse()
 	defer gosrc.Close_Clubhouse()
 
 	var s *http.Server;
 	if (dev) {
+		fmt.Println("Development")
 		s = &http.Server{
 			Addr:           ":80",
 			Handler:        h,
@@ -48,6 +49,7 @@ func main() {
 		}
 		s.ListenAndServe()
 	} else {
+		fmt.Println("Deploy")
 		s = &http.Server{
 			Addr:           ":443",
 			Handler:        h,

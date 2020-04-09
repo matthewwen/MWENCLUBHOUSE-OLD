@@ -10,14 +10,22 @@ void init_mpython() {
 	setenv("PYTHONPATH", "./py", 1);
 	Py_Initialize();
 	PAGE_MODULE      = PyImport_ImportModule("pageview");
-	EXPSCHOOL_MODULE = PyImport_ImportModule("exposchool");
 	assert(PAGE_MODULE != NULL);
-	assert(EXPSCHOOL_MODULE != NULL);
+	PyObject * mod_temp = PyImport_ImportModule("exposchool");
+	assert(mod_temp != NULL);
 
-	PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "init_module");
+	PyObject * function = PyObject_GetAttrString(mod_temp, "init_module");
 	PyObject * myresult = PyObject_CallObject(function, NULL);
 	Py_DECREF(function);
 	Py_DECREF(myresult);
+
+	EXPSCHOOL_MODULE = mod_temp;
+}
+
+char * unsafe_pointer() {
+	char * m = malloc(sizeof(*m));
+	memset(m, 0, sizeof(*m));
+	return m;
 }
 
 char * get_str_from_pyobject(PyObject * myresult) {
@@ -54,47 +62,55 @@ char * get_str_from_pyobject(PyObject * myresult) {
 
 char * get_pageview() {
 	// gets result from python program
-	assert(PAGE_MODULE != NULL);
-	PyObject * function = PyObject_GetAttrString(PAGE_MODULE, "pageview_settings");
-	PyObject * myresult = PyObject_CallObject(function, NULL);
-	Py_DECREF(function);
+	if (PAGE_MODULE != NULL) {
+		PyObject * function = PyObject_GetAttrString(PAGE_MODULE, "pageview_settings");
+		PyObject * myresult = PyObject_CallObject(function, NULL);
+		Py_DECREF(function);
 
-	// put result inside allocated buffer
-	return get_str_from_pyobject(myresult);
+		// put result inside allocated buffer
+		return get_str_from_pyobject(myresult);
+	}
+	return NULL;
 }
 
 char * get_college() {
-	assert(EXPSCHOOL_MODULE != NULL);
-	PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "get_college");
-	PyObject * myresult = PyObject_CallObject(function, NULL);
-	Py_DECREF(function);
+	if (EXPSCHOOL_MODULE != NULL) {
+		PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "get_college");
+		PyObject * myresult = PyObject_CallObject(function, NULL);
+		Py_DECREF(function);
 
-	// put result inside allocated buffer
-	return get_str_from_pyobject(myresult);
+		// put result inside allocated buffer
+		return get_str_from_pyobject(myresult);
+	}
+	return NULL;
 }
 
 char * get_detail(long id) {
-	assert(EXPSCHOOL_MODULE != NULL);
-	PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "get_detail");
-	PyObject * args     = PyTuple_Pack(1, PyLong_FromLong(id));
-	PyObject * myresult = PyObject_CallObject(function, args);
-	Py_DECREF(args);
-	Py_DECREF(function);
+	if (EXPSCHOOL_MODULE != NULL) {
+		PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "get_detail");
+		PyObject * args     = PyTuple_Pack(1, PyLong_FromLong(id));
+		PyObject * myresult = PyObject_CallObject(function, args);
+		Py_DECREF(args);
+		Py_DECREF(function);
 
-	// put result inside allocated buffer
-	return get_str_from_pyobject(myresult);
+		// put result inside allocated buffer
+		return get_str_from_pyobject(myresult);
+	}
+	return NULL;
 }
 
 char * search_query(char * query) {
-	assert(EXPSCHOOL_MODULE != NULL);
-	PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "search_query");
-	PyObject * args     = PyTuple_Pack(1, PyUnicode_FromString(query));
-	PyObject * myresult = PyObject_CallObject(function, args);
-	Py_DECREF(args);
-	Py_DECREF(function);
+	if (EXPSCHOOL_MODULE != NULL) {
+		PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "search_query");
+		PyObject * args     = PyTuple_Pack(1, PyUnicode_FromString(query));
+		PyObject * myresult = PyObject_CallObject(function, args);
+		Py_DECREF(args);
+		Py_DECREF(function);
 
-	// put result inside allocated buffer
-	return get_str_from_pyobject(myresult);
+		// put result inside allocated buffer
+		return get_str_from_pyobject(myresult);
+	}
+	return NULL;
 }
 
 void close_mpython() {
