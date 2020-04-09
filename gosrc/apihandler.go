@@ -88,8 +88,8 @@ func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * 
 				}
 			}
 		} else if compare_sub("/apipageview/", url) {
-			url = url[len("/apipageview/"):]
-			if compare_url(url, "all") {
+			url = url[len("/apipageview"):]
+			if compare_url("/all", url) {
 				a := C.get_pageview()
 				if unsafe.Pointer(a) != nil {
 					defer C.free(unsafe.Pointer(a))
@@ -99,6 +99,22 @@ func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * 
 				} else {
 					http.Error(w, "Server Error", 404)
 				}
+			}
+		} else if compare_sub("/apiexposchool/", url) {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Headers", "*")
+			url = url[len("/apiexposchool"):]
+			if compare_url("/college", url) {
+				a := C.get_college()
+				send_c_buffer(w, a, found)
+			} else if compare_url("/detail", url) {
+				a := C.get_detail(C.long(1))
+				send_c_buffer(w, a, found)
+			} else if compare_url("/addhref", url) {
+			} else if compare_url("/search", url) {
+				a := C.search_query(C.CString("Austin"))
+				send_c_buffer(w, a, found)
+			} else if compare_url("/update", url) {
 			}
 		} else if compare_sub("/todo", url) {
 			// fmt.Println(url)
@@ -124,4 +140,15 @@ func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * 
 		// }
 	}
 
+}
+
+func send_c_buffer(w http.ResponseWriter, a * C.char, found * bool) {
+	if unsafe.Pointer(a) != nil {
+		defer C.free(unsafe.Pointer(a))
+		*found = true
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, C.GoString(a));
+	} else {
+		http.Error(w, "Server Error", 404)
+	}
 }

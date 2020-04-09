@@ -4,12 +4,20 @@
 #include <assert.h>
 
 static PyObject * PAGE_MODULE = NULL;
+static PyObject * EXPSCHOOL_MODULE = NULL;
 
 void init_mpython() {
 	setenv("PYTHONPATH", "./py", 1);
 	Py_Initialize();
-	PAGE_MODULE = PyImport_ImportModule("pageview");
+	PAGE_MODULE      = PyImport_ImportModule("pageview");
+	EXPSCHOOL_MODULE = PyImport_ImportModule("exposchool");
 	assert(PAGE_MODULE != NULL);
+	assert(EXPSCHOOL_MODULE != NULL);
+
+	PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "init_module");
+	PyObject * myresult = PyObject_CallObject(function, NULL);
+	Py_DECREF(function);
+	Py_DECREF(myresult);
 }
 
 char * get_str_from_pyobject(PyObject * myresult) {
@@ -55,7 +63,48 @@ char * get_pageview() {
 	return get_str_from_pyobject(myresult);
 }
 
+char * get_college() {
+	assert(EXPSCHOOL_MODULE != NULL);
+	PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "get_college");
+	PyObject * myresult = PyObject_CallObject(function, NULL);
+	Py_DECREF(function);
+
+	// put result inside allocated buffer
+	return get_str_from_pyobject(myresult);
+}
+
+char * get_detail(long id) {
+	assert(EXPSCHOOL_MODULE != NULL);
+	PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "get_detail");
+	PyObject * args     = PyTuple_Pack(1, PyLong_FromLong(id));
+	PyObject * myresult = PyObject_CallObject(function, args);
+	Py_DECREF(args);
+	Py_DECREF(function);
+
+	// put result inside allocated buffer
+	return get_str_from_pyobject(myresult);
+}
+
+char * search_query(char * query) {
+	assert(EXPSCHOOL_MODULE != NULL);
+	PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "search_query");
+	PyObject * args     = PyTuple_Pack(1, PyUnicode_FromString(query));
+	PyObject * myresult = PyObject_CallObject(function, args);
+	Py_DECREF(args);
+	Py_DECREF(function);
+
+	// put result inside allocated buffer
+	return get_str_from_pyobject(myresult);
+}
+
 void close_mpython() {
-	Py_Finalize();
 	Py_DECREF(PAGE_MODULE);
+	Py_DECREF(EXPSCHOOL_MODULE);
+	Py_Finalize();
+}
+
+int main() {
+	init_mpython();
+	close_mpython();
+	return 0;
 }
