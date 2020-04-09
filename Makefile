@@ -6,6 +6,9 @@ INCLUDE=-I header\
 
 GOSRC=main.go
 
+run:
+	sudo go run $(GOSRC)
+
 build:
 	go build $(GOSRC)
 
@@ -15,7 +18,7 @@ install:
 	$(CC) -fPIC -c csrc/msqlite.c -I cheader -o object/msqlite.o 
 	$(CC) -fPIC -c csrc/webdatabase.c -I cheader -o object/webdatabase.o 
 	$(CC) -shared -o object/libclubhouse.so  object/json.o object/msqlite.o object/webdatabase.o -lsqlite3
-	cp object/libclubhouse.so /usr/local/lib/
+	mv object/libclubhouse.so /usr/local/lib/
 	ldconfig
 
 uninstall:

@@ -64,7 +64,7 @@ body {
   width: 80%;
   margin: 2rem auto;
   text-decoration: none; }
-  .container .mwen-grid-overview h1 {
+  .container .mwen-grid-overview * {
     margin: 5px; }
   .container .mwen-grid-overview .mwen-grid {
     width: calc(100% - 10px);

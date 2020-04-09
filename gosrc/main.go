@@ -102,3 +102,11 @@ func (h * Handler) handle_get_request(w http.ResponseWriter, r * http.Request) {
 		http.Error(w, "Request Not Found", 404)
 	}
 }
+
+func compare_url(static_url, url string) bool {
+	return str.Compare(static_url, url) == 0 || str.Compare(static_url + "/", url) == 0
+}
+
+func compare_sub(static_url, url string) bool {
+	return len(url) >= len(static_url) && str.Compare(static_url, url[:len(static_url)]) == 0
+}
