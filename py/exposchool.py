@@ -252,7 +252,48 @@ def update_memory(temp: str):
         result = {"updated":False}
     return json.dumps(result)
 
-# init_module()
+
+def new_init_module():
+    result = {}
+    try:
+        json_load = None 
+        with open('txt/collegeName.txt') as json_file:
+            json_load = json.load(json_file)
+
+        max_word = 0
+        for item in json_load["data"]:
+            word = re.split(r'\s|-', item["name"])
+            max_word = max_word if len(word) < max_word else len(word) 
+        
+        sort_list = []
+        for i in range(max_word):
+            temp = copy.deepcopy(json_load)
+            temp["data"] = change_list(i, temp["data"])
+            temp["data"] = sort_function(temp["data"], "name")
+            sort_list.append(temp)
+        
+        sort_list_idx = []
+        for i in sort_list:
+            temp = []
+            for y in i["data"]:
+                temp.append(y["id"])
+            sort_list_idx.append(temp)
+
+        pop_list = copy.deepcopy(json_load)
+        pop_list["data"] = sort_function(pop_list["data"], "pop", dist=1)
+
+        pop_list_idx = []
+        for i in pop_list["data"]:
+            pop_list_idx.append(i["id"])
+        
+        format_json = {"ref": json_load["data"], "sort": sort_list_idx, "pop": pop_list_idx}
+
+        return json.dumps(format_json)
+    except:
+        return ""
+
+# print(PROGRAM_LIST.REF_LIST, PROGRAM_LIST.SORTED_LIST, PROGRAM_LIST.POP_LIST, PROGRAM_LIST.MAX_WORD)
+print(new_init_module())
 # print(get_college())
 # print(get_detail(1))
 # # print(process_post(1, "test", "https://google.com", True))
