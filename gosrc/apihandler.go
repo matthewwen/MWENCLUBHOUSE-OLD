@@ -122,13 +122,14 @@ func (h * Handler) handle_gapi_request(found * bool, w http.ResponseWriter, r * 
 				}
 			} else if compare_url("/addhref", url) {
 			} else if compare_url("/search", url) {
-				// disable search
-				// qs, ok := r.URL.Query()["query"]
-				// if ok && len(qs) > 0 {
-				// 	q := qs[0]
-				// 	a := C.search_query(C.CString(q))
-				// 	send_c_buffer(w, a, found)
-				// }
+				*found = true
+				qs, ok := r.URL.Query()["query"]
+				if ok && len(qs) > 0 {
+					q := qs[0]
+					a := C.search_query(C.CString(q))
+
+					send_c_buffer(w, a, found)
+				}
 			} else if compare_url("/update", url) {
 			}
 		} else if compare_sub("/todo", url) {

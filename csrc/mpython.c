@@ -1,10 +1,14 @@
 #include "Python.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <assert.h>
 
 static PyObject * PAGE_MODULE = NULL;
 static PyObject * EXPSCHOOL_MODULE = NULL;
+
+static bool EXP_RUNNING  = false;
+static bool PAGE_RUNNING = false;
 
 void init_mpython() {
 	setenv("PYTHONPATH", "./py", 1);
@@ -61,6 +65,11 @@ char * get_str_from_pyobject(PyObject * myresult) {
 }
 
 char * get_pageview() {
+	while (PAGE_RUNNING == true) {
+		sleep(1);
+	}
+	PAGE_RUNNING = true;
+	char * return_str = NULL;
 	// gets result from python program
 	if (PAGE_MODULE != NULL) {
 		PyObject * function = PyObject_GetAttrString(PAGE_MODULE, "pageview_settings");
@@ -68,24 +77,36 @@ char * get_pageview() {
 		Py_DECREF(function);
 
 		// put result inside allocated buffer
-		return get_str_from_pyobject(myresult);
+		return_str = get_str_from_pyobject(myresult);
 	}
-	return NULL;
+	PAGE_RUNNING = false;
+	return return_str;
 }
 
 char * get_college() {
+	while (EXP_RUNNING == true) {
+		sleep(1);
+	}
+	EXP_RUNNING = true;
+	char * return_str = NULL;
 	if (EXPSCHOOL_MODULE != NULL) {
 		PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "get_college");
 		PyObject * myresult = PyObject_CallObject(function, NULL);
 		Py_DECREF(function);
 
 		// put result inside allocated buffer
-		return get_str_from_pyobject(myresult);
+		return_str = get_str_from_pyobject(myresult);
 	}
-	return NULL;
+	EXP_RUNNING = false;
+	return return_str;
 }
 
 char * get_detail(long id) {
+	while (EXP_RUNNING == true) {
+		sleep(1);
+	}
+	EXP_RUNNING = true;
+	char * return_str = NULL;
 	if (EXPSCHOOL_MODULE != NULL) {
 		PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "get_detail");
 		PyObject * args     = PyTuple_Pack(1, PyLong_FromLong(id));
@@ -94,12 +115,19 @@ char * get_detail(long id) {
 		Py_DECREF(function);
 
 		// put result inside allocated buffer
-		return get_str_from_pyobject(myresult);
+		return_str =  get_str_from_pyobject(myresult);
 	}
-	return NULL;
+	EXP_RUNNING = false;
+	return return_str;
 }
 
 char * search_query(char * query) {
+	while (EXP_RUNNING == true) {
+		sleep(1);
+	}
+
+	EXP_RUNNING = true;
+	char * return_str= NULL;
 	if (EXPSCHOOL_MODULE != NULL) {
 		PyObject * function = PyObject_GetAttrString(EXPSCHOOL_MODULE, "search_query");
 		PyObject * args     = PyTuple_Pack(1, PyUnicode_FromString(query));
@@ -108,19 +136,23 @@ char * search_query(char * query) {
 		Py_DECREF(function);
 
 		// put result inside allocated buffer
-		return get_str_from_pyobject(myresult);
+		return_str =  get_str_from_pyobject(myresult);
 	}
-	return NULL;
+	EXP_RUNNING = false;
+	return return_str;
 }
 
 void close_mpython() {
+	while (EXP_RUNNING == true) {
+		sleep(1);
+	}
 	Py_DECREF(PAGE_MODULE);
 	Py_DECREF(EXPSCHOOL_MODULE);
 	Py_Finalize();
 }
 
-int main() {
-	init_mpython();
-	close_mpython();
-	return 0;
-}
+// int main() {
+// 	init_mpython();
+// 	close_mpython();
+// 	return 0;
+// }
