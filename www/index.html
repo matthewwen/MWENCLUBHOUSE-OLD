@@ -1,70 +1,75 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="apple-touch-icon" sizes="180x180" href="/www/favicon/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/www/favicon/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/www/favicon/favicon-16x16.png"> 
-		<link rel="manifest" href="/www/favicon/site.webmanifest">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" sizes="180x180" href="/www/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/www/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/www/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/www/favicon/site.webmanifest">
 
-		<title>Matthew Wen</title>
-		<link rel="stylesheet" href="/www/css/mwen.css" rel="stylesheet"/>
-		<link rel="stylesheet" href="/www/css/main.css" rel="stylesheet"/>
+	<title>Matthew Wen</title>
+	<link rel="stylesheet" href="/www/css/mwen.css" rel="stylesheet" />
+	<link rel="stylesheet" href="/www/css/main.css" rel="stylesheet" />
 
-		<!-- <link href="/www/css/material/material-components-web.min.css" rel="stylesheet"> -->
-		<!-- <script src="/www/js/material/material-components-web.min.js"></script> -->
-		<!-- <link rel="stylesheet" href="www/css/material/icon.css"> -->
-		<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
-	</head>
+	<!-- <link href="/www/css/material/material-components-web.min.css" rel="stylesheet"> -->
+	<!-- <script src="/www/js/material/material-components-web.min.js"></script> -->
+	<!-- <link rel="stylesheet" href="www/css/material/icon.css"> -->
+	<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+</head>
 
-	<body>
-		<div id="popup-window">
+<body class="basic_background">
+	<div id="popup-window">
+		<div>
+			<h1>Credentials</h1>
+			<input type="text" id="input-username" />
+			<input type="password" id="input-password" />
 			<div>
-				<h1>Credentials</h1>
-				<input type="text" id="input-username"/>
-				<input type="password" id="input-password"/>
-				<div>
-					<button id="btn-cancel">Cancel</button>
-					<button id="btn-okay">Okay</button>
-				</div>
+				<button id="btn-cancel">Cancel</button>
+				<button id="btn-okay">Okay</button>
 			</div>
 		</div>
+	</div>
 
-		<header class="basic_header">
-			<h1>Matthew Wen</h1>
+	<header class="basic_header">
+		<h1>Matthew Wen</h1>
 
-			<div class="nav-links">
-				<div class="nav-link noselect home-menu">Home</div>
-				<div class="nav-link noselect workexp-menu">Work</div>
-				<div class="nav-link noselect school-menu">School</div>
-				<div class="nav-link noselect project-menu">Projects</div>
-				<div class="nav-link noselect about-menu">About</div>
-			</div>
-
-			<div id="icon" onclick="open_menu()">
-				<div id="bar1"></div>
-				<div id="bar2"></div>
-				<div id="bar3"></div>
-			</div>
-		</header>
-
-		<div class="option-links" id="menu-option">
-			<div class="option-link noselect home-menu">Home</div>
-			<div class="option-link noselect workexp-menu">Work</div>
-			<div class="option-link noselect school-menu">School</div>
-			<div class="option-link noselect project-menu">Projects</div>
-			<div class="option-link noselect about-menu">About</div>
+		<div class="nav-links">
+			<div class="nav-link noselect home-menu">Home</div>
+			<div class="nav-link noselect workexp-menu">Work</div>
+			<div class="nav-link noselect school-menu">School</div>
+			<div class="nav-link noselect project-menu">Projects</div>
+			<div class="nav-link noselect about-menu">About</div>
 		</div>
 
+		<div id="icon" onclick="open_menu()">
+			<div id="bar1"></div>
+			<div id="bar2"></div>
+			<div id="bar3"></div>
+		</div>
+	</header>
+
+	<div class="option-links" id="menu-option">
+		<div class="option-link noselect home-menu">Home</div>
+		<div class="option-link noselect workexp-menu">Work</div>
+		<div class="option-link noselect school-menu">School</div>
+		<div class="option-link noselect project-menu">Projects</div>
+		<div class="option-link noselect about-menu">About</div>
+	</div>
+
+	<div class="tint"></div>
+	<div>
 		<div id="div-body" class="container"></div>
-		<footer style="text-align: center;">Copyright &copy; 2020 Matthew Wen</footer>
-	</body>
+	</div>
+	<footer style="text-align: center;">Copyright &copy; 2020 Matthew Wen</footer>
+</body>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-	<script src="/www/js/jquery/less.min.js"></script>
-	<script src="/www/js/jquery/jquery.sha256.min.js"></script>
-	<script src="/www/js/jquery/js.cookie.min.js"></script>
-	<script src="/www/js/mwen.js"></script>
-	<script src="/www/js/main.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="/www/js/jquery/less.min.js"></script>
+<script src="/www/js/jquery/jquery.sha256.min.js"></script>
+<script src="/www/js/jquery/js.cookie.min.js"></script>
+<script src="/www/js/mwen.js"></script>
+<script src="/www/js/main.js"></script>
+<script src="/www/js/chart.js"></script>
+
 </html>

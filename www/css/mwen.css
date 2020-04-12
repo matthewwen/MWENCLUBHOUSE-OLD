@@ -60,6 +60,22 @@ footer {
 body {
   font-family: 'Montserrat', 'sans-serif'; }
 
+.basic_background {
+  background-image: url("/www/img/background.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  color: white; }
+  .basic_background .tint {
+    position: fixed;
+    background-color: rgba(50, 50, 50, 0.8);
+    background-blend-mode: multiply;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    z-index: -1; }
+
 .container {
   width: 80%;
   margin: 2rem auto;
@@ -76,7 +92,9 @@ body {
     .container .mwen-grid-overview .mwen-grid .item {
       padding: 10px;
       min-width: 250px;
-      box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12); }
+      box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+      color: black;
+      background-color: white; }
     .container .mwen-grid-overview .mwen-grid .item-hover:hover {
       background-color: #bbb; }
     .container .mwen-grid-overview .mwen-grid .mdc-fab {

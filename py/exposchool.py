@@ -3,6 +3,11 @@ import sqlite3
 import re
 import copy
 
+import json
+import sqlite3
+import re
+import copy
+
 # algo
 def strcmp(str1, str2, inst, dist=0, count=-1, index=-1, queryAtIndex=False):
     if inst == 0: 
@@ -262,7 +267,7 @@ def new_init_module():
 
         max_word = 0
         for item in json_load["data"]:
-            word = re.split(r'\s|-', item["name"])
+            word = re.split(' ', item["name"])
             max_word = max_word if len(word) < max_word else len(word) 
         
         sort_list = []
@@ -293,7 +298,8 @@ def new_init_module():
         return ""
 
 # print(PROGRAM_LIST.REF_LIST, PROGRAM_LIST.SORTED_LIST, PROGRAM_LIST.POP_LIST, PROGRAM_LIST.MAX_WORD)
-print(new_init_module())
+# print(new_init_module())
+# print(new_init_module())
 # print(get_college())
 # print(get_detail(1))
 # # print(process_post(1, "test", "https://google.com", True))
