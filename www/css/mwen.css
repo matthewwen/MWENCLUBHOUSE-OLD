@@ -30,8 +30,6 @@
     padding-left: 10px;
     padding-right: 10px;
     cursor: pointer; }
-    .basic_header .nav-links .nav-link:hover {
-      background: #333; }
     .basic_header .nav-links .nav-link:active {
       background: #933; }
   .basic_header .nav-links .active-nav-link {
@@ -71,7 +69,7 @@ body {
     position: fixed;
     background-color: rgba(50, 50, 50, 0.8);
     background-blend-mode: multiply;
-    height: 100%;
+    height: 120%;
     width: 100%;
     top: 0;
     z-index: -1; }
