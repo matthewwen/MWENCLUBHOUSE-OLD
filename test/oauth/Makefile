@@ -13,4 +13,4 @@ clean:
 	rm -rf $(NAME)
 
 add:
-	git add $(SRC) $(MAIN) Makefile
+	git add $(SRC) $(MAIN) Makefile oauth.h
