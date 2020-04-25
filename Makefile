@@ -18,7 +18,8 @@ install:
 	$(CC) -fPIC -c csrc/msqlite.c -I cheader -o object/msqlite.o 
 	$(CC) -fPIC -c csrc/webdatabase.c -I cheader -o object/webdatabase.o 
 	$(CC) -fPIC -c csrc/mpython.c -I cheader -I /usr/local/include/python3.7m -o object/mpython.o 
-	$(CC) -shared -o object/libclubhouse.so  object/json.o object/msqlite.o \
+	$(CC) -fPIC -c csrc/oauth.c -I cheader -o object/oauth.o
+	$(CC) -shared -o object/libclubhouse.so  object/json.o object/msqlite.o object/oauth.o\
 		object/webdatabase.o object/mpython.o -lsqlite3 -lpython3.7m
 	mv object/libclubhouse.so /usr/local/lib/
 	ldconfig
@@ -28,7 +29,7 @@ uninstall:
 	ldconfig
 
 clean:
-	rm -rf main $(SQLITENAME) test object
+	rm -rf main $(SQLITENAME) object
 
 add:
 	git add header/* src/* Makefile \

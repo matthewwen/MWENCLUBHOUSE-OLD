@@ -3,13 +3,14 @@ package clubhouse
 import (
 	/* 
 	#cgo CFLAGS: -O6 -std=c99 -Wshadow -Wvla -pedantic -Wall -I .././cheader
-	#cgo LDFLAGS: -lsqlite3 -L .././object -lclubhouse
+	#cgo LDFLAGS: -lsqlite3 -L .././object -lclubhouse -ljwt -ljansson -lcrypto -lm -lrt -lsqlite3
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
 	#include "json.h"
 	#include "webdatabase.h"
 	#include "mpython.h"
+	#include "oauth.h"
 
 	void format_href(char * href) {
 		for (int i = 0; href[i] != '\0'; i++) {
@@ -62,6 +63,7 @@ var (
 
 func Init_Clubhouse() {
 	C.init_mpython()
+	C.oauth_init_admin();
 }
 
 func Close_Clubhouse() {

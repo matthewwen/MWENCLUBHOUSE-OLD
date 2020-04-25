@@ -76,6 +76,10 @@ func (h * Handler) handle_gweb_request(found *bool, w http.ResponseWriter, r * h
 			}
 		} else if (str.Compare("/resume", url) == 0 || str.Compare("/resume/", url) == 0) {
 			n = send_file("www/pdf/matthewwen.pdf", found, w, r)
+		} else if compare_sub("/signin", url) {
+			n = send_file("www/html/signin.html", found, w, r)
+		} else if compare_sub("/signup", url) {
+			n = send_file("www/html/signup.html", found, w, r)
 		}
 	}
 	return n
