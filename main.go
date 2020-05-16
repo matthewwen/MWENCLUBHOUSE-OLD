@@ -58,6 +58,6 @@ func main() {
 			MaxHeaderBytes: 1 << 20,
 		}
 		go http.ListenAndServe(":80", http.HandlerFunc(redirect))
-		s.ListenAndServeTLS("/etc/letsencrypt/live/www.matthewwen.com/fullchain.pem", "/etc/letsencrypt/live/www.matthewwen.com/privkey.pem")
+		s.ListenAndServeTLS("/etc/letsencrypt/live/api.matthewwen.com/fullchain.pem", "/etc/letsencrypt/live/api.matthewwen.com/privkey.pem")
 	}
 }
